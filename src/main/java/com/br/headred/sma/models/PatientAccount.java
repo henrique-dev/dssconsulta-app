@@ -12,11 +12,20 @@ import java.util.List;
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class PatientAccount extends PatientProfile{
+public class PatientAccount{
        
+    private int patientProfileId;
     private Date patientAccountCreationDate;   
     private List<PatientAccountFile> patientAccountFiles;
     private List<PatientAccountSpeciality> patientAccountSpecialities;
+
+    public int getPatientProfileId() {
+        return patientProfileId;
+    }
+
+    public void setPatientProfileId(int patientProfileId) {
+        this.patientProfileId = patientProfileId;
+    }        
 
     public Date getPatientAccountCreationDate() {
         return patientAccountCreationDate;
