@@ -7,7 +7,10 @@ package com.br.headred.sma.teste;
 
 import com.br.headred.sma.dao.SystemDAO;
 import com.br.headred.sma.dao.SystemDAO.Table;
+import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.jdbc.ConnectionFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,7 +19,11 @@ import com.br.headred.sma.jdbc.ConnectionFactory;
 public class LiberarIndex {
     
     public static void main(String[] args) {
-        new SystemDAO(new ConnectionFactory().getConnection()).releaseId(Table.managerUser, 3);
+        try {
+            new SystemDAO(new ConnectionFactory().getConnection()).releaseId(Table.managerUser, 3);
+        } catch (DAOException ex) {
+            ex.printStackTrace();
+        }
     }
     
 }

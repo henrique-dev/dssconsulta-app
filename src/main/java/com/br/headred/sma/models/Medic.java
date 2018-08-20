@@ -13,6 +13,15 @@ public class Medic extends User{
     
     private String medicName;
     private String medicCrm;   
+    private MedicProfile medicProfile;
+    
+    public Medic() {
+        super();
+    }
+    
+    public Medic(int medicId) {
+        super(medicId);
+    }
 
     public String getMedicName() {
         return medicName;
@@ -29,5 +38,13 @@ public class Medic extends User{
     public void setMedicCrm(String medicCrm) {
         this.medicCrm = medicCrm;
     }            
+
+    public MedicProfile getMedicProfile() {
+        return medicProfile;
+    }
+
+    public void setMedicProfile(MedicProfile medicProfile) {
+        this.medicProfile = medicProfile;
+    }        
             
 }

@@ -11,41 +11,47 @@ package com.br.headred.sma.models;
  */
 public abstract class User {
     
-    private int patientUserId;
-    private String patientUserName;
-    private String patientUserPassword;
-    private String patientUserSessionId;
-
-    public int getPatientUserId() {
-        return patientUserId;
+    private int userId;
+    private String userName;
+    private String userPassword;
+    private String userSessionId;
+    
+    public User() {}
+    
+    public User(int userId) {
+        this.userId = userId;
     }
 
-    public void setPatientUserId(int patientUserId) {
-        this.patientUserId = patientUserId;
+    public int getUserId() {
+        return userId;
     }
 
-    public String getPatientUserName() {
-        return patientUserName;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public void setPatientUserName(String patientUserName) {
-        this.patientUserName = patientUserName;
+    public String getUserName() {
+        return userName;
     }
 
-    public String getPatientUserPassword() {
-        return patientUserPassword;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public void setPatientUserPassword(String patientUserPassword) {
-        this.patientUserPassword = patientUserPassword;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public String getPatientUserSessionId() {
-        return patientUserSessionId;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
-    public void setPatientUserSessionId(String patientUserSessionId) {
-        this.patientUserSessionId = patientUserSessionId;
-    }            
+    public String getUserSessionId() {
+        return userSessionId;
+    }
+
+    public void setUserSessionId(String userSessionId) {
+        this.userSessionId = userSessionId;
+    }        
             
 }

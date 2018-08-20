@@ -6,6 +6,7 @@
 package com.br.headred.sma.teste;
 
 import com.br.headred.sma.dao.PatientDAO;
+import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.jdbc.ConnectionFactory;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.PatientAccount;
@@ -29,34 +30,31 @@ public class AddPatient {
      * @param args 
      */
     public static void main(String[] args) {
-        try (Connection connection = new ConnectionFactory().getConnection()) {
-            User patientUser = new Patient();
-            patientUser.setPatientUserName("12345678910");
-            patientUser.setPatientUserPassword(Objects.hashCode("123456") + "");
-            new PatientDAO(connection).addPatientUser(patientUser);  
+        try (Connection connection = new ConnectionFactory().getConnection()) {                        
             
             Patient patient = new Patient();
-            patient.setPatientUserId(patientUser.getPatientUserId());
+            
+            patient.setUserName("12345678910");
+            patient.setUserPassword(Objects.hashCode("123456") + "");            
+                                    
             patient.setPatientName("Paulo Henrique Gonçalves Bacelar");
             patient.setPatientCpf("01741053200");
-            new PatientDAO(connection).addPatient(patient);
-            
+                                    
             PatientProfile patientProfile = new PatientProfile();
-            patientProfile.setPatientUserId(patientUser.getPatientUserId());
             patientProfile.setPatientProfileEmail("henrique.phgb@gmail.com");
             patientProfile.setPatientProfileGenre("masculino");
             patientProfile.setPatientProfileHeight(1.7f);
             patientProfile.setPatientProfileBirthDate(new Date(Calendar.getInstance().getTimeInMillis()));
             patientProfile.setPatientProfileBloodType("A+");
-            patientProfile.setPatientProfileTelephone("96991100443");
-            new PatientDAO(connection).addPatientProfile(patientProfile);
+            patientProfile.setPatientProfileTelephone("96991100443");            
             
-            PatientAccount patientAccount = new PatientAccount();
-            patientAccount.setPatientProfileId(patientProfile.getPatientUserId());
-            patientAccount.setPatientAccountCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
-            new PatientDAO(connection).addPatientAccount(patientAccount);
+            patient.setPatientProfile(patientProfile);
+            
+            new PatientDAO(connection).addPatient(patient);
             
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (DAOException e) {
             e.printStackTrace();
         }
     }

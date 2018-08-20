@@ -5,27 +5,27 @@
  */
 package com.br.headred.sma.teste;
 
-import com.br.headred.sma.dao.SystemDAO;
+import com.br.headred.sma.dao.MedicDAO;
 import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.jdbc.ConnectionFactory;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import com.br.headred.sma.models.Medic;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class SolicitarIndex {
+public class RemoveMedic {
     
     public static void main(String[] args) {
-        long index;
-        try {
-            index = new SystemDAO(new ConnectionFactory().getConnection()).getNextId(SystemDAO.Table.managerUser);
-            JOptionPane.showMessageDialog(null, "Novo index recebido: " + index);
-        } catch (DAOException ex) {
-            ex.printStackTrace();
-        }        
+        try (Connection connection = new ConnectionFactory().getConnection()) {                             
+            new MedicDAO(connection).removeMedic(new Medic(0));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
     }
     
 }

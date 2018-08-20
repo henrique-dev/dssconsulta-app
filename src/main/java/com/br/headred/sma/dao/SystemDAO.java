@@ -39,7 +39,7 @@ public class SystemDAO extends BasicDAO {
         super(connection);
     }
 
-    public int getNextId(Table tableName) {
+    public int getNextId(Table tableName) throws DAOException {
         String sql = "select " + tableName + " from idManager where id=(select " + tableName + "Last from idManager where id=0)"
                 + "union all select " + tableName + "Last from idManager where id=0";
         try {
@@ -69,11 +69,11 @@ public class SystemDAO extends BasicDAO {
                 return index;
             }
         } catch (SQLException e) {
-            throw new DAOException(e);
+            throw new DAOException("Falha ao requisitar um novo id", e);
         }
     }
 
-    public void releaseId(Table tableName, long id) {
+    public void releaseId(Table tableName, long id) throws DAOException {
         String sql = "select rowSize from idManager where id=0 union all "
                 + "select " + tableName + "Last from idManager where id=0";
         try {
@@ -105,7 +105,7 @@ public class SystemDAO extends BasicDAO {
                 stmt.close();
             }
         } catch (SQLException e) {
-            throw new DAOException(e);
+            throw new DAOException("Falha ao liberar o id", e);
         }
     }    
 

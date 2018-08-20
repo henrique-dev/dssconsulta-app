@@ -12,8 +12,9 @@ import java.util.List;
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class PatientProfile extends Patient{
+public class PatientProfile {
 
+    private int patientProfileId;
     private String patientProfileEmail;
     private String patientProfileGenre;
     private Date patientProfileBirthDate;
@@ -24,6 +25,14 @@ public class PatientProfile extends Patient{
     private List<PatientConsult> patientConsults;
     private PatientAccount patientAccount;
     private List<PatientProfileFile> patientProfileFiles;
+
+    public int getPatientProfileId() {
+        return patientProfileId;
+    }
+
+    public void setPatientProfileId(int patientProfileId) {
+        this.patientProfileId = patientProfileId;
+    }        
 
     public String getPatientProfileEmail() {
         return patientProfileEmail;

@@ -12,7 +12,16 @@ package com.br.headred.sma.models;
 public class Patient extends User {
 
     private String patientName;
-    private String patientCpf;      
+    private String patientCpf; 
+    private PatientProfile patientProfile;    
+    
+    public Patient() {
+        super();
+    }
+
+    public Patient(int userId) {
+        super(userId);
+    }
 
     public String getPatientName() {
         return patientName;
@@ -29,5 +38,13 @@ public class Patient extends User {
     public void setPatientCpf(String patientCpf) {
         this.patientCpf = patientCpf;
     }   
+
+    public PatientProfile getPatientProfile() {
+        return patientProfile;
+    }
+
+    public void setPatientProfile(PatientProfile patientProfile) {
+        this.patientProfile = patientProfile;
+    }        
         
 }

@@ -11,15 +11,22 @@ package com.br.headred.sma.models;
  */
 public class Clinic {
     
-    private long clinicId;
+    private int clinicId;
     private String clinicName;
     private String clinicCnpj;
+    private ClinicProfile clinicProfile;
+    
+    public Clinic() {}
+    
+    public Clinic(int clinicId) {
+        this.clinicId = clinicId;
+    }
 
-    public long getClinicId() {
+    public int getClinicId() {
         return clinicId;
     }
 
-    public void setClinicId(long clinicId) {
+    public void setClinicId(int clinicId) {
         this.clinicId = clinicId;
     }
 
@@ -37,6 +44,14 @@ public class Clinic {
 
     public void setClinicCnpj(String clinicCnpj) {
         this.clinicCnpj = clinicCnpj;
+    }        
+
+    public ClinicProfile getClinicProfile() {
+        return clinicProfile;
+    }
+
+    public void setClinicProfile(ClinicProfile clinicProfile) {
+        this.clinicProfile = clinicProfile;
     }        
     
 }

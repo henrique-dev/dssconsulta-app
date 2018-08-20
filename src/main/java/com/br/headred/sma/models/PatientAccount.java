@@ -12,19 +12,19 @@ import java.util.List;
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class PatientAccount{
+public class PatientAccount {
        
-    private int patientProfileId;
+    private int patientAccountId;
     private Date patientAccountCreationDate;   
     private List<PatientAccountFile> patientAccountFiles;
     private List<PatientAccountSpeciality> patientAccountSpecialities;
 
-    public int getPatientProfileId() {
-        return patientProfileId;
+    public int getPatientAccountId() {
+        return patientAccountId;
     }
 
-    public void setPatientProfileId(int patientProfileId) {
-        this.patientProfileId = patientProfileId;
+    public void setPatientAccountId(int patientAccountId) {
+        this.patientAccountId = patientAccountId;
     }        
 
     public Date getPatientAccountCreationDate() {

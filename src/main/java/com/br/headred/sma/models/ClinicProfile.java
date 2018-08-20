@@ -11,14 +11,23 @@ import java.util.List;
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class ClinicProfile extends Clinic {
+public class ClinicProfile {
     
+    private int clinicProfileId;
     private String clinicProfileBio;
     private String clinicProfileAddress;
     private List<ClinicTelephone> clicClinicTelephones;
     private List<MedicSchedule> medicSchedules;
     private List<MedicWorkAddress> medicWorkAddresses;
     private List<ClinicProfileFile> clinicProfileFiles;
+
+    public int getClinicProfileId() {
+        return clinicProfileId;
+    }
+
+    public void setClinicProfileId(int clinicProfileId) {
+        this.clinicProfileId = clinicProfileId;
+    }        
 
     public String getClinicProfileBio() {
         return clinicProfileBio;
