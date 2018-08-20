@@ -13,7 +13,7 @@ import java.sql.Connection;
  */
 public class BasicDAO {
     
-    protected final Connection connection;
+    protected Connection connection;
     
     public BasicDAO(Connection connection) {
         this.connection = connection;

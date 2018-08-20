@@ -11,16 +11,16 @@ package com.br.headred.sma.models;
  */
 public abstract class User {
     
-    private long patientUserId;
+    private int patientUserId;
     private String patientUserName;
     private String patientUserPassword;
     private String patientUserSessionId;
 
-    public long getPatientUserId() {
+    public int getPatientUserId() {
         return patientUserId;
     }
 
-    public void setPatientUserId(long patientUserId) {
+    public void setPatientUserId(int patientUserId) {
         this.patientUserId = patientUserId;
     }
 
