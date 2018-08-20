@@ -14,6 +14,22 @@ public class MedicSpeciality {
     private MedicProfile medicProfile;
     private Speciality speciality;
 
+    public MedicSpeciality() {
+    }
+
+    public MedicSpeciality(MedicProfile medicProfile) {
+        this.medicProfile = medicProfile;
+    }
+
+    public MedicSpeciality(Speciality speciality) {
+        this.speciality = speciality;
+    }
+
+    public MedicSpeciality(MedicProfile medicProfile, Speciality speciality) {
+        this.medicProfile = medicProfile;
+        this.speciality = speciality;
+    }        
+
     public MedicProfile getMedicProfile() {
         return medicProfile;
     }

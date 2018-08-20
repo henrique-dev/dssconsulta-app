@@ -9,10 +9,14 @@ import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.models.Clinic;
 import com.br.headred.sma.models.ClinicProfile;
 import com.br.headred.sma.models.ClinicTelephone;
+import com.br.headred.sma.models.Medic;
+import com.br.headred.sma.models.Speciality;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 
 /**
  *
@@ -38,10 +42,13 @@ public class ClinicDAO extends BasicDAO {
             stmt.setInt(1, clinicId);
             stmt.setString(2, clinic.getClinicName());
             stmt.setString(3, clinic.getClinicCnpj());            
-            stmt.execute();
+            stmt.execute();           
         } catch (SQLException e) {
             new SystemDAO(super.connection).releaseId(SystemDAO.Table.patientUser, clinicId);
-            throw new DAOException("Falha ao adicionar as informações da clinica", e);
+            if (e instanceof SQLIntegrityConstraintViolationException)
+                throw new DAOException("Falha ao adicionar as informações da clinica. O cnpj ja existe", e);
+            else
+                throw new DAOException("Falha ao adicionar as informações da clinica", e);
         }
     }
     
@@ -65,6 +72,42 @@ public class ClinicDAO extends BasicDAO {
         } catch (SQLException e) {            
             throw new DAOException("Falha ao adicionar um perfil para a clinica", e);
         }
+    }        
+    
+    public Clinic getClinicFastDescribe(String cnpj) {
+        return null;
+    }
+    
+    public Clinic getClinicFastDescribe(int clinicId) {
+        return null;
+    }
+    
+    public Clinic getClinicFulltDescribe(String cnpj) {
+        return null;
+    }
+    
+    public Clinic getClinicFulltDescribe(int clinicId) {
+        return null;
+    }
+    
+    public List<Clinic> getClinicFastDescribeList(Medic medic) {
+        return null;
+    }
+    
+    public List<Clinic> getClinicFastDescribeList(Speciality speciality) {
+        return null;
+    }
+    
+    public List<Clinic> getClinicFullDescribeList(Medic medic) {
+        return null;
+    }
+    
+    public List<Clinic> getClinicFullDescribeList(Speciality speciality) {
+        return null;
+    }
+    
+    public List<Clinic> getClinicFastDescribeList() {
+        return null;
     }
     
     public boolean existClinic(Clinic clinic) {
@@ -117,7 +160,7 @@ public class ClinicDAO extends BasicDAO {
         } catch (SQLException e) {            
             throw new DAOException("Falha ao adicionar o numero de telefone para a clinica", e);
         }
-    }
+    }        
     
     public void removeClinicTelephone(Clinic clinic) throws DAOException {
         String sql = "delete from clinicTelephone where clinicProfile_fk=?";        

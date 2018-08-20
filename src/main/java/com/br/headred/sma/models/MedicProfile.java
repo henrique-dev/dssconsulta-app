@@ -24,6 +24,20 @@ public class MedicProfile {
     private MedicWorkAddress medicWorkAddress;
     private PatientEvaluation medicPatientEvaluation;
 
+    public MedicProfile() {
+    }
+
+    public MedicProfile(int medicProfileId) {
+        this.medicProfileId = medicProfileId;
+    }
+
+    public MedicProfile(int medicProfileId, String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl) {
+        this.medicProfileId = medicProfileId;
+        this.medicProfileBio = medicProfileBio;
+        this.medicProfileExpAge = medicProfileExpAge;
+        this.medicProfileInfoCompl = medicProfileInfoCompl;
+    }        
+
     public int getMedicProfileId() {
         return medicProfileId;
     }

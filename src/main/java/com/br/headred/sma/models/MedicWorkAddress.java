@@ -11,17 +11,37 @@ package com.br.headred.sma.models;
  */
 public class MedicWorkAddress {
     
-    private long medicWorkAddress;
+    private int medicWorkAddressId;
     private MedicProfile medicProfile;
     private ClinicProfile clinicProfile;
     private String medicWorkAddressComplement;
 
-    public long getMedicWorkAddress() {
-        return medicWorkAddress;
+    public MedicWorkAddress() {
     }
 
-    public void setMedicWorkAddress(long medicWorkAddress) {
-        this.medicWorkAddress = medicWorkAddress;
+    public MedicWorkAddress(int medicWorkAddressId) {
+        this.medicWorkAddressId = medicWorkAddressId;
+    }
+
+    public MedicWorkAddress(int medicWorkAddressId, MedicProfile medicProfile, ClinicProfile clinicProfile, String medicWorkAddressComplement) {
+        this.medicWorkAddressId = medicWorkAddressId;
+        this.medicProfile = medicProfile;
+        this.clinicProfile = clinicProfile;
+        this.medicWorkAddressComplement = medicWorkAddressComplement;
+    }
+
+    public MedicWorkAddress(MedicProfile medicProfile, ClinicProfile clinicProfile, String medicWorkAddressComplement) {
+        this.medicProfile = medicProfile;
+        this.clinicProfile = clinicProfile;
+        this.medicWorkAddressComplement = medicWorkAddressComplement;
+    }        
+
+    public int getMedicWorkAddressId() {
+        return medicWorkAddressId;
+    }
+
+    public void setMedicWorkAddressId(int medicWorkAddressId) {
+        this.medicWorkAddressId = medicWorkAddressId;
     }
 
     public MedicProfile getMedicProfile() {

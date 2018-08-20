@@ -11,14 +11,30 @@ package com.br.headred.sma.models;
  */
 public class Speciality {
     
-    private long specialityId;
+    private int specialityId;
     private String specialityName;
 
-    public long getSpecialityId() {
+    public Speciality() {
+    }
+
+    public Speciality(int specialityId) {
+        this.specialityId = specialityId;
+    }
+
+    public Speciality(String specialityName) {
+        this.specialityName = specialityName;
+    }
+
+    public Speciality(int specialityId, String specialityName) {
+        this.specialityId = specialityId;
+        this.specialityName = specialityName;
+    }        
+
+    public int getSpecialityId() {
         return specialityId;
     }
 
-    public void setSpecialityId(long specialityId) {
+    public void setSpecialityId(int specialityId) {
         this.specialityId = specialityId;
     }
 

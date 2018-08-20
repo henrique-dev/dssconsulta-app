@@ -11,16 +11,36 @@ package com.br.headred.sma.models;
  */
 public class MedicSchedule {
     
-    private long medicScheduleId;
+    private int medicScheduleId;
     private MedicProfile medicProfile;
     private ClinicProfile cliProfile;
     private String schedule;
 
-    public long getMedicScheduleId() {
+    public MedicSchedule() {
+    }
+
+    public MedicSchedule(int medicScheduleId) {
+        this.medicScheduleId = medicScheduleId;
+    }
+
+    public MedicSchedule(int medicScheduleId, MedicProfile medicProfile, ClinicProfile cliProfile, String schedule) {
+        this.medicScheduleId = medicScheduleId;
+        this.medicProfile = medicProfile;
+        this.cliProfile = cliProfile;
+        this.schedule = schedule;
+    }        
+
+    public MedicSchedule(MedicProfile medicProfile, ClinicProfile cliProfile, String schedule) {
+        this.medicProfile = medicProfile;
+        this.cliProfile = cliProfile;
+        this.schedule = schedule;
+    }        
+
+    public int getMedicScheduleId() {
         return medicScheduleId;
     }
 
-    public void setMedicScheduleId(long medicScheduleId) {
+    public void setMedicScheduleId(int medicScheduleId) {
         this.medicScheduleId = medicScheduleId;
     }
 

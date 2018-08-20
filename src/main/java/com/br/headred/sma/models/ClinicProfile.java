@@ -21,6 +21,26 @@ public class ClinicProfile {
     private List<MedicWorkAddress> medicWorkAddresses;
     private List<ClinicProfileFile> clinicProfileFiles;
 
+    public ClinicProfile() {
+    }
+
+    public ClinicProfile(int clinicProfileId) {
+        this.clinicProfileId = clinicProfileId;
+    }
+
+    public ClinicProfile(int clinicProfileId, String clinicProfileBio, String clinicProfileAddress, List<ClinicTelephone> clicClinicTelephones) {
+        this.clinicProfileId = clinicProfileId;
+        this.clinicProfileBio = clinicProfileBio;
+        this.clinicProfileAddress = clinicProfileAddress;
+        this.clicClinicTelephones = clicClinicTelephones;
+    }
+
+    public ClinicProfile(String clinicProfileBio, String clinicProfileAddress, List<ClinicTelephone> clicClinicTelephones) {
+        this.clinicProfileBio = clinicProfileBio;
+        this.clinicProfileAddress = clinicProfileAddress;
+        this.clicClinicTelephones = clicClinicTelephones;
+    }        
+
     public int getClinicProfileId() {
         return clinicProfileId;
     }
