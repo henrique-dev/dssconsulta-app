@@ -26,6 +26,32 @@ public class PatientProfile {
     private PatientAccount patientAccount;
     private List<PatientProfileFile> patientProfileFiles;
 
+    public PatientProfile() {
+    }
+
+    public PatientProfile(int patientProfileId) {
+        this.patientProfileId = patientProfileId;
+    }
+
+    public PatientProfile(int patientProfileId, String patientProfileEmail, String patientProfileGenre, Date patientProfileBirthDate, float patientProfileHeight, String patientProfileBloodType, String patientProfileTelephone) {
+        this.patientProfileId = patientProfileId;
+        this.patientProfileEmail = patientProfileEmail;
+        this.patientProfileGenre = patientProfileGenre;
+        this.patientProfileBirthDate = patientProfileBirthDate;
+        this.patientProfileHeight = patientProfileHeight;
+        this.patientProfileBloodType = patientProfileBloodType;
+        this.patientProfileTelephone = patientProfileTelephone;
+    }
+
+    public PatientProfile(String patientProfileEmail, String patientProfileGenre, Date patientProfileBirthDate, float patientProfileHeight, String patientProfileBloodType, String patientProfileTelephone) {
+        this.patientProfileEmail = patientProfileEmail;
+        this.patientProfileGenre = patientProfileGenre;
+        this.patientProfileBirthDate = patientProfileBirthDate;
+        this.patientProfileHeight = patientProfileHeight;
+        this.patientProfileBloodType = patientProfileBloodType;
+        this.patientProfileTelephone = patientProfileTelephone;
+    }        
+
     public int getPatientProfileId() {
         return patientProfileId;
     }

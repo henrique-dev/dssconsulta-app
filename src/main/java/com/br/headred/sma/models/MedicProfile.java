@@ -16,12 +16,11 @@ public class MedicProfile {
     private int medicProfileId;
     private String medicProfileBio;
     private int medicProfileExpAge;
-    private String medicProfileInfoCompl;   
-    private List<MedicSchedule> medicSchedules;
+    private String medicProfileInfoCompl;       
     private List<MedicProfileFile> medicProfileFiles;
     private List<MedicSpeciality> medicSpecialities;
     private List<MedicConsult> medicAgenda;
-    private MedicWorkAddress medicWorkAddress;
+    private List<MedicWorkAddress> medicWorkAddresses;
     private PatientEvaluation medicPatientEvaluation;
 
     public MedicProfile() {
@@ -68,15 +67,7 @@ public class MedicProfile {
 
     public void setMedicProfileInfoCompl(String medicProfileInfoCompl) {
         this.medicProfileInfoCompl = medicProfileInfoCompl;
-    }
-
-    public List<MedicSchedule> getMedicSchedules() {
-        return medicSchedules;
-    }
-
-    public void setMedicSchedules(List<MedicSchedule> medicSchedules) {
-        this.medicSchedules = medicSchedules;
-    }
+    }    
 
     public List<MedicProfileFile> getMedicProfileFiles() {
         return medicProfileFiles;
@@ -102,13 +93,13 @@ public class MedicProfile {
         this.medicAgenda = medicAgenda;
     }
 
-    public MedicWorkAddress getMedicWorkAddress() {
-        return medicWorkAddress;
+    public List<MedicWorkAddress> getMedicWorkAddresses() {
+        return medicWorkAddresses;
     }
 
-    public void setMedicWorkAddress(MedicWorkAddress medicWorkAddress) {
-        this.medicWorkAddress = medicWorkAddress;
-    }
+    public void setMedicWorkAddresses(List<MedicWorkAddress> medicWorkAddresses) {
+        this.medicWorkAddresses = medicWorkAddresses;
+    }   
 
     public PatientEvaluation getMedicPatientEvaluation() {
         return medicPatientEvaluation;

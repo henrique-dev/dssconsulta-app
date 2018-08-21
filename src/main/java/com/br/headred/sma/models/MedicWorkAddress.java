@@ -12,29 +12,37 @@ package com.br.headred.sma.models;
 public class MedicWorkAddress {
     
     private int medicWorkAddressId;
-    private MedicProfile medicProfile;
+    private MedicSpeciality medicSpeciality;
     private ClinicProfile clinicProfile;
     private String medicWorkAddressComplement;
 
     public MedicWorkAddress() {
     }
 
+    public MedicWorkAddress(int medicWorkAddressId, MedicSpeciality medicSpeciality, ClinicProfile clinicProfile, String medicWorkAddressComplement) {
+        this.medicWorkAddressId = medicWorkAddressId;
+        this.medicSpeciality = medicSpeciality;
+        this.clinicProfile = clinicProfile;
+        this.medicWorkAddressComplement = medicWorkAddressComplement;
+    }
+
+    public MedicWorkAddress(MedicSpeciality medicSpeciality, ClinicProfile clinicProfile, String medicWorkAddressComplement) {
+        this.medicSpeciality = medicSpeciality;
+        this.clinicProfile = clinicProfile;
+        this.medicWorkAddressComplement = medicWorkAddressComplement;
+    }
+
+    public MedicSpeciality getMedicSpeciality() {
+        return medicSpeciality;
+    }
+
+    public void setMedicSpeciality(MedicSpeciality medicSpeciality) {
+        this.medicSpeciality = medicSpeciality;
+    }        
+
     public MedicWorkAddress(int medicWorkAddressId) {
         this.medicWorkAddressId = medicWorkAddressId;
-    }
-
-    public MedicWorkAddress(int medicWorkAddressId, MedicProfile medicProfile, ClinicProfile clinicProfile, String medicWorkAddressComplement) {
-        this.medicWorkAddressId = medicWorkAddressId;
-        this.medicProfile = medicProfile;
-        this.clinicProfile = clinicProfile;
-        this.medicWorkAddressComplement = medicWorkAddressComplement;
-    }
-
-    public MedicWorkAddress(MedicProfile medicProfile, ClinicProfile clinicProfile, String medicWorkAddressComplement) {
-        this.medicProfile = medicProfile;
-        this.clinicProfile = clinicProfile;
-        this.medicWorkAddressComplement = medicWorkAddressComplement;
-    }        
+    }   
 
     public int getMedicWorkAddressId() {
         return medicWorkAddressId;
@@ -42,15 +50,7 @@ public class MedicWorkAddress {
 
     public void setMedicWorkAddressId(int medicWorkAddressId) {
         this.medicWorkAddressId = medicWorkAddressId;
-    }
-
-    public MedicProfile getMedicProfile() {
-        return medicProfile;
-    }
-
-    public void setMedicProfile(MedicProfile medicProfile) {
-        this.medicProfile = medicProfile;
-    }
+    }   
 
     public ClinicProfile getClinicProfile() {
         return clinicProfile;

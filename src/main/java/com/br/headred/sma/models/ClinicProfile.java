@@ -16,8 +16,7 @@ public class ClinicProfile {
     private int clinicProfileId;
     private String clinicProfileBio;
     private String clinicProfileAddress;
-    private List<ClinicTelephone> clicClinicTelephones;
-    private List<MedicSchedule> medicSchedules;
+    private List<ClinicTelephone> clicClinicTelephones;    
     private List<MedicWorkAddress> medicWorkAddresses;
     private List<ClinicProfileFile> clinicProfileFiles;
 
@@ -71,15 +70,7 @@ public class ClinicProfile {
 
     public void setClicClinicTelephones(List<ClinicTelephone> clicClinicTelephones) {
         this.clicClinicTelephones = clicClinicTelephones;
-    }
-
-    public List<MedicSchedule> getMedicSchedules() {
-        return medicSchedules;
-    }
-
-    public void setMedicSchedules(List<MedicSchedule> medicSchedules) {
-        this.medicSchedules = medicSchedules;
-    }
+    }   
 
     public List<MedicWorkAddress> getMedicWorkAddresses() {
         return medicWorkAddresses;

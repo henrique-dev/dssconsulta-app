@@ -18,7 +18,7 @@ public class RemoveMedicWorkAddress {
     
     public static void main(String[] args) {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
-            new MedicDAO(connection).removeMedicWorkAddress(new MedicWorkAddress(0));
+            new MedicDAO(connection).removeMedicWorkAddressAndScheduling(new MedicWorkAddress(0));
         } catch (Exception e) {
             e.printStackTrace();
         }

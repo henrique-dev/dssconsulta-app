@@ -11,18 +11,42 @@ package com.br.headred.sma.models;
  */
 public class PatientEvaluation {
        
-    private long patientEvaluationId;
+    private int patientEvaluationId;
     private MedicProfile medicProfile;
     private PatientProfile patientProfile;
     private String patientEvaluationDescName;
     private String patientEvaluationDescInfo;
     private int patientEvaluationScore;
 
-    public long getPatientEvaluationId() {
+    public PatientEvaluation() {
+    }
+
+    public PatientEvaluation(int patientEvaluationId) {
+        this.patientEvaluationId = patientEvaluationId;
+    }
+
+    public PatientEvaluation(int patientEvaluationId, MedicProfile medicProfile, PatientProfile patientProfile, String patientEvaluationDescName, String patientEvaluationDescInfo, int patientEvaluationScore) {
+        this.patientEvaluationId = patientEvaluationId;
+        this.medicProfile = medicProfile;
+        this.patientProfile = patientProfile;
+        this.patientEvaluationDescName = patientEvaluationDescName;
+        this.patientEvaluationDescInfo = patientEvaluationDescInfo;
+        this.patientEvaluationScore = patientEvaluationScore;
+    }
+
+    public PatientEvaluation(MedicProfile medicProfile, PatientProfile patientProfile, String patientEvaluationDescName, String patientEvaluationDescInfo, int patientEvaluationScore) {
+        this.medicProfile = medicProfile;
+        this.patientProfile = patientProfile;
+        this.patientEvaluationDescName = patientEvaluationDescName;
+        this.patientEvaluationDescInfo = patientEvaluationDescInfo;
+        this.patientEvaluationScore = patientEvaluationScore;
+    }        
+
+    public int getPatientEvaluationId() {
         return patientEvaluationId;
     }
 
-    public void setPatientEvaluationId(long patientEvaluationId) {
+    public void setPatientEvaluationId(int patientEvaluationId) {
         this.patientEvaluationId = patientEvaluationId;
     }
 

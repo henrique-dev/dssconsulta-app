@@ -5,23 +5,23 @@
  */
 package com.br.headred.sma.teste;
 
-import com.br.headred.sma.dao.MedicDAO;
+import com.br.headred.sma.dao.PatientDAO;
 import com.br.headred.sma.jdbc.ConnectionFactory;
-import com.br.headred.sma.models.ClinicProfile;
 import com.br.headred.sma.models.MedicProfile;
-import com.br.headred.sma.models.MedicSchedule;
+import com.br.headred.sma.models.PatientEvaluation;
+import com.br.headred.sma.models.PatientProfile;
 import java.sql.Connection;
 
 /**
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class AddMedicSchedule {
+public class AddPatientEvaluation {
     
     public static void main(String[] args) {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
-            new MedicDAO(connection).addMedicSchedule(
-                    new MedicSchedule(new MedicProfile(0), new ClinicProfile(0), "10h - 21h"));
+            new PatientDAO(connection).addPatientEvaluation(
+                    new PatientEvaluation(new MedicProfile(0), new PatientProfile(0), "Muito bom", "Ele me atendeu super gentilmente", 5));
         } catch (Exception e) {
             e.printStackTrace();
         }

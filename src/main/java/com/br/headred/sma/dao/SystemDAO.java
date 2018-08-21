@@ -21,8 +21,7 @@ public class SystemDAO extends BasicDAO {
 
     public enum Table {
         managerUser,
-        medicUser,
-        medicSchedule,
+        medicUser,       
         clinic,
         speciality,
         medicWorkAddress,

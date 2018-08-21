@@ -9,9 +9,9 @@ import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.models.Clinic;
 import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.MedicProfile;
-import com.br.headred.sma.models.MedicSchedule;
 import com.br.headred.sma.models.MedicSpeciality;
 import com.br.headred.sma.models.MedicWorkAddress;
+import com.br.headred.sma.models.MedicWorkScheduling;
 import com.br.headred.sma.models.Speciality;
 import com.br.headred.sma.models.User;
 import java.sql.Connection;
@@ -248,70 +248,29 @@ public class MedicDAO extends BasicDAO {
         } catch (SQLException e) {
             throw new DAOException("Falha ao remover as especialidades do medico", e);
         }
+    }        
+    
+    public void addMedicWorkAddressAndScheduling(MedicWorkAddress medicWorkAddress, MedicWorkScheduling medicWorkScheduling) throws DAOException {
+        addMedicWorkAddress(medicWorkAddress);
+        medicWorkScheduling.setMedicWorkSchedulingId(medicWorkAddress.getMedicWorkAddressId());
+        addMedicWorkScheduling(medicWorkScheduling);
     }
     
-    public void addMedicSchedule(MedicSchedule medicSchedule) throws DAOException {
-        String sql = "insert into medicSchedule values (?,?,?,?)";
-        int medicScheduleId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.medicSchedule);
-        medicSchedule.setMedicScheduleId(medicScheduleId);
-        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medicScheduleId);
-            stmt.setInt(2, medicSchedule.getMedicProfile().getMedicProfileId());
-            stmt.setInt(3, medicSchedule.getCliProfile().getClinicProfileId());
-            stmt.setString(4, medicSchedule.getSchedule());
-            stmt.execute();
-        } catch (SQLException e) {
-            new SystemDAO(super.connection).releaseId(SystemDAO.Table.medicSchedule, medicScheduleId);
-            throw new DAOException("Falha ao adicionar um horario para o medico", e);
-        }
+    public void removeMedicWorkAddressAndScheduling(MedicWorkAddress medicWorkAddress) throws DAOException {
+        removeMedicWorkScheduling(new MedicWorkScheduling(medicWorkAddress.getMedicWorkAddressId()));
+        removeMedicWorkAddress(medicWorkAddress);
     }
     
-    public MedicSchedule getMedicSchedule(Medic medic, Clinic clinic) {
-        return null;
-    }
-    
-    public List<MedicSchedule> getMedicScheduleList(Medic medic) {
-        return null;
-    }
-    
-    public List<MedicSchedule> getMedicScheduleList(Clinic clinic) {
-        return null;
-    }
-    
-    public boolean existMedicSchedule(MedicSchedule medicSchedule) {
-        String sql = "select medicScheduleId from medicSchedule where medicScheduleId=?";
-        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medicSchedule.getMedicScheduleId());
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next())
-                return true;
-        } catch (SQLException e) {}
-        return false;
-    }
-    
-    public void removeMedicSchedule(MedicSchedule medicSchedule) throws DAOException {
-        if (!existMedicSchedule(medicSchedule))
-            throw new DAOException("Falha ao remover. O horario do medico não existe");
-        String sql = "delete from medicSchedule where medicScheduleId=?";
-        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medicSchedule.getMedicScheduleId());            
-            stmt.execute();
-            stmt.close();
-            new SystemDAO(super.connection).releaseId(SystemDAO.Table.medicSchedule, medicSchedule.getMedicScheduleId());
-        } catch (SQLException e) {            
-            throw new DAOException("Falha ao remover o horario do medico", e);
-        }
-    }
-    
-    public void addMedicWorkAddress(MedicWorkAddress medicWorkAddress) throws DAOException {
+    private void addMedicWorkAddress(MedicWorkAddress medicWorkAddress) throws DAOException {
         String sql = "insert into medicWorkAddress values (?,?,?,?)";
         int medicWorkAddressId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.medicWorkAddress);
         medicWorkAddress.setMedicWorkAddressId(medicWorkAddressId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicWorkAddressId);
-            stmt.setInt(2, medicWorkAddress.getMedicProfile().getMedicProfileId());
-            stmt.setInt(3, medicWorkAddress.getClinicProfile().getClinicProfileId());
-            stmt.setString(4, medicWorkAddress.getMedicWorkAddressComplement());
+            stmt.setInt(2, medicWorkAddress.getClinicProfile().getClinicProfileId());
+            stmt.setString(3, medicWorkAddress.getMedicWorkAddressComplement());
+            stmt.setInt(4, medicWorkAddress.getMedicSpeciality().getSpeciality().getSpecialityId());
+            stmt.setInt(5, medicWorkAddress.getMedicSpeciality().getMedicProfile().getMedicProfileId());
             stmt.execute();
         } catch (SQLException e) {            
             new SystemDAO(super.connection).releaseId(SystemDAO.Table.medicWorkAddress, medicWorkAddressId);
@@ -331,7 +290,7 @@ public class MedicDAO extends BasicDAO {
         return null;
     }
     
-    public boolean existMedicWorkAddress(MedicWorkAddress medicWorkAddress) {
+    private boolean existMedicWorkAddress(MedicWorkAddress medicWorkAddress) {
         String sql = "select medicWorkAddressId from medicWorkAddress where medicWorkAddressId=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicWorkAddress.getMedicWorkAddressId());
@@ -342,7 +301,7 @@ public class MedicDAO extends BasicDAO {
         return false;
     }
     
-    public void removeMedicWorkAddress(MedicWorkAddress medicWorkAddress) throws DAOException {
+    private void removeMedicWorkAddress(MedicWorkAddress medicWorkAddress) throws DAOException {
         if (!existMedicWorkAddress(medicWorkAddress))
             throw new DAOException("Falha ao remover. O endereço de trabalho do medico não existe");
         String sql = "delete from medicWorkAddress where medicWorkAddressId=?";
@@ -353,6 +312,38 @@ public class MedicDAO extends BasicDAO {
             new SystemDAO(super.connection).releaseId(SystemDAO.Table.medicWorkAddress, medicWorkAddress.getMedicWorkAddressId());
         } catch (SQLException e) {            
             throw new DAOException("Falha ao remover o endereco de trabalho do medico", e);
+        }
+    }
+    
+    private void addMedicWorkScheduling(MedicWorkScheduling medicWorkScheduling) throws DAOException {
+        String sql = "insert into medicWorkScheduling values (?,?,?,?)";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, medicWorkScheduling.getMedicWorkSchedulingId());
+            stmt.setInt(2, medicWorkScheduling.getMedicWorkSchedulingPerDay());
+            stmt.setDate(3, medicWorkScheduling.getMedicWorkSchedulingDateLast());
+            stmt.setInt(4, medicWorkScheduling.getMedicWorkSchedulingCounterOfDay());
+            stmt.setString(5, medicWorkScheduling.getMedicWorkSchedulingInfo());
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao adicionar as variaveis de trabalho do medico", e);
+        }
+    }
+    
+    public MedicWorkScheduling getMedicWorkScheduling(Medic medic, Speciality speciality) {
+        return null;
+    }
+    
+    public List<MedicWorkScheduling> getMedicWorkSchedulingList(Medic medic) {
+        return null;
+    }
+    
+    private void removeMedicWorkScheduling(MedicWorkScheduling medicWorkScheduling) throws DAOException {
+        String sql = "delete from medicWorkScheduling where medicWorkAddress_fk=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, medicWorkScheduling.getMedicWorkSchedulingId());
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao remover as variaveis de trabalho do medico", e);
         }
     }
     

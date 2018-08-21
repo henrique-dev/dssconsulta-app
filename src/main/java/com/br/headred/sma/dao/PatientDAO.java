@@ -6,8 +6,10 @@
 package com.br.headred.sma.dao;
 
 import com.br.headred.sma.exceptions.DAOException;
+import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.PatientAccount;
+import com.br.headred.sma.models.PatientEvaluation;
 import com.br.headred.sma.models.PatientProfile;
 import com.br.headred.sma.models.User;
 import java.sql.Connection;
@@ -19,6 +21,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLType;
 import java.sql.Types;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  *
@@ -136,6 +139,38 @@ public class PatientDAO extends BasicDAO {
             throw new DAOException("Falha ao adicionar a conta do paciente", e);
         }
     }
+    
+    public Patient getPatientFastDescribe(String patientCpf) {
+        return null;
+    }
+    
+    public Patient getPatientFastDescribe(int patientId) {
+        return null;
+    }
+    
+    public Patient getPatientFullDescribe(String patientCpf) {
+        return null;
+    }
+    
+    public Patient getPatientFullDescribe(int patientId) {
+        return null;
+    }
+    
+    public List<Patient> getPatientFastDescribe(Medic medic) {
+        return null;
+    }                
+    
+    public List<Patient> getPatientFullDescribe(Medic medic) {
+        return null;
+    }
+    
+    public List<Patient> getPatientFastDescribe() {
+        return null;
+    }
+    
+    public List<Patient> getPatientFullDescribe() {
+        return null;
+    }
 
     /**
      * Verifica a existencia de um paciente.
@@ -218,7 +253,7 @@ public class PatientDAO extends BasicDAO {
         } catch (SQLException e) {
             throw new DAOException("Falha ao remover o perfil do paciente", e);
         }
-    }
+    }        
 
     /**
      * Remove a conta do paciente.
@@ -233,6 +268,24 @@ public class PatientDAO extends BasicDAO {
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao remover o perfil do paciente", e);
+        }
+    }
+    
+    public void addPatientEvaluation(PatientEvaluation patientEvaluation) throws DAOException {
+        String sql = "insert into patientEvaluation values (?,?,?,?,?,?)";
+        int patientEvaluationId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.patientEvaluation);
+        patientEvaluation.setPatientEvaluationId(patientEvaluationId);
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, patientEvaluationId);
+            stmt.setInt(2, patientEvaluation.getMedicProfile().getMedicProfileId());
+            stmt.setInt(3, patientEvaluation.getPatientProfile().getPatientProfileId());
+            stmt.setString(4, patientEvaluation.getPatientEvaluationDescName());
+            stmt.setString(5, patientEvaluation.getPatientEvaluationDescInfo());
+            stmt.setInt(6, patientEvaluation.getPatientEvaluationScore());
+            stmt.execute();
+        } catch (SQLException e) {
+            new SystemDAO(super.connection).releaseId(SystemDAO.Table.patientEvaluation, patientEvaluationId);
+            throw new DAOException("Falha ao adicionar uma avaliação do medico", e);
         }
     }
 
