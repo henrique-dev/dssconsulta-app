@@ -18,8 +18,8 @@ import java.sql.SQLException;
  * @author Paulo Henrique Gonçalves Bacelar
  */
 public class AddMedic {
-    
-    public static void main(String[] args) {
+
+    public AddMedic() {
         try (Connection connection = new ConnectionFactory().getConnection()) {           
             
             Medic medic = new Medic();
@@ -45,6 +45,10 @@ public class AddMedic {
         } catch (DAOException e) {
             e.printStackTrace();
         }
+    }            
+    
+    public static void main(String[] args) {
+        new AddMedic();
     }
     
 }

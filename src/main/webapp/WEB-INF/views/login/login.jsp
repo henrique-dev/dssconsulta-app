@@ -19,7 +19,7 @@
              text-align: center; position: relative; overflow: auto; padding: 2em;">
             <div style="padding-top: 2rem;">
                 <h1>Sistema de marcação de consulta</h1>
-                <form action="autentica" method="post">
+                <form action="Autenticar" method="post">
                     <text style="display: inline-block; width: 60px; text-align: right;">Usuário: </text>
                     <input type="text" style="width: 100px;" name="userName">
                     <br>

@@ -32,6 +32,26 @@ public class PatientDAO extends BasicDAO {
     public PatientDAO(Connection connection) {
         super(connection);
     }
+    
+    public Patient login(Patient user) throws DAOException {
+        String sql = "select patientUserId from patientUser where patientUserName=? and patientUserPassword=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setString(1, user.getUserName());
+            stmt.setString(2, user.getUserPassword());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                int patientId = rs.getInt("patientUserId");                
+                String sessionId = (user.getUserName().hashCode() + Calendar.getInstance().getTimeInMillis()) + "";                                
+                Patient patient = this.getPatient(patientId);
+                patient.setUserSessionId(sessionId);
+                this.addPatientSessionId(patient);
+                return patient;
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Usuario ou senha incorretos", e);
+        }
+        return null;
+    }
 
     /**
      * Adiciona completamente um paciente na base de dados.
@@ -140,36 +160,33 @@ public class PatientDAO extends BasicDAO {
         }
     }
     
-    public Patient getPatientFastDescribe(String patientCpf) {
+    public Patient getPatient(int patientId) throws DAOException {
+        String sql = "select patientName, patientCpf from patient where patientUser_fk=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, patientId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Patient patient = new Patient();
+                patient.setUserId(patientId);
+                patient.setPatientName(rs.getString("patientName"));
+                patient.setPatientCpf(rs.getString("patientCpf"));
+                return patient;
+            } 
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao recuperar dados do paciente", e);
+        }
         return null;
     }
     
-    public Patient getPatientFastDescribe(int patientId) {
-        return null;
-    }
-    
-    public Patient getPatientFullDescribe(String patientCpf) {
-        return null;
-    }
-    
-    public Patient getPatientFullDescribe(int patientId) {
-        return null;
-    }
-    
-    public List<Patient> getPatientFastDescribe(Medic medic) {
-        return null;
-    }                
-    
-    public List<Patient> getPatientFullDescribe(Medic medic) {
-        return null;
-    }
-    
-    public List<Patient> getPatientFastDescribe() {
-        return null;
-    }
-    
-    public List<Patient> getPatientFullDescribe() {
-        return null;
+    private void addPatientSessionId(Patient patient) throws DAOException {
+        String sql = "update patientUser set patientUserSessionId=? where patientUserId=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setString(1, patient.getUserSessionId());
+            stmt.setInt(2, patient.getUserId());            
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao inserir o identificador para a sessão do paciente", e);
+        }
     }
 
     /**

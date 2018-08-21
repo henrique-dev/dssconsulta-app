@@ -5,31 +5,41 @@
  */
 package com.br.headred.sma.teste;
 
-import com.br.headred.sma.dao.MedicDAO;
+import com.br.headred.sma.dao.ConsultDAO;
 import com.br.headred.sma.jdbc.ConnectionFactory;
+import com.br.headred.sma.models.AccountSpeciality;
 import com.br.headred.sma.models.MedicProfile;
 import com.br.headred.sma.models.MedicSpeciality;
+import com.br.headred.sma.models.PatientAccount;
 import com.br.headred.sma.models.Speciality;
 import java.sql.Connection;
+import java.sql.Date;
+import java.util.Calendar;
 
 /**
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class RemoveMedicSpeciality {
+public class AddAccountSpeciality {
 
-    public RemoveMedicSpeciality() {
+    public AddAccountSpeciality() {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
-            new MedicDAO(connection).removeMedicSpeciality(new MedicSpeciality(new MedicProfile(0), new Speciality(0)));
+            new ConsultDAO(connection).addAccountSpeciality(
+                    new AccountSpeciality(
+                    new PatientAccount(0, null, null, null),
+                    new MedicSpeciality(new MedicProfile(0), new Speciality(0)),
+                    new Date(Calendar.getInstance().getTimeInMillis()),
+                    null,
+                    false));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
-    
-    
     public static void main(String[] args) {
-        new RemoveMedicSpeciality();
+        new AddAccountSpeciality();
     }
+    
+    
     
 }

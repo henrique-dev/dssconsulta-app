@@ -17,13 +17,19 @@ import java.sql.Connection;
  * @author Paulo Henrique Gonçalves Bacelar
  */
 public class AddMedicSpeciality {
-    
-    public static void main(String[] args) {
+
+    public AddMedicSpeciality() {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
             new MedicDAO(connection).addMedicSpeciality(new MedicSpeciality(new MedicProfile(0), new Speciality(0)));
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    
+    
+    public static void main(String[] args) {
+        new AddMedicSpeciality();
     }    
     
 }

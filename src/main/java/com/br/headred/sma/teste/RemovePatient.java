@@ -17,9 +17,8 @@ import java.sql.SQLException;
  * @author Paulo Henrique Gonçalves Bacelar
  */
 public class RemovePatient {
-    
-    public static void main(String[] args) {
-        
+
+    public RemovePatient() {
         try (Connection connection = new ConnectionFactory().getConnection()) {                             
             new PatientDAO(connection).removePatient(new Patient(0));
         } catch (SQLException e) {
@@ -27,6 +26,13 @@ public class RemovePatient {
         } catch (DAOException e) {
             e.printStackTrace();
         }
+    }
+    
+    
+    
+    public static void main(String[] args) {
+        
+        new RemovePatient();
         
     }
     

@@ -3,21 +3,17 @@
  * Proprietary and confidential
  * Written by Paulo Henrique Gona�alves Bacelar <henrique.phgb@gmail.com>, Agosto 2018
  */
-package com.br.headred.sma.controllers;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+package com.br.headred.sma.teste;
 
 /**
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-@Controller
-public class IndexController {        
+public class TesteTodosAcima {
     
-    @RequestMapping("Principal")
-    public String index() {
-        return "login/login";
+    public static void main(String[] args) {
+        new TesteTodosAcimaAdd();
+        new TesteTodosAcimaRemove();
     }
     
 }

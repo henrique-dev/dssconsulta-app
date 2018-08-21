@@ -10,18 +10,9 @@ package com.br.headred.sma.models;
  * @author Paulo Henrique Gonçalves Bacelar
  */
 public class PatientConsult {
-    
-    private long patientConsultId;
+        
     private PatientProfile patientProfile;
     private Consult consult;
-
-    public long getPatientConsultId() {
-        return patientConsultId;
-    }
-
-    public void setPatientConsultId(long patientConsultId) {
-        this.patientConsultId = patientConsultId;
-    }
 
     public PatientProfile getPatientProfile() {
         return patientProfile;

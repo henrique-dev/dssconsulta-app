@@ -17,14 +17,18 @@ import java.sql.Connection;
  * @author Paulo Henrique Gonçalves Bacelar
  */
 public class AddPatientEvaluation {
-    
-    public static void main(String[] args) {
+
+    public AddPatientEvaluation() {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
             new PatientDAO(connection).addPatientEvaluation(
                     new PatientEvaluation(new MedicProfile(0), new PatientProfile(0), "Muito bom", "Ele me atendeu super gentilmente", 5));
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }        
+    
+    public static void main(String[] args) {
+        new AddPatientEvaluation();
     }
     
 }

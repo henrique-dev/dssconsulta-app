@@ -11,21 +11,45 @@ import java.sql.Date;
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class PatientAccountSpeciality {
+public class AccountSpeciality {
     
-    private long patientAccountSpecialityId;
+    private int accountSpecialityId;
     private PatientAccount patientAccount;
     private MedicSpeciality medicSpeciality;
     private Date patientAccountSpecialityCreationDate;
     private Date patientAccountSpecialityUseDate;
     private boolean patientAccountSpecialityUsed;
 
-    public long getPatientAccountSpecialityId() {
-        return patientAccountSpecialityId;
+    public AccountSpeciality() {
     }
 
-    public void setPatientAccountSpecialityId(long patientAccountSpecialityId) {
-        this.patientAccountSpecialityId = patientAccountSpecialityId;
+    public AccountSpeciality(int accountSpecialityId) {
+        this.accountSpecialityId = accountSpecialityId;
+    }
+
+    public AccountSpeciality(int accountSpecialityId, PatientAccount patientAccount, MedicSpeciality medicSpeciality, Date patientAccountSpecialityCreationDate, Date patientAccountSpecialityUseDate, boolean patientAccountSpecialityUsed) {
+        this.accountSpecialityId = accountSpecialityId;
+        this.patientAccount = patientAccount;
+        this.medicSpeciality = medicSpeciality;
+        this.patientAccountSpecialityCreationDate = patientAccountSpecialityCreationDate;
+        this.patientAccountSpecialityUseDate = patientAccountSpecialityUseDate;
+        this.patientAccountSpecialityUsed = patientAccountSpecialityUsed;
+    }
+
+    public AccountSpeciality(PatientAccount patientAccount, MedicSpeciality medicSpeciality, Date patientAccountSpecialityCreationDate, Date patientAccountSpecialityUseDate, boolean patientAccountSpecialityUsed) {
+        this.patientAccount = patientAccount;
+        this.medicSpeciality = medicSpeciality;
+        this.patientAccountSpecialityCreationDate = patientAccountSpecialityCreationDate;
+        this.patientAccountSpecialityUseDate = patientAccountSpecialityUseDate;
+        this.patientAccountSpecialityUsed = patientAccountSpecialityUsed;
+    }        
+
+    public int getAccountSpecialityId() {
+        return accountSpecialityId;
+    }
+
+    public void setAccountSpecialityId(int accountSpecialityId) {
+        this.accountSpecialityId = accountSpecialityId;
     }
 
     public PatientAccount getPatientAccount() {

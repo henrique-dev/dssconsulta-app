@@ -18,7 +18,7 @@ import java.sql.SQLException;
  */
 public class AddSpeciality {
 
-    public static void main(String[] args) {
+    public AddSpeciality() {
         try (Connection connection = new ConnectionFactory().getConnection()) {
             new MedicDAO(connection).addSpeciality(new Speciality("Clinico geral"));
             new MedicDAO(connection).addSpeciality(new Speciality("Cardiologista"));
@@ -29,6 +29,12 @@ public class AddSpeciality {
         } catch (DAOException e) {
             e.printStackTrace();
         }
+    }
+    
+    
+
+    public static void main(String[] args) {
+        new AddSpeciality();
     }
 
 }

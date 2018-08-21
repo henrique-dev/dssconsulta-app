@@ -13,18 +13,42 @@ import java.sql.Date;
  */
 public class Consult {
     
-    private long consultId;
+    private int consultId;
     private Date consultCreationDate;
     private Date consultForDate;
     private boolean consultConsulted;
     private MedicSpeciality medicSpeciality;
     private MedicWorkAddress medicWorkAddress;
 
-    public long getConsultId() {
+    public Consult() {
+    }
+
+    public Consult(int consultId) {
+        this.consultId = consultId;
+    }
+
+    public Consult(int consultId, Date consultCreationDate, Date consultForDate, boolean consultConsulted, MedicSpeciality medicSpeciality, MedicWorkAddress medicWorkAddress) {
+        this.consultId = consultId;
+        this.consultCreationDate = consultCreationDate;
+        this.consultForDate = consultForDate;
+        this.consultConsulted = consultConsulted;
+        this.medicSpeciality = medicSpeciality;
+        this.medicWorkAddress = medicWorkAddress;
+    }
+
+    public Consult(Date consultCreationDate, Date consultForDate, boolean consultConsulted, MedicSpeciality medicSpeciality, MedicWorkAddress medicWorkAddress) {
+        this.consultCreationDate = consultCreationDate;
+        this.consultForDate = consultForDate;
+        this.consultConsulted = consultConsulted;
+        this.medicSpeciality = medicSpeciality;
+        this.medicWorkAddress = medicWorkAddress;
+    }        
+
+    public int getConsultId() {
         return consultId;
     }
 
-    public void setConsultId(long consultId) {
+    public void setConsultId(int consultId) {
         this.consultId = consultId;
     }
 

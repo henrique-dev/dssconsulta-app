@@ -15,8 +15,8 @@ import java.sql.Connection;
  * @author Paulo Henrique Gonçalves Bacelar
  */
 public class RemoveSpeciality {
-    
-    public static void main(String[] args) {
+
+    public RemoveSpeciality() {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
             new MedicDAO(connection).removeSpeciality(new Speciality(0));
             new MedicDAO(connection).removeSpeciality(new Speciality(1));
@@ -25,6 +25,12 @@ public class RemoveSpeciality {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    
+    
+    public static void main(String[] args) {
+        new RemoveSpeciality();
     }
     
 }

@@ -25,17 +25,13 @@ import javax.print.attribute.HashAttributeSet;
  */
 public class AddPatient {
 
-    /**
-     * Creating a full patient
-     * @param args 
-     */
-    public static void main(String[] args) {
+    public AddPatient() {
         try (Connection connection = new ConnectionFactory().getConnection()) {                        
             
             Patient patient = new Patient();
             
-            patient.setUserName("12345678910");
-            patient.setUserPassword(Objects.hashCode("123456") + "");            
+            patient.setUserName("01741053200");
+            patient.setUserPassword("12345");            
                                     
             patient.setPatientName("Paulo Henrique Gonçalves Bacelar");
             patient.setPatientCpf("01741053200");
@@ -57,6 +53,12 @@ public class AddPatient {
         } catch (DAOException e) {
             e.printStackTrace();
         }
+    }
+
+    
+    
+    public static void main(String[] args) {
+        new AddPatient();
     }
 
 }

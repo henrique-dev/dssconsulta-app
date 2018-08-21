@@ -5,33 +5,29 @@
  */
 package com.br.headred.sma.teste;
 
-import com.br.headred.sma.dao.MedicDAO;
-import com.br.headred.sma.exceptions.DAOException;
+import com.br.headred.sma.dao.ConsultDAO;
 import com.br.headred.sma.jdbc.ConnectionFactory;
-import com.br.headred.sma.models.Medic;
+import com.br.headred.sma.models.Consult;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class RemoveMedic {
+public class RemoveConsultFromPatientAndMedic {
 
-    public RemoveMedic() {
-        try (Connection connection = new ConnectionFactory().getConnection()) {                             
-            new MedicDAO(connection).removeMedic(new Medic(0));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (DAOException e) {
+    public RemoveConsultFromPatientAndMedic() {
+        try (Connection connection = new ConnectionFactory().getConnection()) {   
+            new ConsultDAO(connection).removeConsult(new Consult(0));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
-    
-    
     public static void main(String[] args) {
-        new RemoveMedic();
+        new RemoveConsultFromPatientAndMedic();
     }
+    
+    
     
 }

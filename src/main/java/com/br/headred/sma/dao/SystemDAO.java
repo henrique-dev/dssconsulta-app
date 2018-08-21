@@ -28,7 +28,7 @@ public class SystemDAO extends BasicDAO {
         patientEvaluation,
         medicConsult,
         patientConsult,
-        patientAccountSpeciality,
+        accountSpeciality,
         file,
         consult,
         patientUser
@@ -38,7 +38,7 @@ public class SystemDAO extends BasicDAO {
         super(connection);
     }
 
-    public int getNextId(Table tableName) throws DAOException {
+    synchronized public int getNextId(Table tableName) throws DAOException {
         String sql = "select " + tableName + " from idManager where id=(select " + tableName + "Last from idManager where id=0)"
                 + "union all select " + tableName + "Last from idManager where id=0";
         try {
@@ -72,7 +72,7 @@ public class SystemDAO extends BasicDAO {
         }
     }
 
-    public void releaseId(Table tableName, long id) throws DAOException {
+    synchronized public void releaseId(Table tableName, long id) throws DAOException {
         String sql = "select rowSize from idManager where id=0 union all "
                 + "select " + tableName + "Last from idManager where id=0";
         try {

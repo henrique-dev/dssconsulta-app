@@ -17,7 +17,27 @@ public class PatientAccount {
     private int patientAccountId;
     private Date patientAccountCreationDate;   
     private List<PatientAccountFile> patientAccountFiles;
-    private List<PatientAccountSpeciality> patientAccountSpecialities;
+    private List<AccountSpeciality> accountSpecialities;
+
+    public PatientAccount() {
+    }
+
+    public PatientAccount(int patientAccountId) {
+        this.patientAccountId = patientAccountId;
+    }
+
+    public PatientAccount(int patientAccountId, Date patientAccountCreationDate, List<PatientAccountFile> patientAccountFiles, List<AccountSpeciality> accountSpecialities) {
+        this.patientAccountId = patientAccountId;
+        this.patientAccountCreationDate = patientAccountCreationDate;
+        this.patientAccountFiles = patientAccountFiles;
+        this.accountSpecialities = accountSpecialities;
+    }
+
+    public PatientAccount(Date patientAccountCreationDate, List<PatientAccountFile> patientAccountFiles, List<AccountSpeciality> accountSpecialities) {
+        this.patientAccountCreationDate = patientAccountCreationDate;
+        this.patientAccountFiles = patientAccountFiles;
+        this.accountSpecialities = accountSpecialities;
+    }        
 
     public int getPatientAccountId() {
         return patientAccountId;
@@ -43,12 +63,12 @@ public class PatientAccount {
         this.patientAccountFiles = patientAccountFiles;
     }
 
-    public List<PatientAccountSpeciality> getPatientAccountSpecialities() {
-        return patientAccountSpecialities;
+    public List<AccountSpeciality> getAccountSpecialities() {
+        return accountSpecialities;
     }
 
-    public void setPatientAccountSpecialities(List<PatientAccountSpeciality> patientAccountSpecialities) {
-        this.patientAccountSpecialities = patientAccountSpecialities;
-    }        
+    public void setAccountSpecialities(List<AccountSpeciality> accountSpecialities) {
+        this.accountSpecialities = accountSpecialities;
+    }           
            
 }

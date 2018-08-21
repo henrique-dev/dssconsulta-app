@@ -17,7 +17,11 @@ public class Patient extends User {
     
     public Patient() {
         super();
-    }
+    }    
+
+    public Patient(String userName, String userPassword) {
+        super(userName, userPassword);
+    }        
 
     public Patient(int userId) {
         super(userId);

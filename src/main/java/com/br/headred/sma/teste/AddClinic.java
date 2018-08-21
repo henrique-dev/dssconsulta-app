@@ -19,7 +19,7 @@ import java.sql.SQLException;
  */
 public class AddClinic {
     
-    public static void main(String[] args) {
+    public AddClinic() {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
             Clinic clinic = new Clinic();
             clinic.setClinicCnpj("123456789");
@@ -38,6 +38,10 @@ public class AddClinic {
         } catch (DAOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static void main(String[] args) {
+        new AddMedic();
     }
     
 }

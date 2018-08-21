@@ -5,7 +5,16 @@
  */
 package com.br.headred.sma.controllers;
 
+import com.br.headred.sma.dao.ConsultDAO;
+import com.br.headred.sma.exceptions.DAOException;
+import com.br.headred.sma.jdbc.ConnectionFactory;
+import com.br.headred.sma.models.Consult;
+import com.br.headred.sma.models.Patient;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -15,9 +24,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PatientController {
     
-    @RequestMapping("principalPaciente")
+    @RequestMapping("PrincipalPaciente")
     public String mainPatient() {
         return "patient/main";
+    }   
+    
+    @RequestMapping("MinhaAgenda")
+    public String minhaAgenda(int patientId, String sessionId, Model model) {
+        try {
+            List<Consult> consultList = new ConsultDAO(new ConnectionFactory().getConnection()).getConsultList(new Patient(patientId));
+            model.addAttribute(consultList);
+            return "patient/agenda";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+        return "redirect:PrincipalPaciente";
     }
     
 }

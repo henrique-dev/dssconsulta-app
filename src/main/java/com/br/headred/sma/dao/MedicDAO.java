@@ -262,7 +262,7 @@ public class MedicDAO extends BasicDAO {
     }
     
     private void addMedicWorkAddress(MedicWorkAddress medicWorkAddress) throws DAOException {
-        String sql = "insert into medicWorkAddress values (?,?,?,?)";
+        String sql = "insert into medicWorkAddress values (?,?,?,?,?)";
         int medicWorkAddressId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.medicWorkAddress);
         medicWorkAddress.setMedicWorkAddressId(medicWorkAddressId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
@@ -316,7 +316,7 @@ public class MedicDAO extends BasicDAO {
     }
     
     private void addMedicWorkScheduling(MedicWorkScheduling medicWorkScheduling) throws DAOException {
-        String sql = "insert into medicWorkScheduling values (?,?,?,?)";
+        String sql = "insert into medicWorkScheduling values (?,?,?,?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicWorkScheduling.getMedicWorkSchedulingId());
             stmt.setInt(2, medicWorkScheduling.getMedicWorkSchedulingPerDay());
