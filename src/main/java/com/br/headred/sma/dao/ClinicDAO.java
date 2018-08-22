@@ -30,7 +30,7 @@ public class ClinicDAO extends BasicDAO {
     
     public void addClinic(Clinic clinic) throws DAOException {
         addClinicInfo(clinic);
-        clinic.getClinicProfile().setClinicProfileId(clinic.getClinicId());
+        clinic.getClinicProfile().setClinicId(clinic.getClinicId());
         addClinicProfile(clinic.getClinicProfile());
     }
     
@@ -55,7 +55,7 @@ public class ClinicDAO extends BasicDAO {
     private void addClinicProfile(ClinicProfile clinicProfile) throws DAOException {
         String sql = "insert into clinicProfile values (?,?,?)";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, clinicProfile.getClinicProfileId());
+            stmt.setInt(1, clinicProfile.getClinicId());
             stmt.setString(2, clinicProfile.getClinicProfileBio());
             stmt.setString(3, clinicProfile.getClinicProfileAddress());            
             stmt.execute();
@@ -154,7 +154,7 @@ public class ClinicDAO extends BasicDAO {
     public void addClinicTelephone(ClinicTelephone clinicTelephone) throws DAOException {
         String sql = "insert into clinicTelephone values (?,?)";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, clinicTelephone.getClinicProfile().getClinicProfileId());
+            stmt.setInt(1, clinicTelephone.getClinicProfile().getClinicId());
             stmt.setString(2, clinicTelephone.getClinicTelephoneNumber());
             stmt.execute();
         } catch (SQLException e) {            

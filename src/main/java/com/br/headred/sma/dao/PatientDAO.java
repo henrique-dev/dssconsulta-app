@@ -61,10 +61,10 @@ public class PatientDAO extends BasicDAO {
     public void addPatient(Patient patient) throws DAOException {
         addPatientUser(patient);
         addPatientInfo(patient);
-        patient.getPatientProfile().setPatientProfileId(patient.getUserId());
+        patient.getPatientProfile().setPatientProfileId(patient.getId());
         addPatientProfile(patient.getPatientProfile());
         PatientAccount patientAccount = new PatientAccount();
-        patientAccount.setPatientAccountId(patient.getUserId());
+        patientAccount.setPatientAccountId(patient.getId());
         patientAccount.setPatientAccountCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
         addPatientAccount(patientAccount);
     }
@@ -78,7 +78,7 @@ public class PatientDAO extends BasicDAO {
     private void addPatientUser(User patientUser) throws DAOException {
         String sql = "insert into patientUser values (?,?,?,?)";
         int patientUserId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.patientUser);
-        patientUser.setUserId(patientUserId);
+        patientUser.setId(patientUserId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patientUserId);
             stmt.setString(2, patientUser.getUserName());
@@ -104,7 +104,7 @@ public class PatientDAO extends BasicDAO {
     private void addPatientInfo(Patient patient) throws DAOException {
         String sql = "insert into patient values (?,?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, patient.getUserId());
+            stmt.setInt(1, patient.getId());
             stmt.setString(2, patient.getPatientName());
             stmt.setString(3, patient.getPatientCpf());
             stmt.execute();
@@ -167,7 +167,7 @@ public class PatientDAO extends BasicDAO {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 Patient patient = new Patient();
-                patient.setUserId(patientId);
+                patient.setId(patientId);
                 patient.setPatientName(rs.getString("patientName"));
                 patient.setPatientCpf(rs.getString("patientCpf"));
                 return patient;
@@ -182,7 +182,7 @@ public class PatientDAO extends BasicDAO {
         String sql = "update patientUser set patientUserSessionId=? where patientUserId=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setString(1, patient.getUserSessionId());
-            stmt.setInt(2, patient.getUserId());            
+            stmt.setInt(2, patient.getId());            
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao inserir o identificador para a sessão do paciente", e);
@@ -197,7 +197,7 @@ public class PatientDAO extends BasicDAO {
     public boolean existPatient(Patient patient) {
         String sql = "select patientUserId from patientUser where patientUserId=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, patient.getUserId());
+            stmt.setInt(1, patient.getId());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return true;
@@ -231,10 +231,10 @@ public class PatientDAO extends BasicDAO {
     private void removePatientUser(Patient patient) throws DAOException {
         String sql = "delete from patientUser where patientUserId=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, patient.getUserId());
+            stmt.setInt(1, patient.getId());
             stmt.execute();
             stmt.close();
-            new SystemDAO(super.connection).releaseId(SystemDAO.Table.patientUser, patient.getUserId());
+            new SystemDAO(super.connection).releaseId(SystemDAO.Table.patientUser, patient.getId());
         } catch (SQLException e) {
             throw new DAOException("Falha ao remover o usuário do paciente", e);
         }
@@ -249,7 +249,7 @@ public class PatientDAO extends BasicDAO {
     private void removePatientInfo(Patient patient) throws DAOException {
         String sql = "delete from patient where patientUser_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, patient.getUserId());
+            stmt.setInt(1, patient.getId());
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao remover as informações do paciente", e);
@@ -265,7 +265,7 @@ public class PatientDAO extends BasicDAO {
     private void removePatientProfile(Patient patient) throws DAOException {
         String sql = "delete from patientProfile where patient_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, patient.getUserId());
+            stmt.setInt(1, patient.getId());
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao remover o perfil do paciente", e);
@@ -281,7 +281,7 @@ public class PatientDAO extends BasicDAO {
     private void removePatientAccount(Patient patient) throws DAOException {
         String sql = "delete from patientAccount where patientProfile_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, patient.getUserId());
+            stmt.setInt(1, patient.getId());
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao remover o perfil do paciente", e);
@@ -294,7 +294,7 @@ public class PatientDAO extends BasicDAO {
         patientEvaluation.setPatientEvaluationId(patientEvaluationId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patientEvaluationId);
-            stmt.setInt(2, patientEvaluation.getMedicProfile().getMedicProfileId());
+            stmt.setInt(2, patientEvaluation.getMedicProfile().getId());
             stmt.setInt(3, patientEvaluation.getPatientProfile().getPatientProfileId());
             stmt.setString(4, patientEvaluation.getPatientEvaluationDescName());
             stmt.setString(5, patientEvaluation.getPatientEvaluationDescInfo());

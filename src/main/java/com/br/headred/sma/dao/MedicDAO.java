@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public class MedicDAO extends BasicDAO {
     private void addMedicUser(User medicUser) throws DAOException {
         String sql = "insert into medicUser values (?,?,?,?)";
         int medicUserId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.medicUser);
-        medicUser.setUserId(medicUserId);
+        medicUser.setId(medicUserId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicUserId);
             stmt.setString(2, medicUser.getUserName());
@@ -60,7 +61,7 @@ public class MedicDAO extends BasicDAO {
     private void addMedicInfo(Medic medic) throws DAOException {
         String sql = "insert into medic values (?,?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medic.getUserId());
+            stmt.setInt(1, medic.getId());
             stmt.setString(2, medic.getMedicName());
             stmt.setString(3, medic.getMedicCrm());
             stmt.execute();
@@ -75,7 +76,7 @@ public class MedicDAO extends BasicDAO {
     private void addMedicProfile(MedicProfile medicProfile) throws DAOException {
         String sql = "insert into medicProfile values (?,?,?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medicProfile.getMedicProfileId());
+            stmt.setInt(1, medicProfile.getId());
             stmt.setString(2, medicProfile.getMedicProfileBio());
             stmt.setInt(3, medicProfile.getMedicProfileExpAge());
             stmt.setString(4, medicProfile.getMedicProfileInfoCompl());
@@ -88,45 +89,13 @@ public class MedicDAO extends BasicDAO {
     public boolean existMedic(Medic medic) {
         String sql = "select medicUserId from medicUser where medicUserId=?";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medic.getUserId());
+            stmt.setInt(1, medic.getId());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) 
                 return true;
         } catch (SQLException e) {}
         return false;
-    }
-    
-    public Medic getMedicFastDescribe(String crm) {
-        return null;
-    }
-    
-    public Medic getMedicFastDescribe(int medicId) {
-        return null;
-    }
-    
-    public Medic getMedicFullDescribe(String crm) {
-        return null;
-    }
-    
-    public Medic getMedicFullDescribe(int medicId) {
-        return null;
-    }
-    
-    public List<Medic> getMedicFastDescribeList(String name) {
-        return null;
-    }
-    
-    public List<Medic> getMedicFulltDescribeList(String name) {
-        return null;
-    }
-    
-    public List<Medic> getMedicFastDescribeList(Speciality speciality) {
-        return null;
-    }
-    
-    public List<Medic> getMedicFastDescribeList(Clinic clinic) {
-        return null;
-    }
+    }        
     
     public void removeMedic(Medic medic) throws DAOException {
         if (!existMedic(medic))
@@ -139,10 +108,10 @@ public class MedicDAO extends BasicDAO {
     private void removeMedicUser(Medic medic) throws DAOException {
         String sql = "delete from medicUser where medicUserId=?";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medic.getUserId());            
+            stmt.setInt(1, medic.getId());            
             stmt.execute();
             stmt.close();
-            new SystemDAO(super.connection).releaseId(SystemDAO.Table.medicUser, medic.getUserId());
+            new SystemDAO(super.connection).releaseId(SystemDAO.Table.medicUser, medic.getId());
         } catch (SQLException e) {            
             throw new DAOException("Falha ao remover o usuário do médico", e);
         }
@@ -151,7 +120,7 @@ public class MedicDAO extends BasicDAO {
     private void removeMedicInfo(Medic medic) throws DAOException {
         String sql = "delete from medic where medicUser_fk=?";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medic.getUserId());            
+            stmt.setInt(1, medic.getId());            
             stmt.execute();                        
         } catch (SQLException e) {            
             throw new DAOException("Falha ao remover as informações do médico", e);
@@ -161,7 +130,7 @@ public class MedicDAO extends BasicDAO {
     private void removeMedicProfile(Medic medic) throws DAOException {
         String sql = "delete from medicProfile where medic_fk=?";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medic.getUserId());            
+            stmt.setInt(1, medic.getId());            
             stmt.execute();                      
         } catch (SQLException e) {            
             throw new DAOException("Falha ao remover o perfil do médico", e);
@@ -182,8 +151,22 @@ public class MedicDAO extends BasicDAO {
         }
     }        
     
-    public List<Speciality> getSpecialityList() {
-        return null;
+    public List<Speciality> getSpecialityList() throws DAOException {
+        List<Speciality> specialityList = null;
+        String sql = "select * from speciality";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            specialityList = new ArrayList<>();
+            while (rs.next()) {
+                Speciality speciality = new Speciality();
+                speciality.setSpecialityId(rs.getInt("specialityId"));
+                speciality.setSpecialityName(rs.getString("specialityName"));
+                specialityList.add(speciality);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao recuperar a lista de especialidades", e);
+        }
+        return specialityList;
     }
     
     public boolean existSpeciality(Speciality speciality) {
@@ -213,26 +196,18 @@ public class MedicDAO extends BasicDAO {
     public void addMedicSpeciality(MedicSpeciality medicSpeciality) throws DAOException {
         String sql = "insert into medicSpeciality values (?,?)";                
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medicSpeciality.getMedicProfile().getMedicProfileId());
+            stmt.setInt(1, medicSpeciality.getMedicProfile().getId());
             stmt.setInt(2, medicSpeciality.getSpeciality().getSpecialityId());
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao adicionar a especialidade para o medico", e);
         }
-    }
-    
-    public List<MedicSpeciality> getMedicSpecialityList() {
-        return null;
-    }
-    
-    public List<MedicSpeciality> getMedicSpecialityList(Medic medic) {
-        return null;
     }        
     
     public void removeMedicSpeciality(MedicSpeciality medicSpeciality) throws DAOException {
         String sql = "delete from medicSpeciality where medicProfile_fk=? and speciality_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medicSpeciality.getMedicProfile().getMedicProfileId());
+            stmt.setInt(1, medicSpeciality.getMedicProfile().getId());
             stmt.setInt(2, medicSpeciality.getSpeciality().getSpecialityId());
             stmt.execute();
         } catch (SQLException e) {
@@ -243,7 +218,7 @@ public class MedicDAO extends BasicDAO {
     public void removeAllMedicSpeciality(Medic medic) throws DAOException {
         String sql = "delete from medicSpeciality where medicProfile_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, medic.getUserId());            
+            stmt.setInt(1, medic.getId());            
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao remover as especialidades do medico", e);
@@ -267,28 +242,16 @@ public class MedicDAO extends BasicDAO {
         medicWorkAddress.setMedicWorkAddressId(medicWorkAddressId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicWorkAddressId);
-            stmt.setInt(2, medicWorkAddress.getClinicProfile().getClinicProfileId());
+            stmt.setInt(2, medicWorkAddress.getClinicProfile().getClinicId());
             stmt.setString(3, medicWorkAddress.getMedicWorkAddressComplement());
             stmt.setInt(4, medicWorkAddress.getMedicSpeciality().getSpeciality().getSpecialityId());
-            stmt.setInt(5, medicWorkAddress.getMedicSpeciality().getMedicProfile().getMedicProfileId());
+            stmt.setInt(5, medicWorkAddress.getMedicSpeciality().getMedicProfile().getId());
             stmt.execute();
         } catch (SQLException e) {            
             new SystemDAO(super.connection).releaseId(SystemDAO.Table.medicWorkAddress, medicWorkAddressId);
             throw new DAOException("Falha ao adicionar o endereco de trabalho do medico", e);
         }
-    }
-    
-    public MedicWorkAddress getMedicWorkAddress(Medic medic, Clinic clinic) {
-        return null;
-    }
-    
-    public List<MedicWorkAddress> getMedicWorkAddressList(Medic medic) {
-        return null;
-    }
-    
-    public List<MedicWorkAddress> getMedicWorkAddressList(Clinic clinic) {
-        return null;
-    }
+    }        
     
     private boolean existMedicWorkAddress(MedicWorkAddress medicWorkAddress) {
         String sql = "select medicWorkAddressId from medicWorkAddress where medicWorkAddressId=?";
@@ -327,15 +290,7 @@ public class MedicDAO extends BasicDAO {
         } catch (SQLException e) {
             throw new DAOException("Falha ao adicionar as variaveis de trabalho do medico", e);
         }
-    }
-    
-    public MedicWorkScheduling getMedicWorkScheduling(Medic medic, Speciality speciality) {
-        return null;
-    }
-    
-    public List<MedicWorkScheduling> getMedicWorkSchedulingList(Medic medic) {
-        return null;
-    }
+    }        
     
     private void removeMedicWorkScheduling(MedicWorkScheduling medicWorkScheduling) throws DAOException {
         String sql = "delete from medicWorkScheduling where medicWorkAddress_fk=?";

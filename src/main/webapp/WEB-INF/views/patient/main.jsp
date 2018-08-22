@@ -19,11 +19,15 @@
              margin: auto; text-align: center; position: relative;">            
             <div style="padding-top: 2rem; padding-bottom: 2rem; height: auto;">
                 <h1>Sistema de marcação de consulta</h1>    
-                <form action="" method="">                    
+                <!--form action="" method="">                    
                     <input type="submit" value="Suporte online" style="display: inline-block; width: 40%; height: 50px; border-radius: 2px;"><br>
                     <input type="submit" value="Historico de agendamentos" style="display: inline-block; width: 40%; height: 50px; border-radius: 2px;"><br>
                     <input type="submit" value="Buscar médicos e clínicas" style="display: inline-block; width: 40%; height: 50px; border-radius: 2px;">
-                </form>                            
+                </form-->                            
+                <h3>Teste de requisições</h3>
+                <a href="Paciente/MinhaAgenda?patientId=0">Minha agenda</a><br>
+                <a href="Paciente/MinhaAgenda/MinhaConsulta?consultId=0">Minha consulta</a><br>
+                <a href="Paciente/ListarEspecialidades">Listar especialidades</a><br>                
             </div>            
         </div>
 

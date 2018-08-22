@@ -11,9 +11,8 @@ import java.util.List;
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class ClinicProfile {
-    
-    private int clinicProfileId;
+public class ClinicProfile extends Clinic {
+        
     private String clinicProfileBio;
     private String clinicProfileAddress;
     private List<ClinicTelephone> clicClinicTelephones;    
@@ -23,29 +22,31 @@ public class ClinicProfile {
     public ClinicProfile() {
     }
 
-    public ClinicProfile(int clinicProfileId) {
-        this.clinicProfileId = clinicProfileId;
-    }
+    public ClinicProfile(int clinicId) {
+        super(clinicId);
+    }        
 
-    public ClinicProfile(int clinicProfileId, String clinicProfileBio, String clinicProfileAddress, List<ClinicTelephone> clicClinicTelephones) {
-        this.clinicProfileId = clinicProfileId;
+    public ClinicProfile(String clinicProfileBio, String clinicProfileAddress, List<ClinicTelephone> clicClinicTelephones, List<MedicWorkAddress> medicWorkAddresses, List<ClinicProfileFile> clinicProfileFiles, int clinicId) {
+        super(clinicId);
         this.clinicProfileBio = clinicProfileBio;
         this.clinicProfileAddress = clinicProfileAddress;
         this.clicClinicTelephones = clicClinicTelephones;
+        this.medicWorkAddresses = medicWorkAddresses;
+        this.clinicProfileFiles = clinicProfileFiles;
     }
+
+    public ClinicProfile(String clinicProfileBio, String clinicProfileAddress, List<ClinicTelephone> clicClinicTelephones, List<MedicWorkAddress> medicWorkAddresses, List<ClinicProfileFile> clinicProfileFiles) {
+        this.clinicProfileBio = clinicProfileBio;
+        this.clinicProfileAddress = clinicProfileAddress;
+        this.clicClinicTelephones = clicClinicTelephones;
+        this.medicWorkAddresses = medicWorkAddresses;
+        this.clinicProfileFiles = clinicProfileFiles;
+    }    
 
     public ClinicProfile(String clinicProfileBio, String clinicProfileAddress, List<ClinicTelephone> clicClinicTelephones) {
         this.clinicProfileBio = clinicProfileBio;
         this.clinicProfileAddress = clinicProfileAddress;
         this.clicClinicTelephones = clicClinicTelephones;
-    }        
-
-    public int getClinicProfileId() {
-        return clinicProfileId;
-    }
-
-    public void setClinicProfileId(int clinicProfileId) {
-        this.clinicProfileId = clinicProfileId;
     }        
 
     public String getClinicProfileBio() {

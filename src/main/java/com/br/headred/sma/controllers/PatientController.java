@@ -6,15 +6,18 @@
 package com.br.headred.sma.controllers;
 
 import com.br.headred.sma.dao.ConsultDAO;
+import com.br.headred.sma.dao.MedicDAO;
 import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.jdbc.ConnectionFactory;
 import com.br.headred.sma.models.Consult;
 import com.br.headred.sma.models.Patient;
+import com.br.headred.sma.models.Speciality;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -23,18 +26,59 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class PatientController {
+
+    public PatientController() {
+        System.err.println("CONSTRUTOR GERADO");
+    }        
     
-    @RequestMapping("PrincipalPaciente")
+    @RequestMapping("Paciente")
     public String mainPatient() {
         return "patient/main";
     }   
     
-    @RequestMapping("MinhaAgenda")
-    public String minhaAgenda(int patientId, String sessionId, Model model) {
+    @RequestMapping("Paciente/MinhaAgenda")
+    //@PostMapping("PrincipalPaciente/MinhaAgenda")
+    public String minhaAgenda(int patientId, Model model) {
         try {
             List<Consult> consultList = new ConsultDAO(new ConnectionFactory().getConnection()).getConsultList(new Patient(patientId));
             model.addAttribute(consultList);
             return "patient/agenda";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+        return "redirect:PrincipalPaciente";
+    }
+    
+    @RequestMapping("Paciente/MinhaAgenda/MinhaConsulta")
+    public String minhaConsulta(int consultId, Model model) {
+        try {
+            Consult consult = new ConsultDAO(new ConnectionFactory().getConnection()).getConsult(consultId);
+            model.addAttribute(consult);
+            return "patient/agenda-consulta";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+        return "redirect:PrincipalPaciente";
+    }
+    
+    @RequestMapping("Paciente/ListarEspecialidades")
+    public String listarEspecialidades(Model model) {
+        try {
+            List<Speciality> specialityList = new MedicDAO(new ConnectionFactory().getConnection()).getSpecialityList();
+            model.addAttribute(specialityList);            
+            return "patient/speciality-list";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+        return "redirect:PrincipalPaciente";
+    }
+    
+    @RequestMapping("Paciente/ListarMedicos")
+    public String listarMedicos(int specialityId, Model model) {
+        try {
+            List<Speciality> specialityList = new MedicDAO(new ConnectionFactory().getConnection()).getSpecialityList();
+            model.addAttribute(specialityList);            
+            return "patient/speciality-list";
         } catch (DAOException e) {
             e.printStackTrace();
         }

@@ -9,7 +9,7 @@ package com.br.headred.sma.models;
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class Medic extends User{
+public class Medic extends User {
     
     private String medicName;
     private String medicCrm;   

@@ -11,9 +11,8 @@ import java.util.List;
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class MedicProfile {
-
-    private int medicProfileId;
+public class MedicProfile extends Medic {
+    
     private String medicProfileBio;
     private int medicProfileExpAge;
     private String medicProfileInfoCompl;       
@@ -26,24 +25,32 @@ public class MedicProfile {
     public MedicProfile() {
     }
 
-    public MedicProfile(int medicProfileId) {
-        this.medicProfileId = medicProfileId;
+    public MedicProfile(int medicId) {
+        super(medicId);
     }
 
-    public MedicProfile(int medicProfileId, String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl) {
-        this.medicProfileId = medicProfileId;
+    public MedicProfile(String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl, List<MedicProfileFile> medicProfileFiles, List<MedicSpeciality> medicSpecialities, List<MedicConsult> medicAgenda, List<MedicWorkAddress> medicWorkAddresses, PatientEvaluation medicPatientEvaluation, int medicId) {
+        super(medicId);
         this.medicProfileBio = medicProfileBio;
         this.medicProfileExpAge = medicProfileExpAge;
         this.medicProfileInfoCompl = medicProfileInfoCompl;
-    }        
-
-    public int getMedicProfileId() {
-        return medicProfileId;
+        this.medicProfileFiles = medicProfileFiles;
+        this.medicSpecialities = medicSpecialities;
+        this.medicAgenda = medicAgenda;
+        this.medicWorkAddresses = medicWorkAddresses;
+        this.medicPatientEvaluation = medicPatientEvaluation;
     }
 
-    public void setMedicProfileId(int medicProfileId) {
-        this.medicProfileId = medicProfileId;
-    }        
+    public MedicProfile(String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl, List<MedicProfileFile> medicProfileFiles, List<MedicSpeciality> medicSpecialities, List<MedicConsult> medicAgenda, List<MedicWorkAddress> medicWorkAddresses, PatientEvaluation medicPatientEvaluation) {
+        this.medicProfileBio = medicProfileBio;
+        this.medicProfileExpAge = medicProfileExpAge;
+        this.medicProfileInfoCompl = medicProfileInfoCompl;
+        this.medicProfileFiles = medicProfileFiles;
+        this.medicSpecialities = medicSpecialities;
+        this.medicAgenda = medicAgenda;
+        this.medicWorkAddresses = medicWorkAddresses;
+        this.medicPatientEvaluation = medicPatientEvaluation;
+    }    
 
     public String getMedicProfileBio() {
         return medicProfileBio;

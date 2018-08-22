@@ -11,7 +11,7 @@ package com.br.headred.sma.models;
  */
 public abstract class User {
     
-    private int userId;
+    private int id;
     private String userName;
     private String userPassword;
     private String userSessionId;
@@ -19,7 +19,7 @@ public abstract class User {
     public User() {}
     
     public User(int userId) {
-        this.userId = userId;
+        this.id = userId;
     }
 
     public User(String userName, String userPassword) {
@@ -27,12 +27,12 @@ public abstract class User {
         this.userPassword = userPassword;
     }        
 
-    public int getUserId() {
-        return userId;
+    public int getId() {
+        return id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUserName() {

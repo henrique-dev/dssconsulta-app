@@ -38,7 +38,7 @@ public class LoginController {
                 Patient patient = new PatientDAO(connection).login(new Patient(userName, userPassword));
                 if (patient != null) {
                     System.err.println(patient.getUserSessionId());
-                    return "redirect:PrincipalPaciente";                    
+                    return "redirect:Paciente";                    
                 }
             } catch (DAOException e) {
                 e.printStackTrace();
