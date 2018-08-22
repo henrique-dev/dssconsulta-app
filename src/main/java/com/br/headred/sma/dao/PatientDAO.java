@@ -9,7 +9,7 @@ import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.PatientAccount;
-import com.br.headred.sma.models.PatientEvaluation;
+import com.br.headred.sma.models.Evaluation;
 import com.br.headred.sma.models.PatientProfile;
 import com.br.headred.sma.models.User;
 import java.sql.Connection;
@@ -288,22 +288,22 @@ public class PatientDAO extends BasicDAO {
         }
     }
     
-    public void addPatientEvaluation(PatientEvaluation patientEvaluation) throws DAOException {
+    public void addPatientEvaluation(Evaluation evaluation) throws DAOException {
         String sql = "insert into patientEvaluation values (?,?,?,?,?,?)";
-        int patientEvaluationId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.patientEvaluation);
-        patientEvaluation.setPatientEvaluationId(patientEvaluationId);
+        int patientEvaluationId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.evaluation);
+        evaluation.setEvaluationId(patientEvaluationId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patientEvaluationId);
-            stmt.setInt(2, patientEvaluation.getMedicProfile().getId());
-            stmt.setInt(3, patientEvaluation.getPatientProfile().getPatientProfileId());
-            stmt.setString(4, patientEvaluation.getPatientEvaluationDescName());
-            stmt.setString(5, patientEvaluation.getPatientEvaluationDescInfo());
-            stmt.setInt(6, patientEvaluation.getPatientEvaluationScore());
+            stmt.setInt(2, evaluation.getMedicProfile().getId());
+            stmt.setInt(3, evaluation.getPatientProfile().getPatientProfileId());
+            stmt.setString(4, evaluation.getEvaluationDescName());
+            stmt.setString(5, evaluation.getEvaluationDescInfo());
+            stmt.setInt(6, evaluation.getEvaluationScore());
             stmt.execute();
         } catch (SQLException e) {
-            new SystemDAO(super.connection).releaseId(SystemDAO.Table.patientEvaluation, patientEvaluationId);
+            new SystemDAO(super.connection).releaseId(SystemDAO.Table.evaluation, patientEvaluationId);
             throw new DAOException("Falha ao adicionar uma avaliação do medico", e);
         }
-    }
+    }        
 
 }

@@ -20,7 +20,7 @@ public class MedicProfile extends Medic {
     private List<MedicSpeciality> medicSpecialities;
     private List<MedicConsult> medicAgenda;
     private List<MedicWorkAddress> medicWorkAddresses;
-    private PatientEvaluation medicPatientEvaluation;
+    private Evaluation medicPatientEvaluation;
 
     public MedicProfile() {
     }
@@ -29,7 +29,7 @@ public class MedicProfile extends Medic {
         super(medicId);
     }
 
-    public MedicProfile(String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl, List<MedicProfileFile> medicProfileFiles, List<MedicSpeciality> medicSpecialities, List<MedicConsult> medicAgenda, List<MedicWorkAddress> medicWorkAddresses, PatientEvaluation medicPatientEvaluation, int medicId) {
+    public MedicProfile(String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl, List<MedicProfileFile> medicProfileFiles, List<MedicSpeciality> medicSpecialities, List<MedicConsult> medicAgenda, List<MedicWorkAddress> medicWorkAddresses, Evaluation medicPatientEvaluation, int medicId) {
         super(medicId);
         this.medicProfileBio = medicProfileBio;
         this.medicProfileExpAge = medicProfileExpAge;
@@ -41,7 +41,7 @@ public class MedicProfile extends Medic {
         this.medicPatientEvaluation = medicPatientEvaluation;
     }
 
-    public MedicProfile(String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl, List<MedicProfileFile> medicProfileFiles, List<MedicSpeciality> medicSpecialities, List<MedicConsult> medicAgenda, List<MedicWorkAddress> medicWorkAddresses, PatientEvaluation medicPatientEvaluation) {
+    public MedicProfile(String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl, List<MedicProfileFile> medicProfileFiles, List<MedicSpeciality> medicSpecialities, List<MedicConsult> medicAgenda, List<MedicWorkAddress> medicWorkAddresses, Evaluation medicPatientEvaluation) {
         this.medicProfileBio = medicProfileBio;
         this.medicProfileExpAge = medicProfileExpAge;
         this.medicProfileInfoCompl = medicProfileInfoCompl;
@@ -108,11 +108,11 @@ public class MedicProfile extends Medic {
         this.medicWorkAddresses = medicWorkAddresses;
     }   
 
-    public PatientEvaluation getMedicPatientEvaluation() {
+    public Evaluation getMedicPatientEvaluation() {
         return medicPatientEvaluation;
     }
 
-    public void setMedicPatientEvaluation(PatientEvaluation medicPatientEvaluation) {
+    public void setMedicPatientEvaluation(Evaluation medicPatientEvaluation) {
         this.medicPatientEvaluation = medicPatientEvaluation;
     }        
         

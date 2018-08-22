@@ -10,6 +10,7 @@ import com.br.headred.sma.dao.MedicDAO;
 import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.jdbc.ConnectionFactory;
 import com.br.headred.sma.models.Consult;
+import com.br.headred.sma.models.MedicProfile;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.Speciality;
 import java.util.List;
@@ -76,8 +77,8 @@ public class PatientController {
     @RequestMapping("Paciente/ListarMedicos")
     public String listarMedicos(int specialityId, Model model) {
         try {
-            List<Speciality> specialityList = new MedicDAO(new ConnectionFactory().getConnection()).getSpecialityList();
-            model.addAttribute(specialityList);            
+            List<MedicProfile> medicProfileList = new MedicDAO(new ConnectionFactory().getConnection()).getMedicProfileList(specialityId);
+            model.addAttribute(medicProfileList); 
             return "patient/speciality-list";
         } catch (DAOException e) {
             e.printStackTrace();

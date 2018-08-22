@@ -8,7 +8,7 @@ package com.br.headred.sma.teste;
 import com.br.headred.sma.dao.PatientDAO;
 import com.br.headred.sma.jdbc.ConnectionFactory;
 import com.br.headred.sma.models.MedicProfile;
-import com.br.headred.sma.models.PatientEvaluation;
+import com.br.headred.sma.models.Evaluation;
 import com.br.headred.sma.models.PatientProfile;
 import java.sql.Connection;
 
@@ -20,8 +20,7 @@ public class AddPatientEvaluation {
 
     public AddPatientEvaluation() {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
-            new PatientDAO(connection).addPatientEvaluation(
-                    new PatientEvaluation(new MedicProfile(0), new PatientProfile(0), "Muito bom", "Ele me atendeu super gentilmente", 5));
+            new PatientDAO(connection).addPatientEvaluation(new Evaluation(new MedicProfile(0), new PatientProfile(0), "Muito bom", "Ele me atendeu super gentilmente", 5));
         } catch (Exception e) {
             e.printStackTrace();
         }

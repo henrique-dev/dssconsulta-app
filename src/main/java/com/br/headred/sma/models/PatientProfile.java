@@ -21,7 +21,7 @@ public class PatientProfile {
     private float patientProfileHeight;
     private String patientProfileBloodType;
     private String patientProfileTelephone;
-    private List<PatientEvaluation> patientEvaluations;
+    private List<Evaluation> patientEvaluations;
     private List<PatientConsult> patientConsults;
     private PatientAccount patientAccount;
     private List<PatientProfileFile> patientProfileFiles;
@@ -108,11 +108,11 @@ public class PatientProfile {
         this.patientProfileTelephone = patientProfileTelephone;
     }
 
-    public List<PatientEvaluation> getPatientEvaluations() {
+    public List<Evaluation> getPatientEvaluations() {
         return patientEvaluations;
     }
 
-    public void setPatientEvaluations(List<PatientEvaluation> patientEvaluations) {
+    public void setPatientEvaluations(List<Evaluation> patientEvaluations) {
         this.patientEvaluations = patientEvaluations;
     }
 

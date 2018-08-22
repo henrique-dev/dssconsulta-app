@@ -25,7 +25,7 @@ public class SystemDAO extends BasicDAO {
         clinic,
         speciality,
         medicWorkAddress,
-        patientEvaluation,
+        evaluation,
         medicConsult,
         patientConsult,
         accountSpeciality,

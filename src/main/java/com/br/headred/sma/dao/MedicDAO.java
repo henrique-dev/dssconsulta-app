@@ -86,6 +86,10 @@ public class MedicDAO extends BasicDAO {
         }
     }       
     
+    private void addMedicEvaluation(MedicProfile medicProfile) {
+        
+    }
+    
     public boolean existMedic(Medic medic) {
         String sql = "select medicUserId from medicUser where medicUserId=?";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
@@ -136,6 +140,12 @@ public class MedicDAO extends BasicDAO {
             throw new DAOException("Falha ao remover o perfil do médico", e);
         }
     }        
+    
+    public List<MedicProfile> getMedicProfileList(int specialityId) throws DAOException{
+        List<MedicProfile> medicProfileList = null;
+        //String sql = "select * from medicProfile"
+        return null;
+    }
     
     public void addSpeciality(Speciality speciality) throws DAOException {
         String sql = "insert into speciality values (?,?)";
