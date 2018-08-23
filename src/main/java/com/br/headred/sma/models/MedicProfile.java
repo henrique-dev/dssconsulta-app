@@ -16,10 +16,12 @@ public class MedicProfile extends Medic {
     private String medicProfileBio;
     private int medicProfileExpAge;
     private String medicProfileInfoCompl;       
-    private List<MedicProfileFile> medicProfileFiles;
-    private List<MedicSpeciality> medicSpecialities;
-    private List<MedicConsult> medicAgenda;
-    private List<MedicWorkAddress> medicWorkAddresses;
+    private float medicProfileEvaluationAvg;
+    private int medicProfileEvaluationCount;
+    private List<MedicProfileFile> medicProfileFileList;
+    private List<MedicSpeciality> medicSpecialityList;
+    private List<MedicConsult> medicConsultList;
+    private List<MedicWorkAddress> medicWorkAddressList;
     private Evaluation medicPatientEvaluation;
 
     public MedicProfile() {
@@ -29,26 +31,30 @@ public class MedicProfile extends Medic {
         super(medicId);
     }
 
-    public MedicProfile(String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl, List<MedicProfileFile> medicProfileFiles, List<MedicSpeciality> medicSpecialities, List<MedicConsult> medicAgenda, List<MedicWorkAddress> medicWorkAddresses, Evaluation medicPatientEvaluation, int medicId) {
+    public MedicProfile(String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl, float medicProfileEvaluationAvg, int medicProfileEvaluationCount, List<MedicProfileFile> medicProfileFileList, List<MedicSpeciality> medicSpecialityList, List<MedicConsult> medicConsultList, List<MedicWorkAddress> medicWorkAddressList, Evaluation medicPatientEvaluation, int medicId) {
         super(medicId);
         this.medicProfileBio = medicProfileBio;
         this.medicProfileExpAge = medicProfileExpAge;
         this.medicProfileInfoCompl = medicProfileInfoCompl;
-        this.medicProfileFiles = medicProfileFiles;
-        this.medicSpecialities = medicSpecialities;
-        this.medicAgenda = medicAgenda;
-        this.medicWorkAddresses = medicWorkAddresses;
+        this.medicProfileEvaluationAvg = medicProfileEvaluationAvg;
+        this.medicProfileEvaluationCount = medicProfileEvaluationCount;
+        this.medicProfileFileList = medicProfileFileList;
+        this.medicSpecialityList = medicSpecialityList;
+        this.medicConsultList = medicConsultList;
+        this.medicWorkAddressList = medicWorkAddressList;
         this.medicPatientEvaluation = medicPatientEvaluation;
     }
 
-    public MedicProfile(String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl, List<MedicProfileFile> medicProfileFiles, List<MedicSpeciality> medicSpecialities, List<MedicConsult> medicAgenda, List<MedicWorkAddress> medicWorkAddresses, Evaluation medicPatientEvaluation) {
+    public MedicProfile(String medicProfileBio, int medicProfileExpAge, String medicProfileInfoCompl, float medicProfileEvaluationAvg, int medicProfileEvaluationCount, List<MedicProfileFile> medicProfileFileList, List<MedicSpeciality> medicSpecialityList, List<MedicConsult> medicConsultList, List<MedicWorkAddress> medicWorkAddressList, Evaluation medicPatientEvaluation) {
         this.medicProfileBio = medicProfileBio;
         this.medicProfileExpAge = medicProfileExpAge;
         this.medicProfileInfoCompl = medicProfileInfoCompl;
-        this.medicProfileFiles = medicProfileFiles;
-        this.medicSpecialities = medicSpecialities;
-        this.medicAgenda = medicAgenda;
-        this.medicWorkAddresses = medicWorkAddresses;
+        this.medicProfileEvaluationAvg = medicProfileEvaluationAvg;
+        this.medicProfileEvaluationCount = medicProfileEvaluationCount;
+        this.medicProfileFileList = medicProfileFileList;
+        this.medicSpecialityList = medicSpecialityList;
+        this.medicConsultList = medicConsultList;
+        this.medicWorkAddressList = medicWorkAddressList;
         this.medicPatientEvaluation = medicPatientEvaluation;
     }    
 
@@ -76,37 +82,37 @@ public class MedicProfile extends Medic {
         this.medicProfileInfoCompl = medicProfileInfoCompl;
     }    
 
-    public List<MedicProfileFile> getMedicProfileFiles() {
-        return medicProfileFiles;
+    public List<MedicProfileFile> getMedicProfileFileList() {
+        return medicProfileFileList;
     }
 
-    public void setMedicProfileFiles(List<MedicProfileFile> medicProfileFiles) {
-        this.medicProfileFiles = medicProfileFiles;
+    public void setMedicProfileFileList(List<MedicProfileFile> medicProfileFileList) {
+        this.medicProfileFileList = medicProfileFileList;
     }
 
-    public List<MedicSpeciality> getMedicSpecialities() {
-        return medicSpecialities;
+    public List<MedicSpeciality> getMedicSpecialityList() {
+        return medicSpecialityList;
     }
 
-    public void setMedicSpecialities(List<MedicSpeciality> medicSpecialities) {
-        this.medicSpecialities = medicSpecialities;
+    public void setMedicSpecialityList(List<MedicSpeciality> medicSpecialityList) {
+        this.medicSpecialityList = medicSpecialityList;
     }
 
-    public List<MedicConsult> getMedicAgenda() {
-        return medicAgenda;
+    public List<MedicConsult> getMedicConsultList() {
+        return medicConsultList;
     }
 
-    public void setMedicAgenda(List<MedicConsult> medicAgenda) {
-        this.medicAgenda = medicAgenda;
+    public void setMedicConsultList(List<MedicConsult> medicConsultList) {
+        this.medicConsultList = medicConsultList;
     }
 
-    public List<MedicWorkAddress> getMedicWorkAddresses() {
-        return medicWorkAddresses;
+    public List<MedicWorkAddress> getMedicWorkAddressList() {
+        return medicWorkAddressList;
     }
 
-    public void setMedicWorkAddresses(List<MedicWorkAddress> medicWorkAddresses) {
-        this.medicWorkAddresses = medicWorkAddresses;
-    }   
+    public void setMedicWorkAddressList(List<MedicWorkAddress> medicWorkAddressList) {
+        this.medicWorkAddressList = medicWorkAddressList;
+    }    
 
     public Evaluation getMedicPatientEvaluation() {
         return medicPatientEvaluation;
@@ -114,6 +120,22 @@ public class MedicProfile extends Medic {
 
     public void setMedicPatientEvaluation(Evaluation medicPatientEvaluation) {
         this.medicPatientEvaluation = medicPatientEvaluation;
+    }       
+
+    public float getMedicProfileEvaluationAvg() {
+        return medicProfileEvaluationAvg;
+    }
+
+    public void setMedicProfileEvaluationAvg(float medicProfileEvaluationAvg) {
+        this.medicProfileEvaluationAvg = medicProfileEvaluationAvg;
+    }
+
+    public int getMedicProfileEvaluationCount() {
+        return medicProfileEvaluationCount;
+    }
+
+    public void setMedicProfileEvaluationCount(int medicProfileEvaluationCount) {
+        this.medicProfileEvaluationCount = medicProfileEvaluationCount;
     }        
         
 }

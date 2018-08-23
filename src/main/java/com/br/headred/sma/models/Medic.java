@@ -12,8 +12,7 @@ package com.br.headred.sma.models;
 public class Medic extends User {
     
     private String medicName;
-    private String medicCrm;   
-    private MedicProfile medicProfile;
+    private String medicCrm;       
     
     public Medic() {
         super();
@@ -37,14 +36,6 @@ public class Medic extends User {
 
     public void setMedicCrm(String medicCrm) {
         this.medicCrm = medicCrm;
-    }            
-
-    public MedicProfile getMedicProfile() {
-        return medicProfile;
-    }
-
-    public void setMedicProfile(MedicProfile medicProfile) {
-        this.medicProfile = medicProfile;
-    }        
+    }                
             
 }

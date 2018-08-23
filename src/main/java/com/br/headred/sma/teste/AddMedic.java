@@ -22,22 +22,18 @@ public class AddMedic {
     public AddMedic() {
         try (Connection connection = new ConnectionFactory().getConnection()) {           
             
-            Medic medic = new Medic();
+            MedicProfile medic = new MedicProfile();
             
             medic.setUserName("12345");
             medic.setUserPassword("12345");
             
             medic.setMedicName("Fulano Ciclano Beltrano");
             medic.setMedicCrm("123");
-            
-            MedicProfile medicProfile = new MedicProfile();
-            medicProfile.setMedicProfileBio("Eu sou um cara muito bacana");
-            medicProfile.setMedicProfileExpAge(18);
-            medicProfile.setMedicProfileInfoCompl("Então, sabe como é né");
-            
-            medic.setMedicProfile(medicProfile);
-            
-            
+                        
+            medic.setMedicProfileBio("Eu sou um cara muito bacana");
+            medic.setMedicProfileExpAge(18);
+            medic.setMedicProfileInfoCompl("Então, sabe como é né");                       
+                        
             new MedicDAO(connection).addMedic(medic);
             
         } catch (SQLException e) {

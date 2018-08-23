@@ -289,7 +289,7 @@ public class PatientDAO extends BasicDAO {
     }
     
     public void addPatientEvaluation(Evaluation evaluation) throws DAOException {
-        String sql = "insert into patientEvaluation values (?,?,?,?,?,?)";
+        String sql = "insert into evaluation values (?,?,?,?,?,?)";
         int patientEvaluationId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.evaluation);
         evaluation.setEvaluationId(patientEvaluationId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
@@ -300,6 +300,8 @@ public class PatientDAO extends BasicDAO {
             stmt.setString(5, evaluation.getEvaluationDescInfo());
             stmt.setInt(6, evaluation.getEvaluationScore());
             stmt.execute();
+            stmt.close();
+            new MedicDAO(super.connection).updateMedicEvaluation(evaluation.getMedicProfile());
         } catch (SQLException e) {
             new SystemDAO(super.connection).releaseId(SystemDAO.Table.evaluation, patientEvaluationId);
             throw new DAOException("Falha ao adicionar uma avaliação do medico", e);

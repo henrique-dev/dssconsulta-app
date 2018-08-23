@@ -19,7 +19,7 @@
             <th>consultCreationDate</th>
             <th>consultForDate</th>
             <th>consultConsulted</th>
-            <th>medicProfileId</th>
+            <th>medicId</th>
             <th>medicName</th>
             <th>medicCrm</th>
             <th>specialityId</th>

@@ -26,11 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Paulo Henrique Gonçalves Bacelar
  */
 @Controller
-public class PatientController {
-
-    public PatientController() {
-        System.err.println("CONSTRUTOR GERADO");
-    }        
+public class PatientController {   
     
     @RequestMapping("Paciente")
     public String mainPatient() {
@@ -79,7 +75,7 @@ public class PatientController {
         try {
             List<MedicProfile> medicProfileList = new MedicDAO(new ConnectionFactory().getConnection()).getMedicProfileList(specialityId);
             model.addAttribute(medicProfileList); 
-            return "patient/speciality-list";
+            return "patient/medic-list";
         } catch (DAOException e) {
             e.printStackTrace();
         }
