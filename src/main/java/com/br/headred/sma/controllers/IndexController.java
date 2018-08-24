@@ -18,6 +18,6 @@ public class IndexController {
     @RequestMapping("Principal")
     public String index() {
         return "login/login";
-    }
+    }        
     
 }

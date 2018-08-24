@@ -12,7 +12,7 @@ package com.br.headred.sma.models;
 public class ClinicTelephone {
     
     private ClinicProfile clinicProfile;
-    private String clinicTelephoneNumber;
+    private String clinicTelephoneNumber;        
 
     public ClinicProfile getClinicProfile() {
         return clinicProfile;

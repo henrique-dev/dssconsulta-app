@@ -11,7 +11,7 @@ package com.br.headred.sma.models;
  */
 public class Clinic {
     
-    private int clinicId;
+    private int id;
     private String clinicName;
     private String clinicCnpj;
     private ClinicProfile clinicProfile;
@@ -19,15 +19,15 @@ public class Clinic {
     public Clinic() {}
     
     public Clinic(int clinicId) {
-        this.clinicId = clinicId;
+        this.id = clinicId;
     }
 
-    public int getClinicId() {
-        return clinicId;
+    public int getId() {
+        return id;
     }
 
-    public void setClinicId(int clinicId) {
-        this.clinicId = clinicId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getClinicName() {

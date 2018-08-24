@@ -28,23 +28,20 @@ public class AddPatient {
     public AddPatient() {
         try (Connection connection = new ConnectionFactory().getConnection()) {                        
             
-            Patient patient = new Patient();
+            PatientProfile patient = new PatientProfile();
             
             patient.setUserName("01741053200");
             patient.setUserPassword("12345");            
                                     
             patient.setPatientName("Paulo Henrique Gonçalves Bacelar");
             patient.setPatientCpf("01741053200");
-                                    
-            PatientProfile patientProfile = new PatientProfile();
-            patientProfile.setPatientProfileEmail("henrique.phgb@gmail.com");
-            patientProfile.setPatientProfileGenre("masculino");
-            patientProfile.setPatientProfileHeight(1.7f);
-            patientProfile.setPatientProfileBirthDate(new Date(Calendar.getInstance().getTimeInMillis()));
-            patientProfile.setPatientProfileBloodType("A+");
-            patientProfile.setPatientProfileTelephone("96991100443");            
-            
-            patient.setPatientProfile(patientProfile);
+                                                
+            patient.setPatientProfileEmail("henrique.phgb@gmail.com");
+            patient.setPatientProfileGenre("masculino");
+            patient.setPatientProfileHeight(1.7f);
+            patient.setPatientProfileBirthDate(new Date(Calendar.getInstance().getTimeInMillis()));
+            patient.setPatientProfileBloodType("A+");
+            patient.setPatientProfileTelephone("96991100443");                                    
             
             new PatientDAO(connection).addPatient(patient);
             

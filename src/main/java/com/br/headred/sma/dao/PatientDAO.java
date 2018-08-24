@@ -58,11 +58,10 @@ public class PatientDAO extends BasicDAO {
      * @param patient
      * @throws DAOException 
      */
-    public void addPatient(Patient patient) throws DAOException {
+    public void addPatient(PatientProfile patient) throws DAOException {
         addPatientUser(patient);
-        addPatientInfo(patient);
-        patient.getPatientProfile().setPatientProfileId(patient.getId());
-        addPatientProfile(patient.getPatientProfile());
+        addPatientInfo(patient);        
+        addPatientProfile(patient);
         PatientAccount patientAccount = new PatientAccount();
         patientAccount.setPatientAccountId(patient.getId());
         patientAccount.setPatientAccountCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
@@ -128,7 +127,7 @@ public class PatientDAO extends BasicDAO {
     private void addPatientProfile(PatientProfile patientProfile) throws DAOException {
         String sql = "insert into patientProfile values (?,?,?,?,?,?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, patientProfile.getPatientProfileId());
+            stmt.setInt(1, patientProfile.getId());
             stmt.setString(2, patientProfile.getPatientProfileEmail());
             stmt.setString(3, patientProfile.getPatientProfileGenre());
             stmt.setDate(4, patientProfile.getPatientProfileBirthDate());
@@ -137,7 +136,7 @@ public class PatientDAO extends BasicDAO {
             stmt.setString(7, patientProfile.getPatientProfileTelephone());
             stmt.execute();
         } catch (SQLException e) {
-            removePatient(new Patient(patientProfile.getPatientProfileId()));
+            removePatient(new Patient(patientProfile.getId()));
             throw new DAOException("Falha ao adicionar o perfil do paciente", e);
         }
     }
@@ -295,7 +294,7 @@ public class PatientDAO extends BasicDAO {
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patientEvaluationId);
             stmt.setInt(2, evaluation.getMedicProfile().getId());
-            stmt.setInt(3, evaluation.getPatientProfile().getPatientProfileId());
+            stmt.setInt(3, evaluation.getPatientProfile().getId());
             stmt.setString(4, evaluation.getEvaluationDescName());
             stmt.setString(5, evaluation.getEvaluationDescInfo());
             stmt.setInt(6, evaluation.getEvaluationScore());

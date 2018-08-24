@@ -27,7 +27,9 @@
                     <input type="password" style="width: 100px" name="userPassword">
                     <br><br>
                     <input type="submit" value="Entrar" style="display: inline-block; width: auto; border-radius: 2px; min-width: 20%;">
-                </form>            
+                </form>     
+                <br>
+                <a href="NovoCadastro">Cadastrar-se</a>
             </div>            
         </div>
 

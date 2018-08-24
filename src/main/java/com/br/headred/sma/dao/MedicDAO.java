@@ -187,8 +187,8 @@ public class MedicDAO extends BasicDAO {
             medicProfileList = new ArrayList<>();
             List<MedicWorkAddress> medicWorkAddressList = new ArrayList<>();
             List<MedicSpeciality> medicSpecialityList = new ArrayList<>();;
-            while (rs.next()) {                
-                int medicId = rs.getInt("medic_fk");                     
+            while (rs.next()) {
+                int medicId = rs.getInt("medic_fk");
                 if (medicId != currentMedic) {
                     if (currentMedic != -1) {
                         medicProfile.setMedicWorkAddressList(medicWorkAddressList);
@@ -215,23 +215,80 @@ public class MedicDAO extends BasicDAO {
 
                 MedicWorkAddress medicWorkAddress = new MedicWorkAddress();
                 ClinicProfile clinic = new ClinicProfile();
-                clinic.setClinicId(rs.getInt("clinicId"));
+                clinic.setId(rs.getInt("clinicId"));
                 clinic.setClinicName(rs.getString("clinicName"));
                 medicWorkAddress.setMedicWorkAddressId(rs.getInt("medicWorkAddressId"));
                 medicWorkAddress.setClinicProfile(clinic);
                 medicWorkAddress.setMedicSpeciality(medicSpeciality);
                 medicWorkAddressList.add(medicWorkAddress);
-            }            
+            }
             if (currentMedic != -1) {
                 medicProfile.setMedicWorkAddressList(medicWorkAddressList);
                 medicProfile.setMedicSpecialityList(medicSpecialityList);
                 medicProfileList.add(medicProfile);
-            }            
+            }
         } catch (SQLException e) {
             throw new DAOException("Falha ao adquirir a lista de medicos", e);
         }
 
         return medicProfileList;
+    }
+
+    public MedicProfile getMedicProfile(int medicId) throws DAOException {
+        MedicProfile medicProfile = null;
+        String sql = "select "
+                + "medic_fk, medicName, medicWorkAddressId, medicProfileBio, medicProfileInfoCompl, medicProfileExpAge, medicEvaluationAvg, "
+                + "medicEvaluationCount, clinicId, clinicName, specialityId, specialityName "
+                + "from medicWorkAddress "
+                + "inner join medicProfile on medicWorkAddress.medicSpeciality_medicProfile_fk=medicProfile.medic_fk "
+                + "inner join medicEvaluation on medicEvaluation.medicProfile_fk=medicProfile.medic_fk "
+                + "inner join medic on medic.medicUser_fk=medicProfile.medic_fk "
+                + "inner join clinic on clinic.clinicId=medicWorkAddress.clinicProfile_fk "
+                + "inner join speciality on speciality.specialityId=medicWorkAddress.medicSpeciality_speciality_fk where medic_fk=? "
+                + "order by medic_fk";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, medicId);
+            ResultSet rs = stmt.executeQuery();
+            medicProfile = new MedicProfile();
+            List<MedicWorkAddress> medicWorkAddressList = new ArrayList<>();
+            List<MedicSpeciality> medicSpecialityList = new ArrayList<>();;
+            if (rs.next()) {
+                medicProfile = new MedicProfile();
+                medicWorkAddressList = new ArrayList<>();
+                medicSpecialityList = new ArrayList<>();
+                medicProfile.setId(medicId);
+                medicProfile.setMedicName(rs.getString("medicName"));
+                medicProfile.setMedicProfileExpAge(rs.getInt("medicProfileExpAge"));
+                medicProfile.setMedicProfileEvaluationAvg(rs.getFloat("medicEvaluationAvg"));
+                medicProfile.setMedicProfileEvaluationCount(rs.getInt("medicEvaluationCount"));
+                medicProfile.setMedicProfileInfoCompl(rs.getString("medicProfileInfoCompl"));
+                medicProfile.setMedicProfileBio(rs.getString("medicProfileBio"));
+                
+                MedicSpeciality medicSpeciality = new MedicSpeciality();
+                Speciality speciality = new Speciality();
+                speciality.setSpecialityId(rs.getInt("specialityId"));
+                speciality.setSpecialityName(rs.getString("specialityName"));
+                medicSpeciality.setSpeciality(speciality);
+                medicSpeciality.setMedicProfile(medicProfile);
+                medicSpecialityList.add(medicSpeciality);
+
+                MedicWorkAddress medicWorkAddress = new MedicWorkAddress();
+                ClinicProfile clinic = new ClinicProfile();
+                clinic.setId(rs.getInt("clinicId"));
+                clinic.setClinicName(rs.getString("clinicName"));
+                medicWorkAddress.setMedicWorkAddressId(rs.getInt("medicWorkAddressId"));
+                medicWorkAddress.setClinicProfile(clinic);
+                medicWorkAddress.setMedicSpeciality(medicSpeciality);
+                medicWorkAddressList.add(medicWorkAddress);
+                
+                medicProfile.setMedicWorkAddressList(medicWorkAddressList);
+                medicProfile.setMedicSpecialityList(medicSpecialityList);                
+            }            
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao adquirir a lista de medicos", e);
+        }
+
+        return medicProfile;
     }
 
     public void addSpeciality(Speciality speciality) throws DAOException {
@@ -342,7 +399,7 @@ public class MedicDAO extends BasicDAO {
         medicWorkAddress.setMedicWorkAddressId(medicWorkAddressId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicWorkAddressId);
-            stmt.setInt(2, medicWorkAddress.getClinicProfile().getClinicId());
+            stmt.setInt(2, medicWorkAddress.getClinicProfile().getId());
             stmt.setString(3, medicWorkAddress.getMedicWorkAddressComplement());
             stmt.setInt(4, medicWorkAddress.getMedicSpeciality().getSpeciality().getSpecialityId());
             stmt.setInt(5, medicWorkAddress.getMedicSpeciality().getMedicProfile().getId());

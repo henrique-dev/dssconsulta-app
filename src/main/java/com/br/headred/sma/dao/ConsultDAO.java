@@ -158,7 +158,7 @@ public class ConsultDAO extends BasicDAO {
                     medicWorkAddress.setMedicWorkAddressComplement(rs.getString("medicWorkAddressComplement"));                    
                     medicWorkAddress.setMedicSpeciality(medicSpeciality);
                     ClinicProfile clinicProfile = new ClinicProfile();
-                    clinicProfile.setClinicId(rs.getInt("clinicProfile_fk"));
+                    clinicProfile.setId(rs.getInt("clinicProfile_fk"));
                     clinicProfile.setClinicName(rs.getString("clinicName"));
                     clinicProfile.setClinicCnpj(rs.getString("clinicCnpj"));
                     medicWorkAddress.setClinicProfile(clinicProfile);

@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,14 +31,14 @@ public class ClinicDAO extends BasicDAO {
     
     public void addClinic(Clinic clinic) throws DAOException {
         addClinicInfo(clinic);
-        clinic.getClinicProfile().setClinicId(clinic.getClinicId());
+        clinic.getClinicProfile().setId(clinic.getId());
         addClinicProfile(clinic.getClinicProfile());
     }
     
     private void addClinicInfo(Clinic clinic) throws DAOException {
         String sql = "insert into clinic values (?,?,?)";
         int clinicId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.clinic);
-        clinic.setClinicId(clinicId);
+        clinic.setId(clinicId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, clinicId);
             stmt.setString(2, clinic.getClinicName());
@@ -55,18 +56,18 @@ public class ClinicDAO extends BasicDAO {
     private void addClinicProfile(ClinicProfile clinicProfile) throws DAOException {
         String sql = "insert into clinicProfile values (?,?,?)";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, clinicProfile.getClinicId());
+            stmt.setInt(1, clinicProfile.getId());
             stmt.setString(2, clinicProfile.getClinicProfileBio());
             stmt.setString(3, clinicProfile.getClinicProfileAddress());            
             stmt.execute();
-            if (clinicProfile.getClicClinicTelephones() != null) {
+            if (clinicProfile.getClinicTelephoneList() != null) {
                 stmt.close();
-                for (ClinicTelephone ct : clinicProfile.getClicClinicTelephones()) {
+                for (ClinicTelephone ct : clinicProfile.getClinicTelephoneList()) {
                     ct.setClinicProfile(clinicProfile);
                     addClinicTelephone(ct);
                 }
             }
-            if (clinicProfile.getClinicProfileFiles() != null) {
+            if (clinicProfile.getClinicProfileFileList() != null) {
                 
             }
         } catch (SQLException e) {            
@@ -74,46 +75,33 @@ public class ClinicDAO extends BasicDAO {
         }
     }        
     
-    public Clinic getClinicFastDescribe(String cnpj) {
-        return null;
-    }
-    
-    public Clinic getClinicFastDescribe(int clinicId) {
-        return null;
-    }
-    
-    public Clinic getClinicFulltDescribe(String cnpj) {
-        return null;
-    }
-    
-    public Clinic getClinicFulltDescribe(int clinicId) {
-        return null;
-    }
-    
-    public List<Clinic> getClinicFastDescribeList(Medic medic) {
-        return null;
-    }
-    
-    public List<Clinic> getClinicFastDescribeList(Speciality speciality) {
-        return null;
-    }
-    
-    public List<Clinic> getClinicFullDescribeList(Medic medic) {
-        return null;
-    }
-    
-    public List<Clinic> getClinicFullDescribeList(Speciality speciality) {
-        return null;
-    }
-    
-    public List<Clinic> getClinicFastDescribeList() {
-        return null;
+    public ClinicProfile getClinicProfile(int clinicId) throws DAOException{
+        ClinicProfile clinicProfile = null;
+        String sql = "select clinicName, clinicCnpj, clinicProfileBio, clinicProfileAddress from clinic "
+                + "inner join clinicProfile on clinic.clinicId=clinicProfile.clinic_fk where clinicId=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, clinicId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                clinicProfile = new ClinicProfile();
+                clinicProfile.setId(clinicId);
+                clinicProfile.setClinicName(rs.getString("clinicName"));
+                clinicProfile.setClinicCnpj(rs.getString("clinicCnpj"));
+                clinicProfile.setClinicProfileAddress(rs.getString("clinicProfileAddress"));
+                clinicProfile.setClinicProfileBio("clinicProfileBio");                
+                stmt.close();
+                clinicProfile.setClinicTelephoneList(getClinicTelephoneList(clinicProfile));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao adquirir o perfil da clinica", e);
+        }
+        return clinicProfile;
     }
     
     public boolean existClinic(Clinic clinic) {
         String sql = "select clinicId from clinic where clinicId=?";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, clinic.getClinicId());
+            stmt.setInt(1, clinic.getId());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) 
                 return true;
@@ -132,10 +120,10 @@ public class ClinicDAO extends BasicDAO {
     public void removeClinicInfo(Clinic clinic) throws DAOException {
         String sql = "delete from clinic where clinicId=?";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, clinic.getClinicId());            
+            stmt.setInt(1, clinic.getId());            
             stmt.execute();
             stmt.close();
-            new SystemDAO(super.connection).releaseId(SystemDAO.Table.clinic, clinic.getClinicId());
+            new SystemDAO(super.connection).releaseId(SystemDAO.Table.clinic, clinic.getId());
         } catch (SQLException e) {            
             throw new DAOException("Falha ao remover a informação da clinica", e);
         }
@@ -144,7 +132,7 @@ public class ClinicDAO extends BasicDAO {
     public void removeClinicProfile(Clinic clinic) throws DAOException {
         String sql = "delete from clinicProfile where clinic_fk=?";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, clinic.getClinicId());            
+            stmt.setInt(1, clinic.getId());            
             stmt.execute();                        
         } catch (SQLException e) {            
             throw new DAOException("Falha ao remover o perfil da clinica", e);
@@ -154,7 +142,7 @@ public class ClinicDAO extends BasicDAO {
     public void addClinicTelephone(ClinicTelephone clinicTelephone) throws DAOException {
         String sql = "insert into clinicTelephone values (?,?)";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, clinicTelephone.getClinicProfile().getClinicId());
+            stmt.setInt(1, clinicTelephone.getClinicProfile().getId());
             stmt.setString(2, clinicTelephone.getClinicTelephoneNumber());
             stmt.execute();
         } catch (SQLException e) {            
@@ -162,10 +150,28 @@ public class ClinicDAO extends BasicDAO {
         }
     }        
     
+    public List<ClinicTelephone> getClinicTelephoneList(ClinicProfile clinicProfile) throws DAOException {
+        List<ClinicTelephone> clinicTelephoneList = null;
+        String sql = "select clinicTelephoneNumber from clinicTelephone where clinicProfile_fk=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, clinicProfile.getId());
+            ResultSet rs = stmt.executeQuery();
+            clinicTelephoneList = new ArrayList<>();
+            while (rs.next()) {
+                ClinicTelephone clinicTelephone = new ClinicTelephone();
+                clinicTelephone.setClinicProfile(clinicProfile);
+                clinicTelephone.setClinicTelephoneNumber(rs.getString("clinicTelephoneNumber"));
+            }
+        } catch (SQLException e) {            
+            throw new DAOException("Falha ao adquirir a lista de telefones da clinica", e);
+        }
+        return clinicTelephoneList;
+    }
+    
     public void removeClinicTelephone(Clinic clinic) throws DAOException {
         String sql = "delete from clinicTelephone where clinicProfile_fk=?";        
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, clinic.getClinicId());            
+            stmt.setInt(1, clinic.getId());            
             stmt.execute();                        
         } catch (SQLException e) {            
             throw new DAOException("Falha ao remover o numero de telefone da clinica", e);

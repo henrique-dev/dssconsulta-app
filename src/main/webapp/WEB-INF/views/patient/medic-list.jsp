@@ -24,13 +24,13 @@
             <c:forEach items="${medicProfileList}" var="medicProfile">
                 <tr>
                     <td>${medicProfile.id}</td>
-                    <td>${medicProfile.medicName}</td>
+                    <td> <a href="PerfilMedico?medicId=${medicProfile.id}">${medicProfile.medicName}</a></td>
                     <td>
                         <select>
                             <c:forEach items="${medicProfile.medicWorkAddressList}" var="medicWorkAddress">
                                 <option value="${medicWorkAddress.medicWorkAddressId}">
                                     {${medicWorkAddress.medicWorkAddressId}},
-                                    {${medicWorkAddress.clinicProfile.clinicId}},
+                                    {${medicWorkAddress.clinicProfile.id}},
                                     {${medicWorkAddress.clinicProfile.clinicName}},
                                     {${medicWorkAddress.medicSpeciality.speciality.specialityId}},
                                     {${medicWorkAddress.medicSpeciality.speciality.specialityName}}

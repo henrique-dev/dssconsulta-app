@@ -12,53 +12,45 @@ import java.util.List;
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
-public class PatientProfile {
-
-    private int patientProfileId;
+public class PatientProfile extends Patient {
+    
     private String patientProfileEmail;
     private String patientProfileGenre;
     private Date patientProfileBirthDate;
     private float patientProfileHeight;
     private String patientProfileBloodType;
-    private String patientProfileTelephone;
-    private List<Evaluation> patientEvaluations;
-    private List<PatientConsult> patientConsults;
+    private String patientProfileTelephone;    
     private PatientAccount patientAccount;
     private List<PatientProfileFile> patientProfileFiles;
 
     public PatientProfile() {
     }
 
-    public PatientProfile(int patientProfileId) {
-        this.patientProfileId = patientProfileId;
+    public PatientProfile(int userId) {
+        super(userId);
     }
 
-    public PatientProfile(int patientProfileId, String patientProfileEmail, String patientProfileGenre, Date patientProfileBirthDate, float patientProfileHeight, String patientProfileBloodType, String patientProfileTelephone) {
-        this.patientProfileId = patientProfileId;
+    public PatientProfile(String patientProfileEmail, String patientProfileGenre, Date patientProfileBirthDate, float patientProfileHeight, String patientProfileBloodType, String patientProfileTelephone, List<PatientProfileFile> patientProfileFiles, int userId) {
+        super(userId);
         this.patientProfileEmail = patientProfileEmail;
         this.patientProfileGenre = patientProfileGenre;
         this.patientProfileBirthDate = patientProfileBirthDate;
         this.patientProfileHeight = patientProfileHeight;
         this.patientProfileBloodType = patientProfileBloodType;
-        this.patientProfileTelephone = patientProfileTelephone;
+        this.patientProfileTelephone = patientProfileTelephone;                
+        this.patientProfileFiles = patientProfileFiles;
     }
 
-    public PatientProfile(String patientProfileEmail, String patientProfileGenre, Date patientProfileBirthDate, float patientProfileHeight, String patientProfileBloodType, String patientProfileTelephone) {
+    public PatientProfile(String patientProfileEmail, String patientProfileGenre, Date patientProfileBirthDate, float patientProfileHeight, String patientProfileBloodType, String patientProfileTelephone, PatientAccount patientAccount, List<PatientProfileFile> patientProfileFiles) {
         this.patientProfileEmail = patientProfileEmail;
         this.patientProfileGenre = patientProfileGenre;
         this.patientProfileBirthDate = patientProfileBirthDate;
         this.patientProfileHeight = patientProfileHeight;
         this.patientProfileBloodType = patientProfileBloodType;
-        this.patientProfileTelephone = patientProfileTelephone;
-    }        
-
-    public int getPatientProfileId() {
-        return patientProfileId;
-    }
-
-    public void setPatientProfileId(int patientProfileId) {
-        this.patientProfileId = patientProfileId;
-    }        
+        this.patientProfileTelephone = patientProfileTelephone;        
+        this.patientAccount = patientAccount;
+        this.patientProfileFiles = patientProfileFiles;
+    }   
 
     public String getPatientProfileEmail() {
         return patientProfileEmail;
@@ -106,23 +98,7 @@ public class PatientProfile {
 
     public void setPatientProfileTelephone(String patientProfileTelephone) {
         this.patientProfileTelephone = patientProfileTelephone;
-    }
-
-    public List<Evaluation> getPatientEvaluations() {
-        return patientEvaluations;
-    }
-
-    public void setPatientEvaluations(List<Evaluation> patientEvaluations) {
-        this.patientEvaluations = patientEvaluations;
-    }
-
-    public List<PatientConsult> getPatientConsults() {
-        return patientConsults;
-    }
-
-    public void setPatientConsults(List<PatientConsult> patientConsults) {
-        this.patientConsults = patientConsults;
-    }
+    }   
 
     public PatientAccount getPatientAccount() {
         return patientAccount;

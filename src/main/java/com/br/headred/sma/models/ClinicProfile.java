@@ -15,9 +15,9 @@ public class ClinicProfile extends Clinic {
         
     private String clinicProfileBio;
     private String clinicProfileAddress;
-    private List<ClinicTelephone> clicClinicTelephones;    
-    private List<MedicWorkAddress> medicWorkAddresses;
-    private List<ClinicProfileFile> clinicProfileFiles;
+    private List<ClinicTelephone> clinicTelephoneList;    
+    private List<MedicWorkAddress> medicWorkAddressList;
+    private List<ClinicProfileFile> clinicProfileFileList;
 
     public ClinicProfile() {
     }
@@ -30,23 +30,23 @@ public class ClinicProfile extends Clinic {
         super(clinicId);
         this.clinicProfileBio = clinicProfileBio;
         this.clinicProfileAddress = clinicProfileAddress;
-        this.clicClinicTelephones = clicClinicTelephones;
-        this.medicWorkAddresses = medicWorkAddresses;
-        this.clinicProfileFiles = clinicProfileFiles;
+        this.clinicTelephoneList = clicClinicTelephones;
+        this.medicWorkAddressList = medicWorkAddresses;
+        this.clinicProfileFileList = clinicProfileFiles;
     }
 
     public ClinicProfile(String clinicProfileBio, String clinicProfileAddress, List<ClinicTelephone> clicClinicTelephones, List<MedicWorkAddress> medicWorkAddresses, List<ClinicProfileFile> clinicProfileFiles) {
         this.clinicProfileBio = clinicProfileBio;
         this.clinicProfileAddress = clinicProfileAddress;
-        this.clicClinicTelephones = clicClinicTelephones;
-        this.medicWorkAddresses = medicWorkAddresses;
-        this.clinicProfileFiles = clinicProfileFiles;
+        this.clinicTelephoneList = clicClinicTelephones;
+        this.medicWorkAddressList = medicWorkAddresses;
+        this.clinicProfileFileList = clinicProfileFiles;
     }    
 
     public ClinicProfile(String clinicProfileBio, String clinicProfileAddress, List<ClinicTelephone> clicClinicTelephones) {
         this.clinicProfileBio = clinicProfileBio;
         this.clinicProfileAddress = clinicProfileAddress;
-        this.clicClinicTelephones = clicClinicTelephones;
+        this.clinicTelephoneList = clicClinicTelephones;
     }        
 
     public String getClinicProfileBio() {
@@ -65,28 +65,28 @@ public class ClinicProfile extends Clinic {
         this.clinicProfileAddress = clinicProfileAddress;
     }        
 
-    public List<ClinicTelephone> getClicClinicTelephones() {
-        return clicClinicTelephones;
+    public List<ClinicTelephone> getClinicTelephoneList() {
+        return clinicTelephoneList;
     }
 
-    public void setClicClinicTelephones(List<ClinicTelephone> clicClinicTelephones) {
-        this.clicClinicTelephones = clicClinicTelephones;
+    public void setClinicTelephoneList(List<ClinicTelephone> clicClinicTelephones) {
+        this.clinicTelephoneList = clicClinicTelephones;
     }   
 
-    public List<MedicWorkAddress> getMedicWorkAddresses() {
-        return medicWorkAddresses;
+    public List<MedicWorkAddress> getMedicWorkAddressList() {
+        return medicWorkAddressList;
     }
 
-    public void setMedicWorkAddresses(List<MedicWorkAddress> medicWorkAddresses) {
-        this.medicWorkAddresses = medicWorkAddresses;
+    public void setMedicWorkAddressList(List<MedicWorkAddress> medicWorkAddresses) {
+        this.medicWorkAddressList = medicWorkAddresses;
     }
 
-    public List<ClinicProfileFile> getClinicProfileFiles() {
-        return clinicProfileFiles;
+    public List<ClinicProfileFile> getClinicProfileFileList() {
+        return clinicProfileFileList;
     }
 
-    public void setClinicProfileFiles(List<ClinicProfileFile> clinicProfileFiles) {
-        this.clinicProfileFiles = clinicProfileFiles;
+    public void setClinicProfileFileList(List<ClinicProfileFile> clinicProfileFiles) {
+        this.clinicProfileFileList = clinicProfileFiles;
     }        
     
 }

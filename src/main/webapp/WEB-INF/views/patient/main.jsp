@@ -28,7 +28,8 @@
                 <a href="Paciente/MinhaAgenda?patientId=0">Minha agenda</a><br>
                 <a href="Paciente/MinhaAgenda/MinhaConsulta?consultId=0">Minha consulta</a><br>
                 <a href="Paciente/ListarEspecialidades">Listar especialidades</a><br>                
-                <a href="Paciente/ListarMedicos?specialityId=0">Listar medicos com especialidade definida</a><br>
+                <a href="Paciente/ListarMedicos?specialityId=0">Listar medicos com especialidade 0</a><br>
+                <a href="Paciente/PerfilClinica?clinicId=0">Perfil da clinica 0</a><br>
             </div>            
         </div>
 
