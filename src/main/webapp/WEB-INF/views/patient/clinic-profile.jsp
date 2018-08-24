@@ -17,7 +17,7 @@
         <table border="1">
             <th>clinicId</th>
             <th>clinicName</th>   
-            <th>medicWorkInfo</th>   
+            <th>clinicTelephoneList</th>   
             <th>clinicCnpj</th>   
             <th>clinicProfileAddress</th>               
             <tr>
@@ -27,7 +27,7 @@
                     <select>
                         <c:forEach items="${clinicProfile.clinicTelephoneList}" var="clinicTelephone">
                             <option value="${clinicTelephone.clinicTelephoneNumber}">
-                                {${clinicTelephone.clinicTelephoneNumber}},                                
+                                ${clinicTelephone.clinicTelephoneNumber}
                             </option>
                         </c:forEach>
                     </select>                        
@@ -36,5 +36,6 @@
                 <td>${clinicProfile.clinicProfileAddress}</td>                
             </tr>
         </table>
+            <a href="../Paciente">Voltar</a>
     </body>
 </html>

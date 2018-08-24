@@ -34,7 +34,7 @@ public class AddMedicWorkAddress {
                             10, 
                             new Date(Calendar.getInstance().getTimeInMillis()), 
                             0,
-                            "Sala 305"));
+                            "13h ~ 18h"));
         } catch (Exception e) {
             e.printStackTrace();
         }

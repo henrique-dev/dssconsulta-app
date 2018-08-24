@@ -13,8 +13,7 @@ public class Clinic {
     
     private int id;
     private String clinicName;
-    private String clinicCnpj;
-    private ClinicProfile clinicProfile;
+    private String clinicCnpj;    
     
     public Clinic() {}
     
@@ -44,14 +43,6 @@ public class Clinic {
 
     public void setClinicCnpj(String clinicCnpj) {
         this.clinicCnpj = clinicCnpj;
-    }        
-
-    public ClinicProfile getClinicProfile() {
-        return clinicProfile;
-    }
-
-    public void setClinicProfile(ClinicProfile clinicProfile) {
-        this.clinicProfile = clinicProfile;
-    }        
+    }              
     
 }

@@ -13,15 +13,23 @@ import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.MedicProfile;
 import com.br.headred.sma.models.MedicSpeciality;
 import com.br.headred.sma.models.MedicWorkAddress;
+import com.br.headred.sma.models.MedicWorkScheduling;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.Speciality;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  *
@@ -40,7 +48,7 @@ public class ConsultDAO extends BasicDAO {
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, accountSpecialityId);
             stmt.setInt(2, accountSpeciality.getPatientAccount().getPatientAccountId());
-            stmt.setDate(3, accountSpeciality.getPatientAccountSpecialityCreationDate());
+            stmt.setObject(3, accountSpeciality.getPatientAccountSpecialityCreationDate());
             stmt.setNull(4, Types.DATE);
             stmt.setBoolean(5, false);
             stmt.setInt(6, accountSpeciality.getMedicSpeciality().getSpeciality().getSpecialityId());
@@ -88,20 +96,51 @@ public class ConsultDAO extends BasicDAO {
         }
     }
 
-    public void addConsult(Consult consult, Medic medic, Patient patient) throws DAOException {
+    public void addConsultForAll(Consult consult) throws DAOException {
         this.addConsult(consult);
-        this.addMedicConsult(medic, consult);
-        this.addPatientConsult(patient, consult);
+        this.addMedicConsult(consult);
+        this.addPatientConsult(consult);
+    }
+    
+    private boolean compareDate(Date date1, Date date2) {
+        
+        
+        return false;
     }
 
     private void addConsult(Consult consult) throws DAOException {
         String sql = "insert into consult values (?,?,?,?,?,?,?)";
         int consultId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.consult);
+        
+        MedicWorkScheduling medicWorkScheduling = new MedicDAO(connection).getMedicWorkScheduling(consult.getMedicWorkAddress());
+        
+        Date currentDate = new Date(Calendar.getInstance().getTimeInMillis());
+        
+        Date consultForDate;
+                
+        Timestamp timestamp = new Timestamp(Calendar.getInstance().getTimeInMillis());        
+        System.out.println("TENTANDO OBTER HORA ATUAL: " + timestamp);
+        
+        int diff = currentDate.compareTo(medicWorkScheduling.getMedicWorkSchedulingDateLast());
+        int counterOfDay = medicWorkScheduling.getMedicWorkSchedulingCounterOfDay();
+        int consultsPerDay = medicWorkScheduling.getMedicWorkSchedulingPerDay();
+        
+        if (0 < diff) {
+            consultForDate = currentDate;
+        } else {
+            consultForDate = medicWorkScheduling.getMedicWorkSchedulingDateLast();
+        }        
+        
+        System.out.println("Data atual: " + new java.util.Date(currentDate.getTime()));                        
+        System.out.println("Data da ultima consulta do medico: " + medicWorkScheduling.getMedicWorkSchedulingDateLast());
+        System.out.println("compareTo(Duas Acima): " + currentDate.compareTo(medicWorkScheduling.getMedicWorkSchedulingDateLast()));                  
+                
+        
         consult.setConsultId(consultId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, consultId);
-            stmt.setDate(2, consult.getConsultCreationDate());
-            stmt.setDate(3, consult.getConsultForDate());
+            stmt.setObject(2, timestamp);
+            stmt.setDate(3, currentDate);
             stmt.setBoolean(4, consult.isConsultConsulted());
             stmt.setInt(5, consult.getMedicSpeciality().getSpeciality().getSpecialityId());
             stmt.setInt(6, consult.getMedicSpeciality().getMedicProfile().getId());
@@ -137,7 +176,7 @@ public class ConsultDAO extends BasicDAO {
             if (rs.next()) {
                 consult = new Consult();
                 consult.setConsultId(consultId);
-                consult.setConsultCreationDate(rs.getDate("consultCreationDate"));
+                consult.setConsultCreationDate((Timestamp)rs.getObject("consultCreationDate", Timestamp.class));
                 consult.setConsultForDate(rs.getDate("consultForDate"));                
                 consult.setConsultConsulted(rs.getBoolean("consultConsulted"));
 
@@ -175,7 +214,7 @@ public class ConsultDAO extends BasicDAO {
 
     public List<Consult> getConsultList(Patient patient) throws DAOException {
         List<Consult> consultList = null;
-        String sql = "select * from consult where consultId=?";
+        String sql = "select * from consult inner join patientConsult on consult.consultId=patientConsult.consult_fk where patientProfile_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patient.getId());
             ResultSet rs = stmt.executeQuery();
@@ -183,8 +222,8 @@ public class ConsultDAO extends BasicDAO {
             while (rs.next()) {
                 Consult consult = new Consult();
                 consult.setConsultId(rs.getInt("consultId"));
-                consult.setConsultCreationDate(rs.getDate("consultCreationDate"));
-                consult.setConsultForDate(rs.getDate("consultForDate"));
+                consult.setConsultCreationDate((Timestamp)rs.getObject("consultCreationDate", Timestamp.class));                                
+                consult.setConsultForDate(rs.getDate("consultForDate", Calendar.getInstance()));                
                 consult.setConsultConsulted(rs.getBoolean("consultConsulted"));
                 consult.setMedicSpeciality(
                         new MedicSpeciality(
@@ -210,11 +249,11 @@ public class ConsultDAO extends BasicDAO {
         removePatientConsult(consult);
     }
 
-    private void addPatientConsult(Patient patient, Consult consult) throws DAOException {
+    private void addPatientConsult(Consult consult) throws DAOException {
         String sql = "insert into patientConsult values (?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, consult.getConsultId());
-            stmt.setInt(2, patient.getId());
+            stmt.setInt(2, consult.getPatient().getId());
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao adicionar a consulta para o paciente", e);
@@ -231,11 +270,11 @@ public class ConsultDAO extends BasicDAO {
         }
     }
 
-    private void addMedicConsult(Medic medic, Consult consult) throws DAOException {
+    private void addMedicConsult(Consult consult) throws DAOException {
         String sql = "insert into medicConsult values (?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, consult.getConsultId());
-            stmt.setInt(2, medic.getId());
+            stmt.setInt(2, consult.getMedicSpeciality().getMedicProfile().getId());
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao adicionar a consulta para o medico", e);

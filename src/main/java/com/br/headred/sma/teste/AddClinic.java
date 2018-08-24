@@ -21,15 +21,12 @@ public class AddClinic {
     
     public AddClinic() {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
-            Clinic clinic = new Clinic();
+            ClinicProfile clinic = new ClinicProfile();
             clinic.setClinicCnpj("123456789");
             clinic.setClinicName("Hospital Geral");
-            
-            ClinicProfile clinicProfile = new ClinicProfile();
-            clinicProfile.setClinicProfileBio("Um hospital muito bonito");
-            clinicProfile.setClinicProfileAddress("Avenida Brasil");
-            
-            clinic.setClinicProfile(clinicProfile);
+                        
+            clinic.setClinicProfileBio("Um hospital muito bonito");
+            clinic.setClinicProfileAddress("Avenida Brasil");                        
             
             new ClinicDAO(connection).addClinic(clinic);
             

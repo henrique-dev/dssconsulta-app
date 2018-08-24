@@ -13,10 +13,14 @@ import com.br.headred.sma.jdbc.ConnectionFactory;
 import com.br.headred.sma.models.ClinicProfile;
 import com.br.headred.sma.models.Consult;
 import com.br.headred.sma.models.MedicProfile;
+import com.br.headred.sma.models.MedicSpeciality;
+import com.br.headred.sma.models.MedicWorkAddress;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.Speciality;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -113,7 +117,7 @@ public class PatientController {
         return "redirect:PrincipalPaciente";
     }
     
-    @RequestMapping("Paciente/PerfilClinica")
+    @RequestMapping("Paciente/PerfilUnidadeSaude")
     public String perfilClinica(int clinicId, Model model) {
         try (Connection con = new ConnectionFactory().getConnection()){            
             ClinicProfile clinicProfile = new ClinicDAO(con).getClinicProfile(clinicId);
@@ -126,6 +130,23 @@ public class PatientController {
             e.printStackTrace();
         }
         return "redirect:PrincipalPaciente";
+    }
+    
+    @RequestMapping("Paciente/AgendarConsulta")
+    public String agendarConsulta(int patientId, int medicId, int specialityId, int medicWorkAddressId, Model model) {
+        try (Connection con = new ConnectionFactory().getConnection()){            
+            Consult consult = new Consult();
+            consult.setMedicSpeciality(new MedicSpeciality(new MedicProfile(medicId), new Speciality(specialityId)));
+            consult.setMedicWorkAddress(new MedicWorkAddress(medicWorkAddressId));
+            consult.setPatient(new Patient(patientId));
+            new ConsultDAO(con).addConsultForAll(consult);            
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Falha ao obter a conexão");
+            e.printStackTrace();
+        }
+        return "redirect:../Paciente";
     }
     
 }

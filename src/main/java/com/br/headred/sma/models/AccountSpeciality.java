@@ -6,6 +6,7 @@
 package com.br.headred.sma.models;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -16,8 +17,8 @@ public class AccountSpeciality {
     private int accountSpecialityId;
     private PatientAccount patientAccount;
     private MedicSpeciality medicSpeciality;
-    private Date patientAccountSpecialityCreationDate;
-    private Date patientAccountSpecialityUseDate;
+    private Timestamp patientAccountSpecialityCreationDate;
+    private Timestamp patientAccountSpecialityUseDate;
     private boolean patientAccountSpecialityUsed;
 
     public AccountSpeciality() {
@@ -27,7 +28,7 @@ public class AccountSpeciality {
         this.accountSpecialityId = accountSpecialityId;
     }
 
-    public AccountSpeciality(int accountSpecialityId, PatientAccount patientAccount, MedicSpeciality medicSpeciality, Date patientAccountSpecialityCreationDate, Date patientAccountSpecialityUseDate, boolean patientAccountSpecialityUsed) {
+    public AccountSpeciality(int accountSpecialityId, PatientAccount patientAccount, MedicSpeciality medicSpeciality, Timestamp patientAccountSpecialityCreationDate, Timestamp patientAccountSpecialityUseDate, boolean patientAccountSpecialityUsed) {
         this.accountSpecialityId = accountSpecialityId;
         this.patientAccount = patientAccount;
         this.medicSpeciality = medicSpeciality;
@@ -36,13 +37,13 @@ public class AccountSpeciality {
         this.patientAccountSpecialityUsed = patientAccountSpecialityUsed;
     }
 
-    public AccountSpeciality(PatientAccount patientAccount, MedicSpeciality medicSpeciality, Date patientAccountSpecialityCreationDate, Date patientAccountSpecialityUseDate, boolean patientAccountSpecialityUsed) {
+    public AccountSpeciality(PatientAccount patientAccount, MedicSpeciality medicSpeciality, Timestamp patientAccountSpecialityCreationDate, Timestamp patientAccountSpecialityUseDate, boolean patientAccountSpecialityUsed) {
         this.patientAccount = patientAccount;
         this.medicSpeciality = medicSpeciality;
         this.patientAccountSpecialityCreationDate = patientAccountSpecialityCreationDate;
         this.patientAccountSpecialityUseDate = patientAccountSpecialityUseDate;
         this.patientAccountSpecialityUsed = patientAccountSpecialityUsed;
-    }        
+    }    
 
     public int getAccountSpecialityId() {
         return accountSpecialityId;
@@ -68,21 +69,21 @@ public class AccountSpeciality {
         this.medicSpeciality = medicSpeciality;
     }
 
-    public Date getPatientAccountSpecialityCreationDate() {
+    public Timestamp getPatientAccountSpecialityCreationDate() {
         return patientAccountSpecialityCreationDate;
     }
 
-    public void setPatientAccountSpecialityCreationDate(Date patientAccountSpecialityCreationDate) {
+    public void setPatientAccountSpecialityCreationDate(Timestamp patientAccountSpecialityCreationDate) {
         this.patientAccountSpecialityCreationDate = patientAccountSpecialityCreationDate;
     }
 
-    public Date getPatientAccountSpecialityUseDate() {
+    public Timestamp getPatientAccountSpecialityUseDate() {
         return patientAccountSpecialityUseDate;
     }
 
-    public void setPatientAccountSpecialityUseDate(Date patientAccountSpecialityUseDate) {
+    public void setPatientAccountSpecialityUseDate(Timestamp patientAccountSpecialityUseDate) {
         this.patientAccountSpecialityUseDate = patientAccountSpecialityUseDate;
-    }
+    }    
 
     public boolean isPatientAccountSpecialityUsed() {
         return patientAccountSpecialityUsed;

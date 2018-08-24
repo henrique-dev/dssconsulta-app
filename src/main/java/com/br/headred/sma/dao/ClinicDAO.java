@@ -29,10 +29,9 @@ public class ClinicDAO extends BasicDAO {
         super(connection);
     }
     
-    public void addClinic(Clinic clinic) throws DAOException {
-        addClinicInfo(clinic);
-        clinic.getClinicProfile().setId(clinic.getId());
-        addClinicProfile(clinic.getClinicProfile());
+    public void addClinic(ClinicProfile clinic) throws DAOException {
+        addClinicInfo(clinic);        
+        addClinicProfile(clinic);
     }
     
     private void addClinicInfo(Clinic clinic) throws DAOException {
@@ -161,6 +160,7 @@ public class ClinicDAO extends BasicDAO {
                 ClinicTelephone clinicTelephone = new ClinicTelephone();
                 clinicTelephone.setClinicProfile(clinicProfile);
                 clinicTelephone.setClinicTelephoneNumber(rs.getString("clinicTelephoneNumber"));
+                clinicTelephoneList.add(clinicTelephone);
             }
         } catch (SQLException e) {            
             throw new DAOException("Falha ao adquirir a lista de telefones da clinica", e);

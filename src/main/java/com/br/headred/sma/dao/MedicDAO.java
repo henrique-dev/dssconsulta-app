@@ -16,12 +16,15 @@ import com.br.headred.sma.models.MedicWorkScheduling;
 import com.br.headred.sma.models.Speciality;
 import com.br.headred.sma.models.User;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -449,6 +452,39 @@ public class MedicDAO extends BasicDAO {
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao adicionar as variaveis de trabalho do medico", e);
+        }
+    }
+    
+    public MedicWorkScheduling getMedicWorkScheduling(MedicWorkAddress medicWorkAddress) throws DAOException {
+        MedicWorkScheduling medicWorkScheduling = null;
+        String sql = "select * from medicWorkScheduling where medicWorkAddress_fk=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, medicWorkAddress.getMedicWorkAddressId());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                medicWorkScheduling = new MedicWorkScheduling();
+                medicWorkScheduling.setMedicWorkSchedulingCounterOfDay(rs.getInt("medicWorkSpaceSchedulingCounterOfDay"));
+                medicWorkScheduling.setMedicWorkSchedulingPerDay(rs.getInt("medicWorkSpaceSchedulingPerDay"));                                                                
+                medicWorkScheduling.setMedicWorkSchedulingDateLast(rs.getDate("medicWorkSpaceSchedulingDateLast", Calendar.getInstance()));                                                                
+                medicWorkScheduling.setMedicWorkSchedulingInfo(rs.getString("medicWorkSchedulingInfo"));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao adquirir as informações de horario do medico", e);
+        }
+        return medicWorkScheduling;
+    }
+    
+    public void updateMedicWorkSchedulingFromConsult(MedicWorkScheduling medicWorkScheduling) throws DAOException {
+        String sql = "update medicWorkScheduling set "
+                + "medicWorkSpaceSchedulingCounterOfDay=?, medicWorkSpaceSchedulingDateLast=? "
+                + "where medicWorkAddress_fk=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, medicWorkScheduling.getMedicWorkSchedulingCounterOfDay());
+            stmt.setDate(2, medicWorkScheduling.getMedicWorkSchedulingDateLast());
+            stmt.setInt(3, medicWorkScheduling.getMedicWorkSchedulingId());
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao remover as variaveis de trabalho do medico", e);
         }
     }
 

@@ -14,6 +14,7 @@ import com.br.headred.sma.models.PatientAccount;
 import com.br.headred.sma.models.Speciality;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Calendar;
 
 /**
@@ -28,7 +29,7 @@ public class AddAccountSpeciality {
                     new AccountSpeciality(
                     new PatientAccount(0, null, null, null),
                     new MedicSpeciality(new MedicProfile(0), new Speciality(0)),
-                    new Date(Calendar.getInstance().getTimeInMillis()),
+                    new Timestamp(Calendar.getInstance().getTimeInMillis()),
                     null,
                     false));
         } catch (Exception e) {

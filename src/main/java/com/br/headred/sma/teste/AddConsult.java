@@ -16,6 +16,7 @@ import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.Speciality;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Calendar;
 
 /**
@@ -26,15 +27,14 @@ public class AddConsult {
 
     public AddConsult() {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
-            new ConsultDAO(connection).addConsult(
+            new ConsultDAO(connection).addConsultForAll(
                     new Consult(
-                            new Date(Calendar.getInstance().getTimeInMillis()),
+                            new Timestamp(Calendar.getInstance().getTimeInMillis()),
                             new Date(Calendar.getInstance().getTimeInMillis()),
                             false,
+                            new Patient(0),
                             new MedicSpeciality(new MedicProfile(0), new Speciality(0)),
-                            new MedicWorkAddress(0)),
-                    new Medic(0),
-                    new Patient(0));
+                            new MedicWorkAddress(0)));
         } catch (Exception e) {
             e.printStackTrace();
         }

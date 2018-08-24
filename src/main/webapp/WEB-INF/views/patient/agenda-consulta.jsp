@@ -42,7 +42,7 @@
                 <td>${consult.medicSpeciality.speciality.specialityName}</td>                
                 <td>${consult.medicWorkAddress.medicWorkAddressId}</td>                
                 <td>${consult.medicWorkAddress.medicWorkAddressComplement}</td>
-                <td>${consult.medicWorkAddress.clinicProfile.clinicId}</td>
+                <td>${consult.medicWorkAddress.clinicProfile.id}</td>
                 <td>${consult.medicWorkAddress.clinicProfile.clinicName}</td>
                 <td>${consult.medicWorkAddress.clinicProfile.clinicCnpj}</td>
             </tr>
