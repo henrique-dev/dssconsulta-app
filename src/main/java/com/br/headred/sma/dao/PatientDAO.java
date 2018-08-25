@@ -10,6 +10,7 @@ import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.PatientAccount;
 import com.br.headred.sma.models.Evaluation;
+import com.br.headred.sma.models.MedicProfile;
 import com.br.headred.sma.models.PatientProfile;
 import com.br.headred.sma.models.User;
 import java.sql.Connection;
@@ -20,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLType;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -306,5 +308,32 @@ public class PatientDAO extends BasicDAO {
             throw new DAOException("Falha ao adicionar uma avaliação do medico", e);
         }
     }        
+    
+    public List<Evaluation> getEvaluationList(Patient patient) throws DAOException {
+        List<Evaluation> evaluationList = null;
+        String sql = "select medicUser_fk, medicName, evaluationId, evaluationDescName, evaluationDescInfo, evaluationScore "
+                + "from evaluation "
+                + "inner join medic on medic.medicUser_fk=evaluation.medicEvaluation_fk where patientProfile_fk=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, patient.getId());
+            evaluationList = new ArrayList<>();
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Evaluation evaluation = new Evaluation();
+                evaluation.setEvaluationId(rs.getInt("evaluationId"));
+                MedicProfile medic = new MedicProfile();
+                medic.setId(rs.getInt("medicUser_fk"));
+                medic.setMedicName(rs.getString("medicName"));
+                evaluation.setMedicProfile(medic);
+                evaluation.setEvaluationDescName(rs.getString("evaluationDescName"));
+                evaluation.setEvaluationDescInfo(rs.getString("evaluationDescInfo"));
+                evaluation.setEvaluationScore(rs.getInt("evaluationScore"));
+                evaluationList.add(evaluation);
+            }
+        } catch (SQLException e) {            
+            throw new DAOException("Falha ao recuperar a lista de avaliações do paciente", e);
+        }        
+        return evaluationList;
+    }
 
 }

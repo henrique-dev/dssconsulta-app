@@ -5,7 +5,9 @@
  */
 package com.br.headred.sma.dao;
 
+import com.br.headred.sma.exceptions.ConsultWithPrivilegesException;
 import com.br.headred.sma.exceptions.DAOException;
+import com.br.headred.sma.exceptions.DuplicateException;
 import com.br.headred.sma.models.AccountSpeciality;
 import com.br.headred.sma.models.ClinicProfile;
 import com.br.headred.sma.models.Consult;
@@ -21,15 +23,12 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  *
@@ -96,51 +95,160 @@ public class ConsultDAO extends BasicDAO {
         }
     }
 
-    public void addConsultForAll(Consult consult) throws DAOException {
+    public void addConsultForAll(Consult consult) throws DAOException, DuplicateException, ConsultWithPrivilegesException {
         this.addConsult(consult);
         this.addMedicConsult(consult);
         this.addPatientConsult(consult);
     }
+
+    private void setCalendarAvailableDate(Calendar calendar, String daysOfWorkOnWeek) {                               
+        int counter = 0;
+        for (int i = calendar.get(Calendar.DAY_OF_WEEK); i <= daysOfWorkOnWeek.length(); i++) {            
+            if (daysOfWorkOnWeek.charAt(i - 1) == '0') {
+                counter++;
+            } else {
+                break;
+            }
+            if (i == daysOfWorkOnWeek.length()) {
+                i = 0;
+            }
+        }
+        calendar.add(Calendar.DAY_OF_MONTH, counter);        
+    }
     
-    private boolean compareDate(Date date1, Date date2) {
-        
-        
-        return false;
+    private int compareCalendars(Calendar currentDate, Calendar lastDate) {
+        if (currentDate.get(Calendar.DAY_OF_YEAR) == lastDate.get(Calendar.DAY_OF_YEAR)) {
+            if (currentDate.get(Calendar.YEAR) == lastDate.get(Calendar.YEAR)) {
+                return 0;
+            } else if (currentDate.get(Calendar.YEAR) < lastDate.get(Calendar.YEAR)) {
+                return 1;
+            } else {
+                return -1;
+            }
+        } else if (currentDate.get(Calendar.DAY_OF_YEAR) < lastDate.get(Calendar.DAY_OF_YEAR)) {
+            if (currentDate.get(Calendar.YEAR) <= lastDate.get(Calendar.YEAR)) {
+                return 1;
+            } else {
+                return -1;
+            }
+        } else {
+            if (currentDate.get(Calendar.YEAR) >= lastDate.get(Calendar.YEAR)) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
     }
 
-    private void addConsult(Consult consult) throws DAOException {
-        String sql = "insert into consult values (?,?,?,?,?,?,?)";
+    private Timestamp getAvailableDateForConsult(MedicWorkScheduling medicWorkScheduling) throws DAOException {
+        Calendar currentDate = Calendar.getInstance();
+        Calendar lastDate = Calendar.getInstance();
+        lastDate.setTime(medicWorkScheduling.getMedicWorkSchedulingDateLast());        
+
+        int diff = compareCalendars(currentDate, lastDate);
+        
+        if (diff > 0) { // HÁ CONSULTA AGENDADA
+            int counterOfDay = medicWorkScheduling.getMedicWorkSchedulingCounterOfDay();
+            int consultsPerDay = medicWorkScheduling.getMedicWorkSchedulingPerDay();
+            if (counterOfDay >= consultsPerDay) { // CONSULTAS ENCERRADAS NO DIA, AGENDANDO PARA O PROXIMO DIA
+                lastDate.add(Calendar.DAY_OF_MONTH, 1);
+                setCalendarAvailableDate(lastDate, medicWorkScheduling.getMedicWorkSchedulingDaysOfWeek());
+                lastDate.set(Calendar.HOUR_OF_DAY, 7);
+                lastDate.set(Calendar.MINUTE, 0);
+                medicWorkScheduling.setMedicWorkSchedulingCounterOfDay(1);
+                medicWorkScheduling.setMedicWorkSchedulingDateLast(new Date(lastDate.getTimeInMillis()));                
+            } else { // AINDA HÁ CONSULTA OARA O DIA, AGENDANDO NO MESMO
+                lastDate.set(Calendar.HOUR_OF_DAY, 7);
+                lastDate.add(Calendar.MINUTE, 2 * (counterOfDay));
+                medicWorkScheduling.setMedicWorkSchedulingCounterOfDay(counterOfDay + 1);
+            }
+        } else { // NÃO HÁ CONSULTA AGENDADA, NOVO AGENDAGENTO NO DIA CRIADO
+            lastDate = currentDate;
+            lastDate.add(Calendar.DAY_OF_MONTH, 1);
+            setCalendarAvailableDate(lastDate, medicWorkScheduling.getMedicWorkSchedulingDaysOfWeek());
+            lastDate.set(Calendar.HOUR_OF_DAY, 7);
+            lastDate.set(Calendar.MINUTE, 0);
+            lastDate.set(Calendar.SECOND, 0);
+            medicWorkScheduling.setMedicWorkSchedulingDateLast(new Date(lastDate.getTimeInMillis()));
+            medicWorkScheduling.setMedicWorkSchedulingCounterOfDay(1);
+        }
+
+        new MedicDAO(connection).updateMedicWorkSchedulingFromConsult(medicWorkScheduling);
+        return new Timestamp(lastDate.getTimeInMillis());
+    }
+    
+    private boolean checkForDuplicatedConsult(Consult consult) throws DAOException {
+        String sql = "select medicWorkAddress_fk from patientConsult "
+                + "join consult on consult.consultId=patientConsult.consult_fk where patientProfile_fk=? and consultConsulted=0";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, consult.getPatient().getId());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {                
+                int medicWorkAddressId = rs.getInt("medicWorkAddress_fk");
+                if (medicWorkAddressId == consult.getMedicWorkAddress().getMedicWorkAddressId())
+                    return true;
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao checar a duplicidade da consulta", e);
+        }
+        return false;
+    }
+    
+    private boolean checkForSpecialityPrivConsult(Consult consult) throws DAOException {
+        Speciality speciality = new MedicDAO(connection).getSpeciality(consult.getMedicSpeciality().getSpeciality().getSpecialityId());
+        return speciality.isSpecialityPriv();
+    }
+    
+    private void validateConsultWithPriv(Consult consult) throws DAOException, ConsultWithPrivilegesException {
+        String sql = "select * from accountSpeciality where patientAccount_fk=? and patientAccountSpecialityUsed=0 "
+                + "and medicSpeciality_speciality_fk=? and medicSpeciality_medicProfile_fk=?";
+        try {
+            PreparedStatement stmt = super.connection.prepareStatement(sql);
+            stmt.setInt(1, consult.getPatient().getId());            
+            stmt.setInt(2, consult.getMedicSpeciality().getSpeciality().getSpecialityId());
+            stmt.setInt(3, consult.getMedicSpeciality().getMedicProfile().getId());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                int accountSpecialityId = rs.getInt("accountSpecialityId");
+                stmt.close();
+                sql = "update accountSpeciality "
+                        + "set patientAccountSpecialityUseDate=?, patientAccountSpecialityUsed=? where accountSpecialityId=?";
+                stmt = super.connection.prepareStatement(sql);                
+                Timestamp currentDateTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+                stmt.setObject(1, currentDateTime);
+                stmt.setBoolean(2, true);
+                stmt.setInt(3, accountSpecialityId);
+                stmt.execute();
+                stmt.close();                
+            } else {
+                stmt.close();
+                throw new ConsultWithPrivilegesException("O paciente não possui um encaminhamento");
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao validar a consulta", e);
+        }
+    }
+
+    synchronized private void addConsult(Consult consult) throws DAOException, DuplicateException, ConsultWithPrivilegesException {                
+        if (checkForDuplicatedConsult(consult))
+            throw new DuplicateException("A consulta ja existe com este medico");
+        if (checkForSpecialityPrivConsult(consult)) {
+            validateConsultWithPriv(consult);
+        }
+        
+        String sql = "insert into consult values (?,?,?,?,?,?,?)";        
+        
         int consultId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.consult);
-        
         MedicWorkScheduling medicWorkScheduling = new MedicDAO(connection).getMedicWorkScheduling(consult.getMedicWorkAddress());
-        
-        Date currentDate = new Date(Calendar.getInstance().getTimeInMillis());
-        
-        Date consultForDate;
-                
-        Timestamp timestamp = new Timestamp(Calendar.getInstance().getTimeInMillis());        
-        System.out.println("TENTANDO OBTER HORA ATUAL: " + timestamp);
-        
-        int diff = currentDate.compareTo(medicWorkScheduling.getMedicWorkSchedulingDateLast());
-        int counterOfDay = medicWorkScheduling.getMedicWorkSchedulingCounterOfDay();
-        int consultsPerDay = medicWorkScheduling.getMedicWorkSchedulingPerDay();
-        
-        if (0 < diff) {
-            consultForDate = currentDate;
-        } else {
-            consultForDate = medicWorkScheduling.getMedicWorkSchedulingDateLast();
-        }        
-        
-        System.out.println("Data atual: " + new java.util.Date(currentDate.getTime()));                        
-        System.out.println("Data da ultima consulta do medico: " + medicWorkScheduling.getMedicWorkSchedulingDateLast());
-        System.out.println("compareTo(Duas Acima): " + currentDate.compareTo(medicWorkScheduling.getMedicWorkSchedulingDateLast()));                  
-                
-        
+
+        Timestamp currentDateTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+        Timestamp consultForDateTime = getAvailableDateForConsult(medicWorkScheduling);        
+
         consult.setConsultId(consultId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, consultId);
-            stmt.setObject(2, timestamp);
-            stmt.setDate(3, currentDate);
+            stmt.setObject(2, currentDateTime);
+            stmt.setObject(3, consultForDateTime);
             stmt.setBoolean(4, consult.isConsultConsulted());
             stmt.setInt(5, consult.getMedicSpeciality().getSpeciality().getSpecialityId());
             stmt.setInt(6, consult.getMedicSpeciality().getMedicProfile().getId());
@@ -148,7 +256,10 @@ public class ConsultDAO extends BasicDAO {
             stmt.execute();
         } catch (SQLException e) {
             new SystemDAO(super.connection).releaseId(SystemDAO.Table.consult, consultId);
-            throw new DAOException("Falha ao adicionar a consulta", e);
+            if (e instanceof SQLIntegrityConstraintViolationException)
+                throw new DAOException("Informações fornecidas incoerentes", e);    
+            else
+                throw new DAOException("Falha ao adicionar a consulta", e);
         }
     }
 
@@ -176,8 +287,8 @@ public class ConsultDAO extends BasicDAO {
             if (rs.next()) {
                 consult = new Consult();
                 consult.setConsultId(consultId);
-                consult.setConsultCreationDate((Timestamp)rs.getObject("consultCreationDate", Timestamp.class));
-                consult.setConsultForDate(rs.getDate("consultForDate"));                
+                consult.setConsultCreationDate((Timestamp) rs.getObject("consultCreationDate", Timestamp.class));
+                consult.setConsultForDate((Timestamp) rs.getObject("consultForDate", Timestamp.class));
                 consult.setConsultConsulted(rs.getBoolean("consultConsulted"));
 
                 {
@@ -190,21 +301,22 @@ public class ConsultDAO extends BasicDAO {
                     Speciality speciality = new Speciality();
                     speciality.setSpecialityId(rs.getInt("medicSpeciality_speciality_fk"));
                     speciality.setSpecialityName(rs.getString("specialityName"));
+                    speciality.setSpecialityPriv(rs.getBoolean("specialityPriv"));
                     medicSpeciality.setSpeciality(speciality);
-                    
+
                     MedicWorkAddress medicWorkAddress = new MedicWorkAddress();
                     medicWorkAddress.setMedicWorkAddressId(rs.getInt("medicWorkAddress_fk"));
-                    medicWorkAddress.setMedicWorkAddressComplement(rs.getString("medicWorkAddressComplement"));                    
+                    medicWorkAddress.setMedicWorkAddressComplement(rs.getString("medicWorkAddressComplement"));
                     medicWorkAddress.setMedicSpeciality(medicSpeciality);
                     ClinicProfile clinicProfile = new ClinicProfile();
                     clinicProfile.setId(rs.getInt("clinicProfile_fk"));
                     clinicProfile.setClinicName(rs.getString("clinicName"));
                     clinicProfile.setClinicCnpj(rs.getString("clinicCnpj"));
                     medicWorkAddress.setClinicProfile(clinicProfile);
-                                        
+
                     consult.setMedicSpeciality(medicSpeciality);
                     consult.setMedicWorkAddress(medicWorkAddress);
-                }                        
+                }
             }
         } catch (SQLException e) {
             throw new DAOException("Falha ao recuperar a consulta", e);
@@ -222,8 +334,8 @@ public class ConsultDAO extends BasicDAO {
             while (rs.next()) {
                 Consult consult = new Consult();
                 consult.setConsultId(rs.getInt("consultId"));
-                consult.setConsultCreationDate((Timestamp)rs.getObject("consultCreationDate", Timestamp.class));                                
-                consult.setConsultForDate(rs.getDate("consultForDate", Calendar.getInstance()));                
+                consult.setConsultCreationDate((Timestamp) rs.getObject("consultCreationDate", Timestamp.class));
+                consult.setConsultForDate((Timestamp) rs.getObject("consultForDate", Timestamp.class));
                 consult.setConsultConsulted(rs.getBoolean("consultConsulted"));
                 consult.setMedicSpeciality(
                         new MedicSpeciality(

@@ -20,7 +20,7 @@ public class AddMedicSpeciality {
 
     public AddMedicSpeciality() {
         try (Connection connection = new ConnectionFactory().getConnection()) {   
-            new MedicDAO(connection).addMedicSpeciality(new MedicSpeciality(new MedicProfile(0), new Speciality(0)));
+            new MedicDAO(connection).addMedicSpeciality(new MedicSpeciality(new MedicProfile(0), new Speciality(2)));
         } catch (Exception e) {
             e.printStackTrace();
         }

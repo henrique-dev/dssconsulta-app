@@ -27,14 +27,15 @@ public class AddMedicWorkAddress {
         try (Connection connection = new ConnectionFactory().getConnection()) {
             new MedicDAO(connection).addMedicWorkAddressAndScheduling(
                     new MedicWorkAddress(
-                            new MedicSpeciality(new MedicProfile(0), new Speciality(0)),
+                            new MedicSpeciality(new MedicProfile(0), new Speciality(2)),
                             new ClinicProfile(0), 
                             "Sala 205"), 
                     new MedicWorkScheduling(
                             10, 
                             new Date(Calendar.getInstance().getTimeInMillis()), 
                             0,
-                            "13h ~ 18h"));
+                            "13h ~ 18h",
+                            "0101010"));
         } catch (Exception e) {
             e.printStackTrace();
         }

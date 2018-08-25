@@ -174,7 +174,7 @@ public class MedicDAO extends BasicDAO {
         List<MedicProfile> medicProfileList = null;
         String sql = "select "
                 + "medic_fk, medicName, medicWorkAddressId, medicProfileExpAge, medicEvaluationAvg, "
-                + "medicEvaluationCount, clinicId, clinicName, specialityId, specialityName "
+                + "medicEvaluationCount, clinicId, clinicName, specialityId, specialityName, specialityPriv "
                 + "from medicWorkAddress "
                 + "inner join medicProfile on medicWorkAddress.medicSpeciality_medicProfile_fk=medicProfile.medic_fk "
                 + "inner join medicEvaluation on medicEvaluation.medicProfile_fk=medicProfile.medic_fk "
@@ -212,6 +212,7 @@ public class MedicDAO extends BasicDAO {
                 Speciality speciality = new Speciality();
                 speciality.setSpecialityId(rs.getInt("specialityId"));
                 speciality.setSpecialityName(rs.getString("specialityName"));
+                speciality.setSpecialityPriv(rs.getBoolean("specialityPriv"));
                 medicSpeciality.setSpeciality(speciality);
                 medicSpeciality.setMedicProfile(medicProfile);
                 medicSpecialityList.add(medicSpeciality);
@@ -271,6 +272,7 @@ public class MedicDAO extends BasicDAO {
                 Speciality speciality = new Speciality();
                 speciality.setSpecialityId(rs.getInt("specialityId"));
                 speciality.setSpecialityName(rs.getString("specialityName"));
+                speciality.setSpecialityPriv(rs.getBoolean("specialityPriv"));
                 medicSpeciality.setSpeciality(speciality);
                 medicSpeciality.setMedicProfile(medicProfile);
                 medicSpecialityList.add(medicSpeciality);
@@ -295,17 +297,36 @@ public class MedicDAO extends BasicDAO {
     }
 
     public void addSpeciality(Speciality speciality) throws DAOException {
-        String sql = "insert into speciality values (?,?)";
+        String sql = "insert into speciality values (?,?,?)";
         int specialityIndex = new SystemDAO(super.connection).getNextId(SystemDAO.Table.speciality);
         speciality.setSpecialityId(specialityIndex);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, specialityIndex);
             stmt.setString(2, speciality.getSpecialityName());
+            stmt.setBoolean(3, speciality.isSpecialityPriv());
             stmt.execute();
         } catch (SQLException e) {
             new SystemDAO(super.connection).releaseId(SystemDAO.Table.speciality, specialityIndex);
             throw new DAOException("Falha ao adicionar a especialidade", e);
         }
+    }
+    
+    public Speciality getSpeciality(int specialityId) throws DAOException {
+        Speciality speciality = null;
+        String sql = "select * from speciality where specialityId=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, specialityId);
+            ResultSet rs = stmt.executeQuery();
+            speciality = new Speciality();
+            if (rs.next()) {                
+                speciality.setSpecialityId(specialityId);
+                speciality.setSpecialityName(rs.getString("specialityName"));
+                speciality.setSpecialityPriv(rs.getBoolean("specialityPriv"));                
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao recuperar a lista de especialidades", e);
+        }
+        return speciality;
     }
 
     public List<Speciality> getSpecialityList() throws DAOException {
@@ -318,6 +339,7 @@ public class MedicDAO extends BasicDAO {
                 Speciality speciality = new Speciality();
                 speciality.setSpecialityId(rs.getInt("specialityId"));
                 speciality.setSpecialityName(rs.getString("specialityName"));
+                speciality.setSpecialityPriv(rs.getBoolean("specialityPriv"));
                 specialityList.add(speciality);
             }
         } catch (SQLException e) {
@@ -442,13 +464,14 @@ public class MedicDAO extends BasicDAO {
     }
 
     private void addMedicWorkScheduling(MedicWorkScheduling medicWorkScheduling) throws DAOException {
-        String sql = "insert into medicWorkScheduling values (?,?,?,?,?)";
+        String sql = "insert into medicWorkScheduling values (?,?,?,?,?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicWorkScheduling.getMedicWorkSchedulingId());
             stmt.setInt(2, medicWorkScheduling.getMedicWorkSchedulingPerDay());
             stmt.setDate(3, medicWorkScheduling.getMedicWorkSchedulingDateLast());
             stmt.setInt(4, medicWorkScheduling.getMedicWorkSchedulingCounterOfDay());
             stmt.setString(5, medicWorkScheduling.getMedicWorkSchedulingInfo());
+            stmt.setString(6, medicWorkScheduling.getMedicWorkSchedulingDaysOfWeek());
             stmt.execute();
         } catch (SQLException e) {
             throw new DAOException("Falha ao adicionar as variaveis de trabalho do medico", e);
@@ -467,6 +490,8 @@ public class MedicDAO extends BasicDAO {
                 medicWorkScheduling.setMedicWorkSchedulingPerDay(rs.getInt("medicWorkSpaceSchedulingPerDay"));                                                                
                 medicWorkScheduling.setMedicWorkSchedulingDateLast(rs.getDate("medicWorkSpaceSchedulingDateLast", Calendar.getInstance()));                                                                
                 medicWorkScheduling.setMedicWorkSchedulingInfo(rs.getString("medicWorkSchedulingInfo"));
+                medicWorkScheduling.setMedicWorkSchedulingDaysOfWeek(rs.getString("medicWorkSchedulingDaysOfWeek"));
+                medicWorkScheduling.setMedicWorkSchedulingDaysOfWeek(rs.getString("medicWorkSchedulingDaysOfWeek"));
             }
         } catch (SQLException e) {
             throw new DAOException("Falha ao adquirir as informações de horario do medico", e);

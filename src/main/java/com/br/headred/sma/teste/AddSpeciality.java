@@ -20,10 +20,10 @@ public class AddSpeciality {
 
     public AddSpeciality() {
         try (Connection connection = new ConnectionFactory().getConnection()) {
-            new MedicDAO(connection).addSpeciality(new Speciality("Clinico geral"));
-            new MedicDAO(connection).addSpeciality(new Speciality("Cardiologista"));
-            new MedicDAO(connection).addSpeciality(new Speciality("Nutricionista"));
-            new MedicDAO(connection).addSpeciality(new Speciality("Pediatra"));
+            new MedicDAO(connection).addSpeciality(new Speciality("Clinico geral", false));
+            new MedicDAO(connection).addSpeciality(new Speciality("Cardiologista", true));
+            new MedicDAO(connection).addSpeciality(new Speciality("Nutricionista", true));
+            new MedicDAO(connection).addSpeciality(new Speciality("Pediatra", true));
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (DAOException e) {

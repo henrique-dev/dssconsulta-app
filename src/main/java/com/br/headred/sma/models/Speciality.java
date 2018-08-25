@@ -13,6 +13,7 @@ public class Speciality {
     
     private int specialityId;
     private String specialityName;
+    private boolean specialityPriv;
 
     public Speciality() {
     }
@@ -21,13 +22,15 @@ public class Speciality {
         this.specialityId = specialityId;
     }
 
-    public Speciality(String specialityName) {
-        this.specialityName = specialityName;
-    }
-
-    public Speciality(int specialityId, String specialityName) {
+    public Speciality(int specialityId, String specialityName, boolean specialityPriv) {
         this.specialityId = specialityId;
         this.specialityName = specialityName;
+        this.specialityPriv = specialityPriv;
+    }
+
+    public Speciality(String specialityName, boolean specialityPriv) {
+        this.specialityName = specialityName;
+        this.specialityPriv = specialityPriv;
     }        
 
     public int getSpecialityId() {
@@ -44,6 +47,14 @@ public class Speciality {
 
     public void setSpecialityName(String specialityName) {
         this.specialityName = specialityName;
+    }       
+
+    public boolean isSpecialityPriv() {
+        return specialityPriv;
+    }
+
+    public void setSpecialityPriv(boolean specialityPriv) {
+        this.specialityPriv = specialityPriv;
     }        
     
 }

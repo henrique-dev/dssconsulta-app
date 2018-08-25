@@ -18,6 +18,7 @@ public class MedicWorkScheduling {
     private Date medicWorkSchedulingDateLast;
     private int medicWorkSchedulingCounterOfDay;
     private String medicWorkSchedulingInfo;
+    private String medicWorkSchedulingDaysOfWeek;
 
     public MedicWorkScheduling() {
     }
@@ -26,20 +27,22 @@ public class MedicWorkScheduling {
         this.medicWorkSchedulingId = medicWorkSchedulingId;
     }
 
-    public MedicWorkScheduling(int medicWorkSchedulingId, int medicWorkSchedulingPerDay, Date medicWorkSchedulingDateLast, int medicWorkSchedulingCounterOfDay, String medicWorkSchedulingInfo) {
+    public MedicWorkScheduling(int medicWorkSchedulingId, int medicWorkSchedulingPerDay, Date medicWorkSchedulingDateLast, int medicWorkSchedulingCounterOfDay, String medicWorkSchedulingInfo, String medicWorkSchedulingDaysOfWeek) {
         this.medicWorkSchedulingId = medicWorkSchedulingId;
         this.medicWorkSchedulingPerDay = medicWorkSchedulingPerDay;
         this.medicWorkSchedulingDateLast = medicWorkSchedulingDateLast;
         this.medicWorkSchedulingCounterOfDay = medicWorkSchedulingCounterOfDay;
         this.medicWorkSchedulingInfo = medicWorkSchedulingInfo;
+        this.medicWorkSchedulingDaysOfWeek = medicWorkSchedulingDaysOfWeek;
     }
 
-    public MedicWorkScheduling(int medicWorkSchedulingPerDay, Date medicWorkSchedulingDateLast, int medicWorkSchedulingCounterOfDay, String medicWorkSchedulingInfo) {
+    public MedicWorkScheduling(int medicWorkSchedulingPerDay, Date medicWorkSchedulingDateLast, int medicWorkSchedulingCounterOfDay, String medicWorkSchedulingInfo, String medicWorkSchedulingDaysOfWeek) {
         this.medicWorkSchedulingPerDay = medicWorkSchedulingPerDay;
         this.medicWorkSchedulingDateLast = medicWorkSchedulingDateLast;
         this.medicWorkSchedulingCounterOfDay = medicWorkSchedulingCounterOfDay;
         this.medicWorkSchedulingInfo = medicWorkSchedulingInfo;
-    }      
+        this.medicWorkSchedulingDaysOfWeek = medicWorkSchedulingDaysOfWeek;
+    }       
 
     public int getMedicWorkSchedulingId() {
         return medicWorkSchedulingId;
@@ -79,6 +82,14 @@ public class MedicWorkScheduling {
 
     public void setMedicWorkSchedulingInfo(String medicWorkSchedulingInfo) {
         this.medicWorkSchedulingInfo = medicWorkSchedulingInfo;
+    }        
+
+    public String getMedicWorkSchedulingDaysOfWeek() {
+        return medicWorkSchedulingDaysOfWeek;
+    }
+
+    public void setMedicWorkSchedulingDaysOfWeek(String medicWorkSchedulingDaysOfWeek) {
+        this.medicWorkSchedulingDaysOfWeek = medicWorkSchedulingDaysOfWeek;
     }        
     
 }

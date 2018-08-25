@@ -30,7 +30,8 @@
                 <a href="Paciente/ListarEspecialidades">Listar especialidades</a><br>                
                 <a href="Paciente/ListarMedicos?specialityId=0">Listar medicos com especialidade 0</a><br>
                 <a href="Paciente/PerfilUnidadeSaude?clinicId=0">Perfil da clinica 0</a><br>
-                <a href="Paciente/AgendarConsulta?patientId=0&medicId=0&specialityId=0&medicWorkAddressId=0">Agendar Consulta</a><br>
+                <a href="Paciente/AgendarConsulta?patientId=0&medicId=0&specialityId=2&medicWorkAddressId=0">Agendar Consulta</a><br>
+                <a href="Paciente/MinhasAvaliacoes?patientId=0">Minhas avaliações</a><br>
             </div>            
         </div>
 

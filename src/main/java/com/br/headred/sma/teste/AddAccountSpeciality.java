@@ -28,7 +28,7 @@ public class AddAccountSpeciality {
             new ConsultDAO(connection).addAccountSpeciality(
                     new AccountSpeciality(
                     new PatientAccount(0, null, null, null),
-                    new MedicSpeciality(new MedicProfile(0), new Speciality(0)),
+                    new MedicSpeciality(new MedicProfile(0), new Speciality(2)),
                     new Timestamp(Calendar.getInstance().getTimeInMillis()),
                     null,
                     false));

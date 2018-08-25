@@ -30,7 +30,7 @@ public class AddConsult {
             new ConsultDAO(connection).addConsultForAll(
                     new Consult(
                             new Timestamp(Calendar.getInstance().getTimeInMillis()),
-                            new Date(Calendar.getInstance().getTimeInMillis()),
+                            new Timestamp(Calendar.getInstance().getTimeInMillis()),
                             false,
                             new Patient(0),
                             new MedicSpeciality(new MedicProfile(0), new Speciality(0)),
