@@ -15,12 +15,12 @@
         <h1>Listar medicos</h1>
         <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
         <table border="1">
-            <th>medicId</th>
-            <th>medicName</th>   
-            <th>medicWorkInfo</th>   
-            <th>medicProfileExpAge</th>   
-            <th>medicProfileEvaluationAvg</th>   
-            <th>medicProfileEvaluationCount</th>   
+            <th>id</th>
+            <th>name</th>   
+            <th>workinfo</th>   
+            <th>expage</th>   
+            <th>evaluationavg</th>   
+            <th>evaluationcount</th>   
             <c:forEach items="${medicProfileList}" var="medicProfile">
                 <tr>
                     <td>${medicProfile.id}</td>

@@ -42,6 +42,21 @@ public class PatientController {
     public String mainPatient() {
         return "patient/main";
     }
+    
+    @RequestMapping("Paciente/MeuPerfil")
+    public String meuPerfil(int patientId, Model model) {
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            PatientProfile patientProfile = new PatientDAO(con).getPatientProfile(patientId);
+            model.addAttribute(patientProfile);
+            return "patient/profile-patient";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Falha ao obter a conexão");
+            e.printStackTrace();
+        }
+        return "redirect:../Paciente";
+    }
 
     @RequestMapping("Paciente/MinhaAgenda")
     //@PostMapping("PrincipalPaciente/MinhaAgenda")
@@ -56,7 +71,7 @@ public class PatientController {
             System.err.println("Falha ao obter a conexão");
             e.printStackTrace();
         }
-        return "redirect:PrincipalPaciente";
+        return "redirect:../Paciente";
     }
 
     @RequestMapping("Paciente/MinhaAgenda/MinhaConsulta")
@@ -71,7 +86,7 @@ public class PatientController {
             System.err.println("Falha ao obter a conexão");
             e.printStackTrace();
         }
-        return "redirect:PrincipalPaciente";
+        return "redirect:../MinhaAgenda";
     }
 
     @RequestMapping("Paciente/ListarEspecialidades")
@@ -79,14 +94,14 @@ public class PatientController {
         try (Connection con = new ConnectionFactory().getConnection()) {
             List<Speciality> specialityList = new MedicDAO(con).getSpecialityList();
             model.addAttribute(specialityList);
-            return "patient/speciality-list";
+            return "patient/list-speciality";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             System.err.println("Falha ao obter a conexão");
             e.printStackTrace();
         }
-        return "redirect:PrincipalPaciente";
+        return "redirect:../Paciente";
     }
 
     @RequestMapping("Paciente/ListarMedicos")
@@ -94,14 +109,14 @@ public class PatientController {
         try (Connection con = new ConnectionFactory().getConnection()) {
             List<MedicProfile> medicProfileList = new MedicDAO(con).getMedicProfileList(specialityId);
             model.addAttribute(medicProfileList);
-            return "patient/medic-list";
+            return "patient/list-medic";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             System.err.println("Falha ao obter a conexão");
             e.printStackTrace();
         }
-        return "redirect:PrincipalPaciente";
+        return "redirect:../Paciente";
     }
 
     @RequestMapping("Paciente/PerfilMedico")
@@ -109,14 +124,14 @@ public class PatientController {
         try (Connection con = new ConnectionFactory().getConnection()) {
             MedicProfile medicProfile = new MedicDAO(con).getMedicProfile(medicId);
             model.addAttribute(medicProfile);
-            return "patient/medic-profile";
+            return "patient/profile-medic";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             System.err.println("Falha ao obter a conexão");
             e.printStackTrace();
         }
-        return "redirect:PrincipalPaciente";
+        return "redirect:../Paciente";
     }
 
     @RequestMapping("Paciente/PerfilUnidadeSaude")
@@ -124,14 +139,14 @@ public class PatientController {
         try (Connection con = new ConnectionFactory().getConnection()) {
             ClinicProfile clinicProfile = new ClinicDAO(con).getClinicProfile(clinicId);
             model.addAttribute(clinicProfile);
-            return "patient/clinic-profile";
+            return "patient/profile-clinic";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             System.err.println("Falha ao obter a conexão");
             e.printStackTrace();
         }
-        return "redirect:PrincipalPaciente";
+        return "redirect:../Paciente";
     }
 
     @RequestMapping("Paciente/AgendarConsulta")
@@ -179,7 +194,7 @@ public class PatientController {
         try (Connection con = new ConnectionFactory().getConnection()) {
             List<Evaluation> evaluationList = new PatientDAO(con).getEvaluationList(new Patient(patientId));
             model.addAttribute(evaluationList);
-            return "patient/evaluation-list";
+            return "patient/list-evaluation";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {

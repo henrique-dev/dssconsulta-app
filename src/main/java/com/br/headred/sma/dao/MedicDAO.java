@@ -72,6 +72,7 @@ public class MedicDAO extends BasicDAO {
             stmt.setString(3, medic.getMedicCrm());
             stmt.execute();
         } catch (SQLException e) {
+            removeMedic(medic);
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 throw new DAOException("Falha ao adicionar as informações do médico. O crm já existe", e);
             } else {
@@ -89,6 +90,7 @@ public class MedicDAO extends BasicDAO {
             stmt.setString(4, medicProfile.getMedicProfileInfoCompl());
             stmt.execute();
         } catch (SQLException e) {
+            removeMedic(medicProfile);
             throw new DAOException("Falha ao adicionar o perfil do médico", e);
         }
     }
@@ -101,6 +103,7 @@ public class MedicDAO extends BasicDAO {
             stmt.setInt(3, 0);
             stmt.execute();
         } catch (SQLException e) {
+            removeMedic(medicProfile);
             throw new DAOException("Falha ao adicionar o perfil de avaliação do medico", e);
         }
     }
@@ -242,7 +245,7 @@ public class MedicDAO extends BasicDAO {
         MedicProfile medicProfile = null;
         String sql = "select "
                 + "medic_fk, medicName, medicWorkAddressId, medicProfileBio, medicProfileInfoCompl, medicProfileExpAge, medicEvaluationAvg, "
-                + "medicEvaluationCount, clinicId, clinicName, specialityId, specialityName "
+                + "medicEvaluationCount, clinicId, clinicName, specialityId, specialityName, specialityPriv "
                 + "from medicWorkAddress "
                 + "inner join medicProfile on medicWorkAddress.medicSpeciality_medicProfile_fk=medicProfile.medic_fk "
                 + "inner join medicEvaluation on medicEvaluation.medicProfile_fk=medicProfile.medic_fk "

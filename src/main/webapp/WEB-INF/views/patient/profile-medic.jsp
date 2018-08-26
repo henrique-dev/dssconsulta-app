@@ -15,14 +15,14 @@
         <h1>Perfil do médico</h1>
         <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
         <table border="1">
-            <th>medicId</th>
-            <th>medicName</th>   
-            <th>medicWorkInfo</th>   
-            <th>medicProfileExpAge</th>   
-            <th>medicProfileEvaluationAvg</th>   
-            <th>medicProfileEvaluationCount</th>   
-            <th>medicProfileBio</th>   
-            <th>medicProfileInfoCompl</th>   
+            <th>id</th>
+            <th>name</th>   
+            <th>workinfo</th>   
+            <th>expage</th>   
+            <th>evaluationavg</th>   
+            <th>evaluationcount</th>   
+            <th>bio</th>   
+            <th>infocompl</th>   
             <tr>
                 <td>${medicProfile.id}</td>
                 <td>${medicProfile.medicName}</td>                
@@ -30,11 +30,11 @@
                     <select>
                         <c:forEach items="${medicProfile.medicWorkAddressList}" var="medicWorkAddress">
                             <option value="${medicWorkAddress.medicWorkAddressId}">
-                                {${medicWorkAddress.medicWorkAddressId}},
-                                {${medicWorkAddress.clinicProfile.clinicId}},
-                                {${medicWorkAddress.clinicProfile.clinicName}},
-                                {${medicWorkAddress.medicSpeciality.speciality.specialityId}},
-                                {${medicWorkAddress.medicSpeciality.speciality.specialityName}}
+                                {workaddressid:${medicWorkAddress.medicWorkAddressId}},
+                                {clinicid:${medicWorkAddress.clinicProfile.id}},
+                                {clinicname:${medicWorkAddress.clinicProfile.clinicName}},
+                                {specialityid:${medicWorkAddress.medicSpeciality.speciality.specialityId}},
+                                {specialityname:${medicWorkAddress.medicSpeciality.speciality.specialityName}}
                             </option>
                         </c:forEach>
                     </select>                        

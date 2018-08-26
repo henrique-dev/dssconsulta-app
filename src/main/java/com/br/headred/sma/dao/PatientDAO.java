@@ -161,6 +161,32 @@ public class PatientDAO extends BasicDAO {
         }
     }
     
+    public PatientProfile getPatientProfile(int patientId) throws DAOException {
+        PatientProfile patientProfile = null;
+        String sql = "select * from patient "
+                + "inner join patientProfile on patientProfile.patient_fk=patient.patientUser_fk "
+                + "where patientUser_fk=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, patientId);
+            patientProfile = new PatientProfile();
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {                
+                patientProfile.setId(patientId);
+                patientProfile.setPatientName(rs.getString("patientName"));
+                patientProfile.setPatientCpf(rs.getString("patientCpf"));
+                patientProfile.setPatientProfileEmail(rs.getString("patientProfileEmail"));
+                patientProfile.setPatientProfileGenre(rs.getString("patientProfileGenre"));
+                patientProfile.setPatientProfileBirthDate(rs.getDate("patientProfileBirthDate"));
+                patientProfile.setPatientProfileHeight(rs.getFloat("patientProfileHeight"));
+                patientProfile.setPatientProfileBloodType(rs.getString("patientProfileBloodType"));
+                patientProfile.setPatientProfileTelephone(rs.getString("patientProfileTelephone"));
+            } 
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao recuperar dados do paciente", e);
+        }
+        return patientProfile;
+    }
+    
     public Patient getPatient(int patientId) throws DAOException {
         String sql = "select patientName, patientCpf from patient where patientUser_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
