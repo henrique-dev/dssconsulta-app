@@ -4,18 +4,20 @@
     Author     : Paulo Henrique Gonçalves Bacelar
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-[(<c:forEach items="${clinicProfileList}" var="clinicProfile" varStatus="i">            
-    [{clinicId:${clinicProfile.id}},
+(clinicProfileList:<c:forEach items="${clinicProfileList}" var="clinicProfile" varStatus="i">            
+    [clinic:{clinicId:${clinicProfile.id}},
     {clinicName:${clinicProfile.clinicName}},
     {clinicCnpj:${clinicProfile.clinicCnpj}},
     {clinicAddress:${clinicProfile.clinicProfileAddress}},
-    (<c:forEach items="${clinicProfile.clinicTelephoneList}" var="telephone" varStatus="j">
-        [{${telephone.clinicTelephoneNumber}}
+    
+    (telephoneList:<c:forEach items="${clinicProfile.clinicTelephoneList}" var="telephone" varStatus="j">
+        [telephone:{${telephone.clinicTelephoneNumber}}
         <c:if test="${!j.last}">
             ,
         </c:if>]
-    </c:forEach>
+    </c:forEach>)
+        
     <c:if test="${!i.last}">
         ,
-    </c:if>)]
-</c:forEach>)]
+    </c:if>]
+</c:forEach>)

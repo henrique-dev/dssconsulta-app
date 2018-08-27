@@ -4,10 +4,10 @@
     Author     : Paulo Henrique Gonçalves Bacelar
 --%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>           
-[(<c:forEach items="${specialityList}" var="speciality" varStatus="i">
-    [{specialityId:${speciality.specialityId}},
+(specialityList:<c:forEach items="${specialityList}" var="speciality" varStatus="i">
+    [speciality:{specialityId:${speciality.specialityId}},
     {specialityName:${speciality.specialityName}}]
     <c:if test="${!i.last}">
         ,
     </c:if>
-</c:forEach>)]
+</c:forEach>)

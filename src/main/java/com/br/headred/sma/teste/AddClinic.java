@@ -38,7 +38,7 @@ public class AddClinic {
     }
     
     public static void main(String[] args) {
-        new AddMedic();
+        new AddClinic();
     }
     
 }
