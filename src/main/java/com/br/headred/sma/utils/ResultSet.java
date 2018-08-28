@@ -38,7 +38,7 @@ public class ResultSet {
 
     public ResultSet(String rawResult) {
         //System.out.println(rawResult);
-        this.finalResult = extractResult(0, rawResult);
+        this.finalResult = extractResult(rawResult);
     }
 
     public Result getResult() {
@@ -87,17 +87,18 @@ public class ResultSet {
         }
         return rawResult.toString();
     }
+    
+    private int testeIndex = 0;
 
-    private Object extractResult(int indexBegin, String rawResult) {
+    private Object extractResult(String rawResult) {
         int attrCount = 0;
         int objCount = 0;
         StringBuilder name = new StringBuilder();
         StringBuilder value = new StringBuilder();
         Result result = new Result();
         List<Result> resultList = new ArrayList<>();        
-        for (int i = indexBegin; i < rawResult.length(); i++) {
-            lastIndex = i;
-            char c = rawResult.charAt(i);            
+        while (testeIndex < rawResult.length()) {        
+            char c = rawResult.charAt(testeIndex++);
             switch (c) {
                 case '<':
                     codLv++;
@@ -124,9 +125,10 @@ public class ResultSet {
                         throw new Error("Falha na leitura da ResultSet");
                     }
                     if (resultList.isEmpty()) // AQUI FOI MODIFICADO
-                    {
+                    {                                           
                         return null;
                     } else {
+                        //System.out.println("Retornando resultList com tamanho: " + resultList.size());                        
                         return resultList;
                     }
                 case '(':                    
@@ -138,9 +140,7 @@ public class ResultSet {
                     if (listLv < 0) {
                         throw new Error("Falha na leitura da ResultSet");
                     }
-                    //if (resultList.isEmpty()) // AQUI FOI MODIFICADO
-                    //  return null;
-                    //else
+                    //System.out.println("Retornando resultList com tamanho: " + resultList.size());                    
                     return resultList;
                 case '{':
                     readingStatus = READING_ATTR_NAME;
@@ -153,8 +153,9 @@ public class ResultSet {
                 case '}':
                     if (readingStatus != READING_ATTR_NAME) {
                         result.setAttrValue(value.toString());
-                        value = new StringBuilder();
+                        value = new StringBuilder();                        
                         resultList.add(result);
+                        //System.out.println("Adicionou objecto na resultList: " + result.getAttrName());
                         readingStatus = READING_KEY;
                     }
                     attrLv--;
@@ -170,14 +171,14 @@ public class ResultSet {
                             result.setResultType(Result.ResultType.OBJECT);
                             result.setAttrName(name.toString());
                             name = new StringBuilder();
-                            Object obj = extractResult(i + 1, rawResult);
-                            result.setAttrValue(obj);
+                            Object obj = extractResult(rawResult);
+                            result.setAttrValue(obj);                            
                             if (listLv > 0) {
                                 if (obj != null) {
                                     resultList.add(result);
+                                    //System.out.println("Adicionou objecto na resultList: " + result.getAttrName());
                                 }
-                            }
-                            i = lastIndex + 1;
+                            }                            
                             break;
                         }
                         case READING_ATTR_NAME:
@@ -193,13 +194,12 @@ public class ResultSet {
                             result.setResultType(Result.ResultType.LIST);
                             result.setAttrName(name.toString());
                             name = new StringBuilder();
-                            Object obj = extractResult(i + 1, rawResult);                            
-                            result.setAttrValue(obj);
-                            if (listLv > 0) {
-                                //if (obj != null)
+                            Object obj = extractResult(rawResult);
+                            result.setAttrValue(obj);                                                        
+                            if (listLv > 0) {                                
                                 resultList.add(result);
-                            }
-                            i = lastIndex + 1;
+                                //System.out.println("Adicionou objecto na resultList: " + result.getAttrName());
+                            }                            
                             break;
                     }
                     break;
@@ -217,13 +217,13 @@ public class ResultSet {
                             break;
                     }
                     break;
-            }
-            //lastIndex = i;
+            }            
         }
         if (listLv != 0 && objLv != 0 && attrLv != 0 && codLv != 0) {
             result = null;
             throw new Error("Falha na leitura da ResultSet");
         }
+        //System.out.println("Retornando result: " + result.getAttrName());
         return result;
     }
 

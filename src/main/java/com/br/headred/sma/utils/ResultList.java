@@ -13,23 +13,43 @@ import java.util.List;
  * @author Paulo Henrique Gonçalves Bacelar
  */
 public class ResultList {
-    
-    private List<ObjectList> resultList;
+
+    private final List<ObjectList> resultList;
+    private int index = -1;
 
     public ResultList() {
         resultList = new ArrayList<>();
-    }        
-
-    public ResultList(List<ObjectList> resultList) {
-        this.resultList = resultList;
     }
 
-    public List<ObjectList> getList() {
-        return resultList;
+    public ResultList(Result result) {
+        List<Result> lr = (List<Result>) result.getAttrValue();
+        resultList = new ArrayList<>();
+        for (Result r : lr) {
+            resultList.add(new ObjectList((List<Result>) r.getAttrValue()));
+        }
     }
 
-    public void setList(List<ObjectList> resultList) {
-        this.resultList = resultList;
-    }        
+    public ResultList(List<Result> results) {
+        resultList = new ArrayList<>();
+        for (Result r : results) {
+            resultList.add(new ObjectList((List<Result>) r.getAttrValue()));
+        }
+    }
     
+    public boolean isEmpty() {
+        return this.resultList.isEmpty();
+    }
+
+    public boolean next() {
+        index++;
+        if (index + 1 > resultList.size()) {
+            return false;
+        }
+        return true;
+    }
+
+    public ObjectList getObjectList() {
+        return resultList.get(index);
+    }
+
 }

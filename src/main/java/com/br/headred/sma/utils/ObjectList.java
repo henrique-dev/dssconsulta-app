@@ -14,8 +14,7 @@ import java.util.List;
  */
 public class ObjectList {
 
-    private final List<Result> objectList;
-    private int index = 0;
+    private final List<Result> objectList;    
 
     public ObjectList() {
         objectList = new ArrayList<>();
@@ -23,20 +22,11 @@ public class ObjectList {
 
     public ObjectList(List<Result> objectList) {
         this.objectList = objectList;
-    }
-
-    public List<Result> getObjectList() {
-        return objectList;
-    }
+    }    
 
     public int size() {
         return this.objectList.size();
-    }
-    
-    public boolean next() {
-        index++;
-        return index <= objectList.size()-1;
-    }
+    }        
     
     public int getInt(String attrName) {
         for (Result r : objectList) {
@@ -62,8 +52,10 @@ public class ObjectList {
         throw new Error("Atributo não encontrado");
     }
     
+    @Deprecated
     public ObjectList getObjectList(String attrName) {
-        for (Result r : objectList) {                        
+        for (Result r : objectList) {                                  
+            System.out.println(attrName);
             if (attrName.equals(r.getAttrName()))
                 return new ObjectList((List<Result>)r.getAttrValue());
         }
@@ -77,5 +69,15 @@ public class ObjectList {
         }
         throw new Error("Atributo não encontrado");
     }
+    
+    @Deprecated
+    public Result getResult(String attrName) {
+        for (Result r : objectList) {                        
+            if (attrName.equals(r.getAttrName()))
+                return (Result)r.getAttrValue();
+        }
+        throw new Error("Atributo não encontrado");
+    }
+    
 
 }
