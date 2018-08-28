@@ -14,6 +14,14 @@ public class ClinicTelephone {
     private ClinicProfile clinicProfile;
     private String clinicTelephoneNumber;        
 
+    public ClinicTelephone() {
+    }
+
+    public ClinicTelephone(ClinicProfile clinicProfile, String clinicTelephoneNumber) {
+        this.clinicProfile = clinicProfile;
+        this.clinicTelephoneNumber = clinicTelephoneNumber;
+    }        
+
     public ClinicProfile getClinicProfile() {
         return clinicProfile;
     }

@@ -10,6 +10,7 @@ import com.br.headred.sma.dao.MedicDAO;
 import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.jdbc.ConnectionFactory;
 import com.br.headred.sma.models.ClinicProfile;
+import com.br.headred.sma.models.ClinicTelephone;
 import com.br.headred.sma.models.MedicProfile;
 import com.br.headred.sma.models.MedicSpeciality;
 import com.br.headred.sma.models.MedicWorkAddress;
@@ -47,46 +48,66 @@ public class ManagerController {
             medicProfile.setUserName(userName);
             medicProfile.setUserPassword(userPassword);
             new MedicDAO(con).addMedic(medicProfile);
-            
             List<MedicSpeciality> medicSpecialityList = new ArrayList<>();
             List<MedicWorkAddress> medicWorkAddressList = new ArrayList<>();
             List<MedicWorkScheduling> medicWorkSchedulingList = new ArrayList<>();
-
             Result r = new ResultSet(medicWorkInfo).getResult();
             List<Result> lr = (List<Result>) r.getAttrValue();
-            
             for (Result result : lr) {
                 ObjectList obj = new ObjectList((List<Result>) result.getAttrValue());
-                
                 MedicSpeciality medicSpeciality = new MedicSpeciality(medicProfile, new Speciality(obj.getInt("specialityId")));
                 MedicWorkAddress medicWorkAddress = new MedicWorkAddress(medicSpeciality, new ClinicProfile(obj.getInt("clinicId")), obj.getString("medicWorkInfo"));
                 MedicWorkScheduling medicWorkScheduling = new MedicWorkScheduling(
-                        obj.getInt("medicSchedPerDay"), 
+                        obj.getInt("medicSchedPerDay"),
                         new Date(Calendar.getInstance().getTimeInMillis()), 0, obj.getString("medicSchedInfo"), obj.getString("medicSchedDayOfWeek"));
-                
                 medicSpecialityList.add(medicSpeciality);
                 medicWorkAddressList.add(medicWorkAddress);
                 medicWorkSchedulingList.add(medicWorkScheduling);
             }
-            
-            new MedicDAO(con).addMedicSpecialityList(medicSpecialityList);
-            new MedicDAO(con).addMedicWorkAddressList(medicWorkAddressList);
-            
-            for (int i=0; i<medicWorkSchedulingList.size(); i++) {
-                medicWorkSchedulingList.get(i).setMedicWorkSchedulingId(medicWorkAddressList.get(i).getMedicWorkAddressId());
+            if (!medicSpecialityList.isEmpty()) {
+                new MedicDAO(con).addMedicSpecialityList(medicSpecialityList);
+                new MedicDAO(con).addMedicWorkAddressList(medicWorkAddressList);
+                for (int i = 0; i < medicWorkSchedulingList.size(); i++) {
+                    medicWorkSchedulingList.get(i).setMedicWorkSchedulingId(medicWorkAddressList.get(i).getMedicWorkAddressId());
+                }
+                new MedicDAO(con).addMedicWorkSchedulingList(medicWorkSchedulingList);
             }
-            
-            new MedicDAO(con).addMedicWorkSchedulingList(medicWorkSchedulingList);
-
-            /*
-            MedicSpeciality medicSpeciality = new MedicSpeciality();
-            medicSpeciality.setMedicProfile(medicProfile);
-            medicSpeciality.setSpeciality(
-                    new Speciality());*/
             message = "Registro inserido com sucesso!";
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (DAOException e) {
+            e.printStackTrace();
+            message = e.getMessage();
+        }
+        model.addAttribute("message", message);
+        return "manager/message";
+    }
+
+    @RequestMapping("Manager/CadastrarUnidadeSaude")
+    public String cadastrarUnidadeSaude(String clinicName, String clinicCnpj, String clinicCompl, String clinicAddress, String telephoneList, Model model) {
+        String message = "";
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            ClinicProfile clinicProfile = new ClinicProfile();
+            clinicProfile.setClinicName(clinicName);
+            clinicProfile.setClinicCnpj(clinicCnpj);
+            clinicProfile.setClinicProfileAddress(clinicAddress);
+            clinicProfile.setClinicProfileBio(clinicCompl);
+            new ClinicDAO(con).addClinic(clinicProfile);
+            Result r = new ResultSet(telephoneList).getResult();
+            List<Result> lr = (List<Result>) r.getAttrValue();
+            List<Result> lrf = (List<Result>) r.getAttrValue();
+            List<ClinicTelephone> clinicTelephoneList = new ArrayList<>();
+            for (Result result : lrf) {
+                ObjectList attrList = new ObjectList((List<Result>) result.getAttrValue());
+                clinicTelephoneList.add(new ClinicTelephone(clinicProfile, attrList.getString("telephoneNumber")));
+            }
+            if (!clinicTelephoneList.isEmpty()) {
+                new ClinicDAO(con).addClinicTelephoneList(clinicTelephoneList);
+            }
+            message = "Registro inserido com sucesso!";
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
             message = e.getMessage();
         }

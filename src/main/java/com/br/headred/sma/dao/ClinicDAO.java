@@ -182,6 +182,25 @@ public class ClinicDAO extends BasicDAO {
             throw new DAOException("Falha ao remover o perfil da clinica", e);
         }
     }
+    
+    public void addClinicTelephoneList(List<ClinicTelephone> clinicTelephoneList) throws DAOException {
+        StringBuilder argumentsSize = new StringBuilder();
+        for (int i = 0; i < clinicTelephoneList.size(); i++) {
+            argumentsSize.append("(?,?),");
+        }
+        argumentsSize.deleteCharAt(argumentsSize.length() - 1);
+        String sql = "insert into clinicTelephone values " + argumentsSize.toString();
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            int counter = 1;
+            for (int i = 0; i < clinicTelephoneList.size(); i++) {
+                stmt.setInt(counter++, clinicTelephoneList.get(i).getClinicProfile().getId());
+                stmt.setString(counter++, clinicTelephoneList.get(i).getClinicTelephoneNumber());                
+            }
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao adicionar as variaveis de trabalho do medico", e);
+        }
+    }
 
     public void addClinicTelephone(ClinicTelephone clinicTelephone) throws DAOException {
         String sql = "insert into clinicTelephone values (?,?)";

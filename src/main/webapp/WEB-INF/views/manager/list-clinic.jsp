@@ -15,9 +15,8 @@
         <c:if test="${!j.last}">
             ,
         </c:if>]
-    </c:forEach>)
-        
+    </c:forEach>)]
     <c:if test="${!i.last}">
         ,
-    </c:if>]
+    </c:if>
 </c:forEach>)

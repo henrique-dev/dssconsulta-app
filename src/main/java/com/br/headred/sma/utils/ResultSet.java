@@ -37,7 +37,7 @@ public class ResultSet {
     
 
     public ResultSet(String rawResult) {
-        System.out.println(rawResult);
+        //System.out.println(rawResult);
         this.finalResult = extractResult(0, rawResult);
     }
 
@@ -94,9 +94,10 @@ public class ResultSet {
         StringBuilder name = new StringBuilder();
         StringBuilder value = new StringBuilder();
         Result result = new Result();
-        List<Result> resultList = new ArrayList<>();
+        List<Result> resultList = new ArrayList<>();        
         for (int i = indexBegin; i < rawResult.length(); i++) {
-            char c = rawResult.charAt(i);
+            lastIndex = i;
+            char c = rawResult.charAt(i);            
             switch (c) {
                 case '<':
                     codLv++;
@@ -128,11 +129,11 @@ public class ResultSet {
                     } else {
                         return resultList;
                     }
-                case '(':
+                case '(':                    
                     listLv++;
                     readingStatus = READING_LIST_NAME;
                     break;
-                case ')':
+                case ')':                    
                     listLv--;
                     if (listLv < 0) {
                         throw new Error("Falha na leitura da ResultSet");
@@ -192,7 +193,7 @@ public class ResultSet {
                             result.setResultType(Result.ResultType.LIST);
                             result.setAttrName(name.toString());
                             name = new StringBuilder();
-                            Object obj = extractResult(i + 1, rawResult);
+                            Object obj = extractResult(i + 1, rawResult);                            
                             result.setAttrValue(obj);
                             if (listLv > 0) {
                                 //if (obj != null)
@@ -217,7 +218,7 @@ public class ResultSet {
                     }
                     break;
             }
-            lastIndex = i;
+            //lastIndex = i;
         }
         if (listLv != 0 && objLv != 0 && attrLv != 0 && codLv != 0) {
             result = null;
