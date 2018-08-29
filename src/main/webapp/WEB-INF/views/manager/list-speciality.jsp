@@ -5,8 +5,10 @@
 --%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>           
 (specialityList:<c:forEach items="${specialityList}" var="speciality" varStatus="i">
-    [speciality:{specialityId:${speciality.specialityId}},
-    {specialityName:${speciality.specialityName}}]
+    [speciality:
+        {specialityId:${speciality.specialityId}},
+        {specialityName:${speciality.specialityName}},
+        {specialityPriv:${speciality.specialityPriv}}]
     <c:if test="${!i.last}">
         ,
     </c:if>

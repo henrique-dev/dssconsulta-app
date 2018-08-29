@@ -17,18 +17,25 @@ public class ResultList {
     private final List<ObjectList> resultList;
     private int index = -1;
 
-    public ResultList() {
-        resultList = new ArrayList<>();
-    }
-
     public ResultList(Result result) {
-        List<Result> lr = (List<Result>) result.getAttrValue();
         resultList = new ArrayList<>();
-        for (Result r : lr) {
-            resultList.add(new ObjectList((List<Result>) r.getAttrValue()));
+        if (result.getAttrValue() instanceof List) {
+            switch (result.getResultType()) {
+                case LIST:                    
+                    List<Result> lr = (List<Result>) result.getAttrValue();                    
+                    for (Result r : lr) {
+                        resultList.add(new ObjectList((List<Result>)r.getAttrValue()));
+                    }
+                    break;
+                case OBJECT:                    
+                    resultList.add(new ObjectList((List<Result>)result.getAttrValue()));
+                    break;
+                case ATTRIBUTE:
+                    throw new Error("Result invalida");                    
+            }
         }
     }
-
+        
     public ResultList(List<Result> results) {
         resultList = new ArrayList<>();
         for (Result r : results) {
@@ -36,10 +43,6 @@ public class ResultList {
         }
     }
     
-    public boolean isEmpty() {
-        return this.resultList.isEmpty();
-    }
-
     public boolean next() {
         index++;
         if (index + 1 > resultList.size()) {
@@ -48,8 +51,32 @@ public class ResultList {
         return true;
     }
 
-    public ObjectList getObjectList() {
-        return resultList.get(index);
+    public int size() {
+        return this.resultList.size();
+    }
+
+    public boolean isEmpty() {
+        return this.resultList.isEmpty();
+    }
+    
+    public int getInt(String attrName) {
+        return resultList.get(index).getInt(attrName);
+    }
+
+    public String getString(String attrName) {
+        return resultList.get(index).getString(attrName);
+    }
+
+    public Object getObject(String attrName) {
+        return resultList.get(index).getObject(attrName);
+    }
+
+    public List<Result> getResultList(String attrName) {
+        return resultList.get(index).getResultList(attrName);
+    }
+    
+    public Result getResult(String attrName) {
+        return resultList.get(index).getResult(attrName);
     }
 
 }

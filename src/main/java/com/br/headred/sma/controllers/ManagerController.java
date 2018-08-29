@@ -43,7 +43,7 @@ public class ManagerController {
     public String cadastrarMedico(String userName, String userPassword, String medicName, String medicCrm, String medicWorkInfo, Model model) {
         String message = "";
         MedicProfile medicProfile = new MedicProfile();
-        try (Connection con = new ConnectionFactory().getConnection()) {            
+        try (Connection con = new ConnectionFactory().getConnection()) {
             medicProfile.setMedicName(medicName);
             medicProfile.setMedicCrm(medicCrm);
             medicProfile.setUserName(userName);
@@ -58,35 +58,37 @@ public class ManagerController {
                 while (resultList.next()) {
                     MedicSpeciality medicSpeciality = new MedicSpeciality(
                             medicProfile,
-                            new Speciality(resultList.getObjectList().getInt("specialityId")));
+                            new Speciality(resultList.getInt("specialityId")));
                     MedicWorkAddress medicWorkAddress = new MedicWorkAddress(
                             medicSpeciality,
                             new ClinicProfile(
-                                    resultList.getObjectList().getInt("clinicId")),
-                            resultList.getObjectList().getString("medicWorkInfo"));
+                                    resultList.getInt("clinicId")),
+                            resultList.getString("medicWorkInfo"));
                     MedicWorkScheduling medicWorkScheduling = new MedicWorkScheduling(
-                            resultList.getObjectList().getInt("medicSchedPerDay"),
+                            resultList.getInt("medicSchedPerDay"),
                             new Date(Calendar.getInstance().getTimeInMillis()),
                             0,
-                            resultList.getObjectList().getString("medicSchedInfo"),
-                            resultList.getObjectList().getString("medicSchedDayOfWeek"));
+                            resultList.getString("medicSchedInfo"),
+                            resultList.getString("medicSchedDayOfWeek"));
                     medicSpecialityList.add(medicSpeciality);
                     medicWorkAddressList.add(medicWorkAddress);
                     medicWorkSchedulingList.add(medicWorkScheduling);
                 }
-                new MedicDAO(con).addMedicSpecialityList(medicSpecialityList);
+                for (MedicSpeciality ms : medicSpecialityList) {
+                    new MedicDAO(con).addMedicSpeciality(ms);
+                }
                 new MedicDAO(con).addMedicWorkAddressList(medicWorkAddressList);
                 for (int i = 0; i < medicWorkSchedulingList.size(); i++) {
                     medicWorkSchedulingList.get(i).setMedicWorkSchedulingId(medicWorkAddressList.get(i).getMedicWorkAddressId());
                 }
                 new MedicDAO(con).addMedicWorkSchedulingList(medicWorkSchedulingList);
-            }            
+            }
             message = "Registro inserido com sucesso!";
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (DAOException e) {            
+        } catch (DAOException e) {
             e.printStackTrace();
-            message = e.getMessage();           
+            message = e.getMessage();
         }
         model.addAttribute("message", message);
         return "manager/message";
@@ -101,16 +103,35 @@ public class ManagerController {
             clinicProfile.setClinicCnpj(clinicCnpj);
             clinicProfile.setClinicProfileAddress(clinicAddress);
             clinicProfile.setClinicProfileBio(clinicCompl);
-            new ClinicDAO(con).addClinic(clinicProfile);            
+            new ClinicDAO(con).addClinic(clinicProfile);
             List<ClinicTelephone> clinicTelephoneList = new ArrayList<>();
             Result result = new ResultSet(telephoneList).getResult();
             ResultList resultList = new ResultList(result);
             if (!resultList.isEmpty()) {
                 while (resultList.next()) {
-                    clinicTelephoneList.add(new ClinicTelephone(clinicProfile, resultList.getObjectList().getString("telephoneNumber")));
+                    clinicTelephoneList.add(new ClinicTelephone(clinicProfile, resultList.getString("telephoneNumber")));
                 }
                 new ClinicDAO(con).addClinicTelephoneList(clinicTelephoneList);
-            }                                    
+            }
+            message = "Registro inserido com sucesso!";
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = e.getMessage();
+        }
+        model.addAttribute("message", message);
+        return "manager/message";
+    }
+
+    @RequestMapping("Manager/CadastrarEspecialidade")
+    public String cadastrarEspecialidade(String specialityName, boolean specialityPriv, Model model) {
+        String message = "";
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            Speciality speciality = new Speciality();
+            speciality.setSpecialityName(specialityName);
+            speciality.setSpecialityPriv(specialityPriv);            
+            new MedicDAO(con).addSpeciality(speciality);
             message = "Registro inserido com sucesso!";
         } catch (SQLException e) {
             e.printStackTrace();

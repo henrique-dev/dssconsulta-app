@@ -378,6 +378,7 @@ public class MedicDAO extends BasicDAO {
         }
     }
 
+    @Deprecated
     public void addMedicSpecialityList(List<MedicSpeciality> medicSpecialityList) throws DAOException {
         StringBuilder argumentsSize = new StringBuilder();
         for (int i = 0; i < medicSpecialityList.size(); i++) {
@@ -396,8 +397,24 @@ public class MedicDAO extends BasicDAO {
             throw new DAOException("Falha ao inserir as especialidades do medico", e);
         }
     }
+    
+    public boolean existMedicSpeciality(MedicSpeciality medicSpeciality) {
+        String sql = "select * from medicSpeciality where medicProfile_fk=? and speciality_fk=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, medicSpeciality.getMedicProfile().getId());
+            stmt.setInt(2, medicSpeciality.getSpeciality().getSpecialityId());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+        }
+        return false;
+    }
 
     public void addMedicSpeciality(MedicSpeciality medicSpeciality) throws DAOException {
+        if (existMedicSpeciality(medicSpeciality))
+            return;
         String sql = "insert into medicSpeciality values (?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicSpeciality.getMedicProfile().getId());
