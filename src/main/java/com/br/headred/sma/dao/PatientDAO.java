@@ -33,27 +33,7 @@ public class PatientDAO extends BasicDAO {
 
     public PatientDAO(Connection connection) {
         super(connection);
-    }
-    
-    public Patient login(Patient user) throws DAOException {
-        String sql = "select patientUserId from patientUser where patientUserName=? and patientUserPassword=?";
-        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setString(1, user.getUserName());
-            stmt.setString(2, user.getUserPassword());
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                int patientId = rs.getInt("patientUserId");                
-                String sessionId = (user.getUserName().hashCode() + Calendar.getInstance().getTimeInMillis()) + "";                                
-                Patient patient = this.getPatient(patientId);
-                patient.setUserSessionId(sessionId);
-                this.addPatientSessionId(patient);
-                return patient;
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Usuario ou senha incorretos", e);
-        }
-        return null;
-    }
+    }        
 
     /**
      * Adiciona completamente um paciente na base de dados.

@@ -5,17 +5,24 @@
  */
 package com.br.headred.sma.controllers;
 
+import com.br.headred.sma.dao.LoginDAO;
+import com.br.headred.sma.dao.MedicDAO;
 import com.br.headred.sma.dao.PatientDAO;
 import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.jdbc.ConnectionFactory;
+import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.PatientProfile;
+import com.br.headred.sma.models.User;
 import java.sql.Connection;
 import java.sql.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -30,15 +37,15 @@ public class LoginController {
     public String login() {
         return "login/login";
     }
-    
+
     @RequestMapping("NovoCadastro")
     public String registrar() {
         return "login/register";
     }
-    
+
     @RequestMapping("Cadastrar")
-    public String registrando(String name, String cpf, String email, String genre, 
-            Date birthDate, String height, String bloodType, String telephone, String password, String passwordRe) {        
+    public String registrando(String name, String cpf, String email, String genre,
+            Date birthDate, String height, String bloodType, String telephone, String password, String passwordRe) {
         try {
             PatientProfile p = new PatientProfile();
             p.setPatientName(name);
@@ -59,20 +66,49 @@ public class LoginController {
     }
 
     @PostMapping("Autenticar")
-    public String autenticar(String userName, String userPassword, HttpSession session) {
-        System.out.println("Tentativa de logon > Usuario: " + userName + " - Senha: " + userPassword);
-        Connection connection = new ConnectionFactory().getConnection();
-        if (!userName.toLowerCase().contains("ap")) {
-            try {
-                Patient patient = new PatientDAO(connection).login(new Patient(userName, userPassword));
-                if (patient != null) {
-                    System.err.println(patient.getUserSessionId());
-                    return "redirect:Paciente";                    
+    public String autenticar(String userName, String userPassword, HttpSession session, Model model, HttpServletResponse response) {
+        String msg = "";
+        try (Connection connection = new ConnectionFactory().getConnection()) {
+            if (userName.toLowerCase().contains(".")) {
+
+                User user = new Medic();
+                user.setUserName(userName);
+                user.setUserPassword(userPassword);
+
+            } else {
+
+                User user = new LoginDAO(connection).login(new Patient(userName, userPassword));
+                if (user != null) {
+                    session.setAttribute("patient", user);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    return "redirect:Paciente";
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 }
-            } catch (DAOException e) {
-                e.printStackTrace();
+
             }
+        } catch (DAOException e) {
+            e.printStackTrace();
+            msg = e.getMessage();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return "patient/main";
+    }
+
+    @RequestMapping("Teste")
+    public String teste(String userName, String userPassword, HttpSession session, HttpServletRequest request) {
+
+        System.out.println("request.getHeader(\"Cookie\"): " + request.getHeader("Cookie"));
+
+        System.out.println(session.getId());
+        System.out.println(session.getAttribute("usuario"));
+        System.out.println(session.isNew());
+        Enumeration<String> e = session.getAttributeNames();
+        while (e.hasMoreElements()) {
+            System.out.println(e.nextElement());
+        }
+        System.out.println("Recuperando usuario desta sessão: " + session.getId());
         return "redirect:Entrar";
     }
 
