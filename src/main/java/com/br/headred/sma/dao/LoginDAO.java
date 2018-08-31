@@ -6,6 +6,7 @@
 package com.br.headred.sma.dao;
 
 import com.br.headred.sma.exceptions.DAOException;
+import com.br.headred.sma.models.Manager;
 import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.User;
@@ -28,7 +29,7 @@ public class LoginDAO extends BasicDAO {
     public User login(User user) throws DAOException {
         if (user instanceof Patient) {
             String sql = "select patientUserId, patientName, patientCpf from patientUser "
-                    + "join patient on patient.patientId=patientUser.patientId where patientUserName=? and patientUserPassword=?";
+                    + "join patient on patient.patientUser_fk=patientUser.patientUserId where patientUserName=? and patientUserPassword=?";
             try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
                 stmt.setString(1, user.getUserName());
                 stmt.setString(2, user.getUserPassword());
@@ -42,26 +43,28 @@ public class LoginDAO extends BasicDAO {
                     return patient;
                 }
             } catch (SQLException e) {
-                throw new DAOException("Usuario ou senha incorretos", e);
+                throw new DAOException("Falha no login", e);
             }
         } else if (user instanceof Medic) {
-            String sql = "select patientUserId, patientName, patientCpf from patientUser "
-                    + "join patient on patient.patientId=patientUser.patientId where patientUserName=? and patientUserPassword=?";
+            String sql = "select medicUserId, medicName, medicCrm from medicUser "
+                    + "join medic on medic.medicUser_fk=medicUser.medicUserId where medicUserName=? and medicUserPassword=?";
             try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
                 stmt.setString(1, user.getUserName());
                 stmt.setString(2, user.getUserPassword());
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    int patientId = rs.getInt("patientUserId");
-                    Patient patient = new Patient();
-                    patient.setId(patientId);
-                    patient.setPatientName(rs.getString("patientName"));
-                    patient.setPatientCpf(rs.getString("patientCpf"));
-                    return patient;
+                    int patientId = rs.getInt("medicUserId");
+                    Medic medic = new Medic();
+                    medic.setId(patientId);
+                    medic.setMedicName(rs.getString("medicName"));
+                    medic.setMedicCrm(rs.getString("medicCrm"));
+                    return medic;
                 }
             } catch (SQLException e) {
-                throw new DAOException("Usuario ou senha incorretos", e);
+                throw new DAOException("Falha no login", e);
             }
+        } else if (user instanceof Manager) {
+            
         }
         return null;
     }

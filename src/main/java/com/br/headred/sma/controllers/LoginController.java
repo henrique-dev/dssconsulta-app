@@ -14,6 +14,7 @@ import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.PatientProfile;
 import com.br.headred.sma.models.User;
+import com.br.headred.sma.utils.ResponseCode;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -70,46 +71,43 @@ public class LoginController {
         String msg = "";
         try (Connection connection = new ConnectionFactory().getConnection()) {
             if (userName.toLowerCase().contains(".")) {
-
                 User user = new Medic();
                 user.setUserName(userName);
                 user.setUserPassword(userPassword);
-
             } else {
-
                 User user = new LoginDAO(connection).login(new Patient(userName, userPassword));
                 if (user != null) {
                     session.setAttribute("patient", user);
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    return "redirect:Paciente";
-                } else {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    model.addAttribute("patient", user);
+                    response.setStatus(HttpServletResponse.SC_OK);                    
+                    return "patient/main-data";
                 }
-
             }
+            response.setStatus( ResponseCode.SC_LOGIN_ERROR );
+            msg = "Usuário ou senha incorretos";
         } catch (DAOException e) {
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             msg = e.getMessage();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return "patient/main";
+        model.addAttribute("message", msg);
+        return "message";
     }
 
     @RequestMapping("Teste")
-    public String teste(String userName, String userPassword, HttpSession session, HttpServletRequest request) {
-
-        System.out.println("request.getHeader(\"Cookie\"): " + request.getHeader("Cookie"));
-
+    public String teste(String userName, String userPassword, HttpSession session) {
         System.out.println(session.getId());
         System.out.println(session.getAttribute("usuario"));
-        System.out.println(session.isNew());
-        Enumeration<String> e = session.getAttributeNames();
-        while (e.hasMoreElements()) {
-            System.out.println(e.nextElement());
-        }
         System.out.println("Recuperando usuario desta sessão: " + session.getId());
-        return "redirect:Entrar";
+        return "patient/main";
+    }
+
+    @RequestMapping("Teste2")
+    public String teste2(String userName, String userPassword, HttpSession session) {
+        session.invalidate();
+        return "patient/main";
     }
 
 }
