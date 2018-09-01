@@ -22,13 +22,14 @@ import com.br.headred.sma.models.MedicWorkAddress;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.PatientProfile;
 import com.br.headred.sma.models.Speciality;
+import com.br.headred.sma.models.User;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -43,28 +44,31 @@ public class PatientController {
         return "patient/main";
     }
     
-    @RequestMapping("Paciente/MeuPerfil")
-    public String meuPerfil(int patientId, Model model) {
+    @PostMapping("Paciente/MeuPerfil")
+    public String meuPerfil(HttpSession session, Model model) {        
         try (Connection con = new ConnectionFactory().getConnection()) {
-            PatientProfile patientProfile = new PatientDAO(con).getPatientProfile(patientId);
-            model.addAttribute(patientProfile);
-            return "patient/profile-patient";
+            int patientId = ((User)session.getAttribute("user")).getId();
+            System.out.println(patientId);
+            PatientProfile patientProfile = new PatientDAO(con).getPatientProfile(patientId); 
+            model.addAttribute(patientProfile);            
+            return "patient/profile-patient-data";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             System.err.println("Falha ao obter a conexão");
             e.printStackTrace();
         }
-        return "redirect:../Paciente";
+        return "redirect:../Paciente"; 
     }
 
     @RequestMapping("Paciente/MinhaAgenda")
     //@PostMapping("PrincipalPaciente/MinhaAgenda")
-    public String minhaAgenda(int patientId, Model model) {
+    public String minhaAgenda(Model model, HttpSession session) {
         try (Connection con = new ConnectionFactory().getConnection()) {
+            int patientId = ((User)session.getAttribute("user")).getId();
             List<Consult> consultList = new ConsultDAO(con).getConsultList(new Patient(patientId));
             model.addAttribute(consultList);
-            return "patient/agenda";
+            return "patient/agenda-data";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -94,7 +98,7 @@ public class PatientController {
         try (Connection con = new ConnectionFactory().getConnection()) {
             List<Speciality> specialityList = new MedicDAO(con).getSpecialityList();
             model.addAttribute(specialityList);
-            return "patient/list-speciality";
+            return "patient/list-speciality-data";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -105,11 +109,11 @@ public class PatientController {
     }
 
     @RequestMapping("Paciente/ListarMedicos")
-    public String listarMedicos(int specialityId, Model model) {
-        try (Connection con = new ConnectionFactory().getConnection()) {
-            List<MedicProfile> medicProfileList = new MedicDAO(con).getMedicProfileList(specialityId);
-            model.addAttribute(medicProfileList);
-            return "patient/list-medic";
+    public String listarMedicos(int keyForSearch, Model model) {        
+        try (Connection con = new ConnectionFactory().getConnection()) {            
+            List<MedicProfile> medicProfileList = new MedicDAO(con).getMedicProfileList(keyForSearch);
+            model.addAttribute(medicProfileList);            
+            return "patient/list-medic-data";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -124,7 +128,7 @@ public class PatientController {
         try (Connection con = new ConnectionFactory().getConnection()) {
             MedicProfile medicProfile = new MedicDAO(con).getMedicProfile(medicId);
             model.addAttribute(medicProfile);
-            return "patient/profile-medic";
+            return "patient/profile-medic-data";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {

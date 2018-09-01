@@ -246,30 +246,31 @@ public class MedicDAO extends BasicDAO {
         String sql = "select "
                 + "medic_fk, medicName, medicWorkAddressId, medicProfileBio, medicProfileInfoCompl, medicProfileExpAge, medicEvaluationAvg, "
                 + "medicEvaluationCount, clinicId, clinicName, specialityId, specialityName, specialityPriv "
-                + "from medicWorkAddress "
-                + "inner join medicProfile on medicWorkAddress.medicSpeciality_medicProfile_fk=medicProfile.medic_fk "
-                + "inner join medicEvaluation on medicEvaluation.medicProfile_fk=medicProfile.medic_fk "
-                + "inner join medic on medic.medicUser_fk=medicProfile.medic_fk "
-                + "inner join clinic on clinic.clinicId=medicWorkAddress.clinicProfile_fk "
-                + "inner join speciality on speciality.specialityId=medicWorkAddress.medicSpeciality_speciality_fk where medic_fk=? "
-                + "order by medic_fk";
+                + "from medic "
+                + "join medicProfile on medicProfile.medic_fk=medic.medicUser_fk "
+                + "join medicEvaluation on medicEvaluation.medicProfile_fk=medicProfile.medic_fk "
+                + "left join medicWorkAddress on medicWorkAddress.medicSpeciality_medicProfile_fk=medicProfile.medic_fk "
+                + "left join clinic on clinic.clinicId=medicWorkAddress.clinicProfile_fk "
+                + "left join speciality on speciality.specialityId=medicWorkAddress.medicSpeciality_speciality_fk "
+                + "where medic_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicId);
             ResultSet rs = stmt.executeQuery();
+            int currentMedic = -1;
             medicProfile = new MedicProfile();
             List<MedicWorkAddress> medicWorkAddressList = new ArrayList<>();
             List<MedicSpeciality> medicSpecialityList = new ArrayList<>();;
-            if (rs.next()) {
-                medicProfile = new MedicProfile();
-                medicWorkAddressList = new ArrayList<>();
-                medicSpecialityList = new ArrayList<>();
-                medicProfile.setId(medicId);
-                medicProfile.setMedicName(rs.getString("medicName"));
-                medicProfile.setMedicProfileExpAge(rs.getInt("medicProfileExpAge"));
-                medicProfile.setMedicProfileEvaluationAvg(rs.getFloat("medicEvaluationAvg"));
-                medicProfile.setMedicProfileEvaluationCount(rs.getInt("medicEvaluationCount"));
-                medicProfile.setMedicProfileInfoCompl(rs.getString("medicProfileInfoCompl"));
-                medicProfile.setMedicProfileBio(rs.getString("medicProfileBio"));
+            while (rs.next()) {                
+                if (currentMedic != medicId) {
+                    currentMedic = medicId;                                                            
+                    medicProfile.setId(medicId);
+                    medicProfile.setMedicName(rs.getString("medicName"));
+                    medicProfile.setMedicProfileExpAge(rs.getInt("medicProfileExpAge"));
+                    medicProfile.setMedicProfileEvaluationAvg(rs.getFloat("medicEvaluationAvg"));
+                    medicProfile.setMedicProfileEvaluationCount(rs.getInt("medicEvaluationCount"));
+                    medicProfile.setMedicProfileInfoCompl(rs.getString("medicProfileInfoCompl"));
+                    medicProfile.setMedicProfileBio(rs.getString("medicProfileBio"));
+                }
 
                 MedicSpeciality medicSpeciality = new MedicSpeciality();
                 Speciality speciality = new Speciality();
@@ -288,9 +289,13 @@ public class MedicDAO extends BasicDAO {
                 medicWorkAddress.setClinicProfile(clinic);
                 medicWorkAddress.setMedicSpeciality(medicSpeciality);
                 medicWorkAddressList.add(medicWorkAddress);
-
+                
+            }
+            if (currentMedic != -1) {
                 medicProfile.setMedicWorkAddressList(medicWorkAddressList);
                 medicProfile.setMedicSpecialityList(medicSpecialityList);
+                System.out.println(medicWorkAddressList.size());
+                System.out.println(medicSpecialityList.size());
             }
         } catch (SQLException e) {
             throw new DAOException("Falha ao adquirir a lista de medicos", e);
@@ -397,7 +402,7 @@ public class MedicDAO extends BasicDAO {
             throw new DAOException("Falha ao inserir as especialidades do medico", e);
         }
     }
-    
+
     public boolean existMedicSpeciality(MedicSpeciality medicSpeciality) {
         String sql = "select * from medicSpeciality where medicProfile_fk=? and speciality_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
@@ -413,8 +418,9 @@ public class MedicDAO extends BasicDAO {
     }
 
     public void addMedicSpeciality(MedicSpeciality medicSpeciality) throws DAOException {
-        if (existMedicSpeciality(medicSpeciality))
+        if (existMedicSpeciality(medicSpeciality)) {
             return;
+        }
         String sql = "insert into medicSpeciality values (?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicSpeciality.getMedicProfile().getId());

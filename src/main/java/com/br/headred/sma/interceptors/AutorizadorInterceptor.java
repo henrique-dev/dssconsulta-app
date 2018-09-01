@@ -7,6 +7,7 @@ package com.br.headred.sma.interceptors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
@@ -17,8 +18,9 @@ public class AutorizadorInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("Session id: " + request.getSession().getId());
         String uri = request.getRequestURI();
-        if (request.getSession().getAttribute("usuario") != null) {
+        if (request.getSession().getAttribute("user") != null) {
             System.out.println("USUARIO NÃO NULO");
             return true;
         }
@@ -27,7 +29,8 @@ public class AutorizadorInterceptor extends HandlerInterceptorAdapter {
             System.out.println("ENCAMINHANDO");            
             return true;            
         } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);            
+            System.out.println("ACESSO NÃO AUTORIZADO");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
         //response.sendRedirect("Principal");
         return false;

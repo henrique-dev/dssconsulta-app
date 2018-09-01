@@ -77,7 +77,7 @@ public class LoginController {
             } else {
                 User user = new LoginDAO(connection).login(new Patient(userName, userPassword));
                 if (user != null) {
-                    session.setAttribute("patient", user);
+                    session.setAttribute("user", user);
                     model.addAttribute("patient", user);
                     response.setStatus(HttpServletResponse.SC_OK);                    
                     return "patient/main-data";
