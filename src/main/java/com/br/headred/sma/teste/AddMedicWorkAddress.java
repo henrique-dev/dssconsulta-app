@@ -29,7 +29,7 @@ public class AddMedicWorkAddress {
                     new MedicWorkAddress(
                             new MedicSpeciality(new MedicProfile(0), new Speciality(2)),
                             new ClinicProfile(0), 
-                            "Sala 205"), 
+                            "Sala 205", null), 
                     new MedicWorkScheduling(
                             10, 
                             new Date(Calendar.getInstance().getTimeInMillis()), 

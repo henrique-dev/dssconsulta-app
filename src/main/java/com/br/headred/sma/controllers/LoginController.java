@@ -10,6 +10,7 @@ import com.br.headred.sma.dao.MedicDAO;
 import com.br.headred.sma.dao.PatientDAO;
 import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.jdbc.ConnectionFactory;
+import com.br.headred.sma.models.Manager;
 import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.PatientProfile;
@@ -67,13 +68,23 @@ public class LoginController {
     }
 
     @PostMapping("Autenticar")
-    public String autenticar(String userName, String userPassword, HttpSession session, Model model, HttpServletResponse response) {
+    public String autenticar(String userName, String userPassword, HttpSession session, Model model, HttpServletResponse response) {        
         String msg = "";
         try (Connection connection = new ConnectionFactory().getConnection()) {
             if (userName.toLowerCase().contains(".")) {
                 User user = new Medic();
                 user.setUserName(userName);
                 user.setUserPassword(userPassword);
+            } else if (userName.toLowerCase().startsWith("@")) {
+                User user = new LoginDAO(connection).login(new Manager(userName, userPassword));
+                if (user != null) {
+                    session.setAttribute("user", user);                    
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    msg = "success";
+                    model.addAttribute("message", msg);
+                    System.out.println("HERE");
+                    return "manager/message";
+                }
             } else {
                 User user = new LoginDAO(connection).login(new Patient(userName, userPassword));
                 if (user != null) {
@@ -83,7 +94,7 @@ public class LoginController {
                     return "patient/main-data";
                 }
             }
-            response.setStatus( ResponseCode.SC_LOGIN_ERROR );
+            response.setStatus( HttpServletResponse.SC_FORBIDDEN );
             msg = "Usuário ou senha incorretos";
         } catch (DAOException e) {
             e.printStackTrace();
@@ -91,9 +102,9 @@ public class LoginController {
             msg = e.getMessage();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }        
         model.addAttribute("message", msg);
-        return "message";
+        return "manager/message";
     }
 
     @RequestMapping("Teste")

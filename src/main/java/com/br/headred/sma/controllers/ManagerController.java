@@ -63,7 +63,8 @@ public class ManagerController {
                             medicSpeciality,
                             new ClinicProfile(
                                     resultList.getInt("clinicId")),
-                            resultList.getString("medicWorkInfo"));
+                            resultList.getString("medicWorkInfo"),
+                    null);
                     MedicWorkScheduling medicWorkScheduling = new MedicWorkScheduling(
                             resultList.getInt("medicSchedPerDay"),
                             new Date(Calendar.getInstance().getTimeInMillis()),

@@ -15,22 +15,29 @@ public class MedicWorkAddress {
     private MedicSpeciality medicSpeciality;
     private ClinicProfile clinicProfile;
     private String medicWorkAddressComplement;
+    private MedicWorkScheduling medicWorkScheduling;
 
     public MedicWorkAddress() {
     }
+    
+    public MedicWorkAddress(int medicWorkAddressId) {
+        this.medicWorkAddressId = medicWorkAddressId;
+    }   
 
-    public MedicWorkAddress(int medicWorkAddressId, MedicSpeciality medicSpeciality, ClinicProfile clinicProfile, String medicWorkAddressComplement) {
+    public MedicWorkAddress(int medicWorkAddressId, MedicSpeciality medicSpeciality, ClinicProfile clinicProfile, String medicWorkAddressComplement, MedicWorkScheduling medicWorkScheduling) {
         this.medicWorkAddressId = medicWorkAddressId;
         this.medicSpeciality = medicSpeciality;
         this.clinicProfile = clinicProfile;
         this.medicWorkAddressComplement = medicWorkAddressComplement;
+        this.medicWorkScheduling = medicWorkScheduling;
     }
 
-    public MedicWorkAddress(MedicSpeciality medicSpeciality, ClinicProfile clinicProfile, String medicWorkAddressComplement) {
+    public MedicWorkAddress(MedicSpeciality medicSpeciality, ClinicProfile clinicProfile, String medicWorkAddressComplement, MedicWorkScheduling medicWorkScheduling) {
         this.medicSpeciality = medicSpeciality;
         this.clinicProfile = clinicProfile;
         this.medicWorkAddressComplement = medicWorkAddressComplement;
-    }
+        this.medicWorkScheduling = medicWorkScheduling;
+    }        
 
     public MedicSpeciality getMedicSpeciality() {
         return medicSpeciality;
@@ -38,11 +45,7 @@ public class MedicWorkAddress {
 
     public void setMedicSpeciality(MedicSpeciality medicSpeciality) {
         this.medicSpeciality = medicSpeciality;
-    }        
-
-    public MedicWorkAddress(int medicWorkAddressId) {
-        this.medicWorkAddressId = medicWorkAddressId;
-    }   
+    }           
 
     public int getMedicWorkAddressId() {
         return medicWorkAddressId;
@@ -66,6 +69,14 @@ public class MedicWorkAddress {
 
     public void setMedicWorkAddressComplement(String medicWorkAddressComplement) {
         this.medicWorkAddressComplement = medicWorkAddressComplement;
+    }        
+
+    public MedicWorkScheduling getMedicWorkScheduling() {
+        return medicWorkScheduling;
+    }
+
+    public void setMedicWorkScheduling(MedicWorkScheduling medicWorkScheduling) {
+        this.medicWorkScheduling = medicWorkScheduling;
     }        
     
 }

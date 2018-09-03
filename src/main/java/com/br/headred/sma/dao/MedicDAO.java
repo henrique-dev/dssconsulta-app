@@ -16,12 +16,10 @@ import com.br.headred.sma.models.MedicWorkScheduling;
 import com.br.headred.sma.models.Speciality;
 import com.br.headred.sma.models.User;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -578,9 +576,9 @@ public class MedicDAO extends BasicDAO {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 medicWorkScheduling = new MedicWorkScheduling();
-                medicWorkScheduling.setMedicWorkSchedulingCounterOfDay(rs.getInt("medicWorkSpaceSchedulingCounterOfDay"));
-                medicWorkScheduling.setMedicWorkSchedulingPerDay(rs.getInt("medicWorkSpaceSchedulingPerDay"));
-                medicWorkScheduling.setMedicWorkSchedulingDateLast(rs.getDate("medicWorkSpaceSchedulingDateLast", Calendar.getInstance()));
+                medicWorkScheduling.setMedicWorkSchedulingCounterOfDay(rs.getInt("medicWorkSchedulingCounterOfDay"));
+                medicWorkScheduling.setMedicWorkSchedulingPerDay(rs.getInt("medicWorkSchedulingPerDay"));
+                medicWorkScheduling.setMedicWorkSchedulingDateLast(rs.getDate("medicWorkSchedulingDateLast", Calendar.getInstance()));
                 medicWorkScheduling.setMedicWorkSchedulingInfo(rs.getString("medicWorkSchedulingInfo"));
                 medicWorkScheduling.setMedicWorkSchedulingDaysOfWeek(rs.getString("medicWorkSchedulingDaysOfWeek"));
                 medicWorkScheduling.setMedicWorkSchedulingDaysOfWeek(rs.getString("medicWorkSchedulingDaysOfWeek"));
@@ -593,7 +591,7 @@ public class MedicDAO extends BasicDAO {
 
     public void updateMedicWorkSchedulingFromConsult(MedicWorkScheduling medicWorkScheduling) throws DAOException {
         String sql = "update medicWorkScheduling set "
-                + "medicWorkSpaceSchedulingCounterOfDay=?, medicWorkSpaceSchedulingDateLast=? "
+                + "medicWorkSchedulingCounterOfDay=?, medicWorkSchedulingDateLast=? "
                 + "where medicWorkAddress_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicWorkScheduling.getMedicWorkSchedulingCounterOfDay());
@@ -637,6 +635,60 @@ public class MedicDAO extends BasicDAO {
         } catch (SQLException e) {
             throw new DAOException("Falha ao atualizar o perfil de avaliação do medico", e);
         }
+    }
+    
+    public MedicProfile getMedicProfileWithWorkInfoListForScheduleConsult(Medic medic) throws DAOException {
+        MedicProfile medicProfile = null;
+        String sql = "select medicUser_fk, medicName, medicWorkAddressId, medicWorkSchedulingDateLast, medicWorkSchedulingCounterOfDay,"
+                + "medicWorkSchedulingPerDay, medicWorkSchedulingDaysOfWeek, clinicName, specialityId, specialityName, specialityPriv "
+                + "from medic "
+                + "join medicWorkAddress on medic.medicUser_fk=MedicWorkAddress.medicSpeciality_medicProfile_fk "
+                + "join medicWorkScheduling on medicWorkAddress.medicWorkAddressId=medicWorkScheduling.medicWorkAddress_fk "
+                + "join clinic on medicWorkAddress.clinicProfile_fk=clinic.clinicId "
+                + "join speciality on medicWorkAddress.medicSpeciality_speciality_fk=speciality.specialityId "
+                + "where medicUser_fk=? "
+                + "order by medicName, specialityName";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, medic.getId());
+            ResultSet rs = stmt.executeQuery();
+            List<MedicWorkAddress> medicWorkAddressList = new ArrayList<>();
+            medicProfile = new MedicProfile();
+            int currentMedic = -1;
+            while (rs.next()) {
+                if (currentMedic != medic.getId()) {
+                    currentMedic = medic.getId();                    
+                    medicWorkAddressList = new ArrayList<>();
+                    medicProfile.setId(medic.getId());
+                    medicProfile.setMedicName(rs.getString("medicName"));
+                }
+                MedicWorkAddress medicWorkAddress = new MedicWorkAddress();
+                medicWorkAddress.setMedicWorkAddressId(rs.getInt("medicWorkAddressId"));
+                
+                MedicWorkScheduling medicWorkScheduling = new MedicWorkScheduling();
+                medicWorkScheduling.setMedicWorkSchedulingDateLast(rs.getDate("medicWorkSchedulingDateLast", Calendar.getInstance()));                
+                medicWorkScheduling.setMedicWorkSchedulingDaysOfWeek(rs.getString("medicWorkSchedulingDaysOfWeek"));
+                medicWorkScheduling.setMedicWorkSchedulingCounterOfDay(rs.getInt("medicWorkSchedulingCounterOfDay"));
+                medicWorkScheduling.setMedicWorkSchedulingPerDay(rs.getInt("medicWorkSchedulingPerDay"));
+                medicWorkAddress.setMedicWorkScheduling(medicWorkScheduling);
+                
+                ClinicProfile clinicProfile = new ClinicProfile();
+                clinicProfile.setClinicName(rs.getString("clinicName"));
+                medicWorkAddress.setClinicProfile(clinicProfile);
+                
+                Speciality speciality = new Speciality();
+                speciality.setSpecialityId(rs.getInt("specialityId"));
+                speciality.setSpecialityName(rs.getString("specialityName"));
+                speciality.setSpecialityPriv(rs.getBoolean("specialityPriv"));
+                medicWorkAddress.setMedicSpeciality(new MedicSpeciality(medicProfile, speciality));
+                
+                medicWorkAddressList.add(medicWorkAddress);
+            }
+            if (currentMedic == medic.getId())
+                medicProfile.setMedicWorkAddressList(medicWorkAddressList);
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao obter as informações dos médicos", e);
+        }
+        return medicProfile;
     }
 
 }

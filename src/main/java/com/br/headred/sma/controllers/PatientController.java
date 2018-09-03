@@ -16,6 +16,7 @@ import com.br.headred.sma.jdbc.ConnectionFactory;
 import com.br.headred.sma.models.ClinicProfile;
 import com.br.headred.sma.models.Consult;
 import com.br.headred.sma.models.Evaluation;
+import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.MedicProfile;
 import com.br.headred.sma.models.MedicSpeciality;
 import com.br.headred.sma.models.MedicWorkAddress;
@@ -25,6 +26,7 @@ import com.br.headred.sma.models.Speciality;
 import com.br.headred.sma.models.User;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -61,8 +63,7 @@ public class PatientController {
         return "redirect:../Paciente"; 
     }
 
-    @RequestMapping("Paciente/MinhaAgenda")
-    //@PostMapping("PrincipalPaciente/MinhaAgenda")
+    @RequestMapping("Paciente/MinhaAgenda")    
     public String minhaAgenda(Model model, HttpSession session) {
         try (Connection con = new ConnectionFactory().getConnection()) {
             int patientId = ((User)session.getAttribute("user")).getId();
@@ -133,6 +134,23 @@ public class PatientController {
             e.printStackTrace();
         } catch (SQLException e) {
             System.err.println("Falha ao obter a conexão");
+            e.printStackTrace();
+        }
+        return "redirect:../Paciente";
+    }
+    
+    @RequestMapping("Paciente/ProximaConsulta")    
+    public String proximaConsulta(int medicId, Model model) {
+        System.out.println("HERE");
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            MedicProfile medicProfile = new MedicDAO(con).getMedicProfileWithWorkInfoListForScheduleConsult(new Medic(medicId));
+            model.addAttribute("medicProfile", medicProfile);            
+            model.addAttribute("currentDate", Calendar.getInstance().getTime().getTime());
+            return "patient/next-consult-data";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Falha ao obter a conexão");            
             e.printStackTrace();
         }
         return "redirect:../Paciente";

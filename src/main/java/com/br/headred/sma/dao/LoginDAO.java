@@ -64,7 +64,7 @@ public class LoginDAO extends BasicDAO {
                 throw new DAOException("Falha no login", e);
             }
         } else if (user instanceof Manager) {
-            
+            return new Manager();
         }
         return null;
     }

@@ -1,11 +1,11 @@
 <%-- 
     Document   : profile-medic-data
     Created on : 31/08/2018, 20:05:19
-    Author     : Paulo Henrique Gonçalves Bacelar
+    Author     : Paulo Henrique GonÃ§alves Bacelar
 --%>
-<%@page contentType="application/json"%>
+<%@page contentType="application/json" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-(lista:
+(list:
 [medicProfile:
     {id:${medicProfile.id}},
     {name:${medicProfile.medicName}},

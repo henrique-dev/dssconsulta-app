@@ -10,5 +10,16 @@ package com.br.headred.sma.models;
  * @author Paulo Henrique Gonçalves Bacelar
  */
 public class Manager extends User{
+
+    public Manager() {
+    }
+
+    public Manager(int userId) {
+        super(userId);
+    }
+
+    public Manager(String userName, String userPassword) {
+        super(userName, userPassword);
+    }        
     
 }
