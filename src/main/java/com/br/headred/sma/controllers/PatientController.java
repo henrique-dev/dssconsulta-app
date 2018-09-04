@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,8 +50,7 @@ public class PatientController {
     @PostMapping("Paciente/MeuPerfil")
     public String meuPerfil(HttpSession session, Model model) {        
         try (Connection con = new ConnectionFactory().getConnection()) {
-            int patientId = ((User)session.getAttribute("user")).getId();
-            System.out.println(patientId);
+            int patientId = ((User)session.getAttribute("user")).getId();            
             PatientProfile patientProfile = new PatientDAO(con).getPatientProfile(patientId); 
             model.addAttribute(patientProfile);            
             return "patient/profile-patient-data";
@@ -172,22 +172,30 @@ public class PatientController {
     }
 
     @RequestMapping("Paciente/AgendarConsulta")
-    public String agendarConsulta(int patientId, int medicId, int specialityId, int medicWorkAddressId, Model model) {
+    public String agendarConsulta(int medicId, int specialityId, int medicWorkAddressId, 
+            Model model, HttpServletResponse response, HttpSession session) {
         try (Connection con = new ConnectionFactory().getConnection()) {
+            int patientId = ((User)session.getAttribute("user")).getId();
             Consult consult = new Consult();
             consult.setMedicSpeciality(new MedicSpeciality(new MedicProfile(medicId), new Speciality(specialityId)));
             consult.setMedicWorkAddress(new MedicWorkAddress(medicWorkAddressId));
-            consult.setPatient(new Patient(patientId));
+            consult.setPatientProfile(new PatientProfile(patientId));
             new ConsultDAO(con).addConsultForAll(consult);
-        } catch (DAOException e) {
+            model.addAttribute("message", "success");
+            return "patient/message";
+        } catch (DAOException e) {            
             e.printStackTrace();
         } catch (SQLException e) {
             System.err.println("Falha ao obter a conexão");
             e.printStackTrace();
-        } catch (DuplicateException e) {
+        } catch (DuplicateException e) {            
+            model.addAttribute("message", e.getMessage());
             System.err.println(e.getMessage());
-        } catch (ConsultWithPrivilegesException e) {
-            System.out.println(e.getMessage());
+            return "patient/message";
+        } catch (ConsultWithPrivilegesException e) {            
+            model.addAttribute("message", e.getMessage());
+            System.err.println(e.getMessage());
+            return "patient/message";
         }
         return "redirect:../Paciente";
     }

@@ -353,6 +353,27 @@ public class MedicDAO extends BasicDAO {
         }
         return specialityList;
     }
+    
+    public List<Speciality> getSpecialityListFromMedicSpeciality() throws DAOException {
+        List<Speciality> specialityList = null;
+        String sql = "select specialityId, specialityName, specialityPriv from medicSpeciality "
+                + "join speciality on medicSpeciality.speciality_fk=speciality.specialityId "
+                + "group by speciality_fk";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            specialityList = new ArrayList<>();
+            while (rs.next()) {
+                Speciality speciality = new Speciality();
+                speciality.setSpecialityId(rs.getInt("specialityId"));
+                speciality.setSpecialityName(rs.getString("specialityName"));
+                speciality.setSpecialityPriv(rs.getBoolean("specialityPriv"));
+                specialityList.add(speciality);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao recuperar a lista de especialidades", e);
+        }
+        return specialityList;
+    }
 
     public boolean existSpeciality(Speciality speciality) {
         String sql = "select specialityId from speciality where specialityId=?";
@@ -500,6 +521,34 @@ public class MedicDAO extends BasicDAO {
             new SystemDAO(super.connection).releaseId(SystemDAO.Table.medicWorkAddress, medicWorkAddressId);
             throw new DAOException("Falha ao adicionar o endereco de trabalho do medico", e);
         }
+    }
+    
+    public List<MedicWorkAddress> getMedicWorkAddressList(Medic medic) throws DAOException {
+        List<MedicWorkAddress> medicWorkAddressList = null;
+        String sql = "select medicWorkAddressid, clinicName, medicWorkAddressComplement, specialityName from medicWorkAddress "
+                + "join clinic on medicWorkAddress.clinicProfile_fk=clinic.clinicId "
+                + "join speciality on medicWorkAddress.medicSpeciality_speciality_fk=speciality.specialityId "
+                + "where medicSpeciality_medicProfile_fk=? order by clinicName";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, medic.getId());
+            medicWorkAddressList = new ArrayList<>();
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                MedicWorkAddress medicWorkAddress = new MedicWorkAddress();
+                medicWorkAddress.setMedicWorkAddressId(rs.getInt("medicWorkAddressId"));
+                medicWorkAddress.setMedicWorkAddressComplement(rs.getString("medicWorkAddressComplement"));
+                ClinicProfile clinicProfile = new ClinicProfile();
+                clinicProfile.setClinicName(rs.getString("clinicName"));                
+                medicWorkAddress.setClinicProfile(clinicProfile);
+                Speciality speciality = new Speciality();
+                speciality.setSpecialityName(rs.getString("specialityName"));
+                medicWorkAddress.setMedicSpeciality(new MedicSpeciality(null, speciality));
+                medicWorkAddressList.add(medicWorkAddress);
+            }
+        } catch (SQLException e) {            
+            throw new DAOException("Falha ao recuperar a lista de endereços de trabalho do medico", e);
+        }
+        return medicWorkAddressList;
     }
 
     private boolean existMedicWorkAddress(MedicWorkAddress medicWorkAddress) {

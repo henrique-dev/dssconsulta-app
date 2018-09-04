@@ -30,11 +30,11 @@ public class AddPatient {
             
             PatientProfile patient = new PatientProfile();
             
-            patient.setUserName("01741053200");
-            patient.setUserPassword("12345");            
+            patient.setUserName("4");
+            patient.setUserPassword("4");            
                                     
-            patient.setPatientName("Paulo Henrique Gonçalves Bacelar");
-            patient.setPatientCpf("01741053200");
+            patient.setPatientName("Larissa Queiroz");
+            patient.setPatientCpf("4");
                                                 
             patient.setPatientProfileEmail("henrique.phgb@gmail.com");
             patient.setPatientProfileGenre("masculino");

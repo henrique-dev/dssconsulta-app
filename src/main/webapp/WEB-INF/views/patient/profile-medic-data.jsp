@@ -1,9 +1,9 @@
 <%-- 
     Document   : profile-medic-data
     Created on : 31/08/2018, 20:05:19
-    Author     : Paulo Henrique GonÃ§alves Bacelar
+    Author     : Paulo Henrique Gonçalves Bacelar
 --%>
-<%@page contentType="application/json" pageEncoding="UTF-8"%>
+<%@page contentType="application/json"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 (list:
 [medicProfile:

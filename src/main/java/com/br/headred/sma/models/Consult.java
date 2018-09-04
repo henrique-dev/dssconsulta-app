@@ -18,7 +18,7 @@ public class Consult {
     private Timestamp consultCreationDate;
     private Timestamp consultForDate;
     private boolean consultConsulted;
-    private Patient patient;
+    private PatientProfile patient;
     private MedicSpeciality medicSpeciality;
     private MedicWorkAddress medicWorkAddress;
 
@@ -29,7 +29,7 @@ public class Consult {
         this.consultId = consultId;
     }
 
-    public Consult(int consultId, Timestamp consultCreationDate, Timestamp consultForDate, boolean consultConsulted, Patient patient, MedicSpeciality medicSpeciality, MedicWorkAddress medicWorkAddress) {
+    public Consult(int consultId, Timestamp consultCreationDate, Timestamp consultForDate, boolean consultConsulted, PatientProfile patient, MedicSpeciality medicSpeciality, MedicWorkAddress medicWorkAddress) {
         this.consultId = consultId;
         this.consultCreationDate = consultCreationDate;
         this.consultForDate = consultForDate;
@@ -39,7 +39,7 @@ public class Consult {
         this.medicWorkAddress = medicWorkAddress;
     }
 
-    public Consult(Timestamp consultCreationDate, Timestamp consultForDate, boolean consultConsulted, Patient patient, MedicSpeciality medicSpeciality, MedicWorkAddress medicWorkAddress) {
+    public Consult(Timestamp consultCreationDate, Timestamp consultForDate, boolean consultConsulted, PatientProfile patient, MedicSpeciality medicSpeciality, MedicWorkAddress medicWorkAddress) {
         this.consultCreationDate = consultCreationDate;
         this.consultForDate = consultForDate;
         this.consultConsulted = consultConsulted;
@@ -96,11 +96,11 @@ public class Consult {
         this.medicWorkAddress = medicWorkAddress;
     }        
 
-    public Patient getPatient() {
+    public PatientProfile getPatientProfile() {
         return patient;
     }
 
-    public void setPatient(Patient patient) {
+    public void setPatientProfile(PatientProfile patient) {
         this.patient = patient;
     }        
     

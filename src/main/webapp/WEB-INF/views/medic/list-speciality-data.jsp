@@ -7,11 +7,13 @@
 <%@page contentType="application/json"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 (specialityList:<c:forEach items="${specialityList}" var="speciality" varStatus="i">
-    [speciality:
-        {id:${speciality.specialityId}},
-        {name:${speciality.specialityName}}        
-    ]
-    <c:if test="${!i.last}">
-        ,
+    <c:if test="${speciality.specialityPriv}">
+        [speciality:
+            {specialityId:${speciality.specialityId}},
+            {specialityName:${speciality.specialityName}}        
+        ]
+        <c:if test="${!i.last}">
+            ,
+        </c:if>
     </c:if>
 </c:forEach>)

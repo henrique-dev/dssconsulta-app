@@ -7,7 +7,6 @@ package com.br.headred.sma.interceptors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
@@ -17,22 +16,18 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 public class AutorizadorInterceptor extends HandlerInterceptorAdapter {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("Session id: " + request.getSession().getId());
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {        
         String uri = request.getRequestURI();
-        if (request.getSession().getAttribute("user") != null) {
-            System.out.println("USUARIO NÃO NULO");
+        if (request.getSession().getAttribute("user") != null) {            
             return true;
         }
         else if (uri.contains("resources") || uri.contains("Teste2") || uri.contains("Autenticar")
-                || uri.contains("Entrar") || uri.contains("Principal")) {
-            System.out.println("ENCAMINHANDO");            
+                || uri.contains("Entrar") || uri.contains("Principal")) {            
             return true;            
-        } else {
-            System.out.println("ACESSO NÃO AUTORIZADO");
+        } else {          
+            System.out.println("Acesso não autorizado");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        }
-        //response.sendRedirect("Principal");
+        }        
         return false;
     }
 

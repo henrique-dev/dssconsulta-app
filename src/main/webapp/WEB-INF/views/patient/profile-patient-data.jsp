@@ -1,9 +1,9 @@
 <%-- 
     Document   : profile-patient-data
     Created on : 31/08/2018, 12:01:25
-    Author     : Paulo Henrique GonÃ§alves Bacelar
+    Author     : Paulo Henrique Gonçalves Bacelar
 --%>
-<%@page contentType="application/json" pageEncoding="UTF-8"%>
+<%@page contentType="application/json"%>
 (patientProfile:
     [patient:
         {name:${patientProfile.patientName}},

@@ -1,10 +1,10 @@
 <%-- 
     Document   : next-consult-data
     Created on : 03/09/2018, 09:05:05
-    Author     : Paulo Henrique GonÃ§alves Bacelar
+    Author     : Paulo Henrique Gonçalves Bacelar
 --%>
 
-<%@page contentType="application/json" pageEncoding="UTF-8"%>
+<%@page contentType="application/json"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 (list:
 [medicProfile:

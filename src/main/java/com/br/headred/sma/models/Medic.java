@@ -12,7 +12,11 @@ package com.br.headred.sma.models;
 public class Medic extends User {
     
     private String medicName;
-    private String medicCrm;       
+    private String medicCrm;      
+
+    public Medic(String userName, String userPassword) {
+        super(userName, userPassword);
+    }        
     
     public Medic() {
         super();

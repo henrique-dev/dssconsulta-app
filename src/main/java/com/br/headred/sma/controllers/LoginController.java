@@ -69,24 +69,27 @@ public class LoginController {
 
     @PostMapping("Autenticar")
     public String autenticar(String userName, String userPassword, HttpSession session, Model model, HttpServletResponse response) {        
-        String msg = "";
+        String msg = "";        
         try (Connection connection = new ConnectionFactory().getConnection()) {
             if (userName.toLowerCase().contains(".")) {
-                User user = new Medic();
-                user.setUserName(userName);
-                user.setUserPassword(userPassword);
+                User user = new LoginDAO(connection).login(new Medic(userName.toLowerCase(), userPassword));
+                if (user != null) {
+                    session.setAttribute("user", user);
+                    model.addAttribute("medic", user);
+                    response.setStatus(HttpServletResponse.SC_OK);                    
+                    return "medic/main-data";
+                }                    
             } else if (userName.toLowerCase().startsWith("@")) {
-                User user = new LoginDAO(connection).login(new Manager(userName, userPassword));
+                User user = new LoginDAO(connection).login(new Manager(userName.toLowerCase(), userPassword));
                 if (user != null) {
                     session.setAttribute("user", user);                    
                     response.setStatus(HttpServletResponse.SC_OK);
                     msg = "success";
-                    model.addAttribute("message", msg);
-                    System.out.println("HERE");
+                    model.addAttribute("message", msg);                    
                     return "manager/message";
                 }
             } else {
-                User user = new LoginDAO(connection).login(new Patient(userName, userPassword));
+                User user = new LoginDAO(connection).login(new Patient(userName.toLowerCase(), userPassword));
                 if (user != null) {
                     session.setAttribute("user", user);
                     model.addAttribute("patient", user);

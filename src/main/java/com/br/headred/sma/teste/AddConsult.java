@@ -13,6 +13,7 @@ import com.br.headred.sma.models.MedicProfile;
 import com.br.headred.sma.models.MedicSpeciality;
 import com.br.headred.sma.models.MedicWorkAddress;
 import com.br.headred.sma.models.Patient;
+import com.br.headred.sma.models.PatientProfile;
 import com.br.headred.sma.models.Speciality;
 import java.sql.Connection;
 import java.sql.Date;
@@ -32,8 +33,8 @@ public class AddConsult {
                             new Timestamp(Calendar.getInstance().getTimeInMillis()),
                             new Timestamp(Calendar.getInstance().getTimeInMillis()),
                             false,
-                            new Patient(0),
-                            new MedicSpeciality(new MedicProfile(0), new Speciality(0)),
+                            new PatientProfile(2),
+                            new MedicSpeciality(new MedicProfile(0), new Speciality(2)),
                             new MedicWorkAddress(0)));
         } catch (Exception e) {
             e.printStackTrace();
