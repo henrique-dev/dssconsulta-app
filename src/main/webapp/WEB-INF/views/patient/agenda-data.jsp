@@ -9,6 +9,7 @@
     [consult:
         {id:${consult.consultId}},
         {forDate:${consult.consultForDate.time}},
+        {consulted:${consult.consultConsulted}},
         {medicName:${consult.medicSpeciality.medicProfile.medicName}},
         {specialityName:${consult.medicSpeciality.speciality.specialityName}},
         {clinicName:${consult.medicWorkAddress.clinicProfile.clinicName}},

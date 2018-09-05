@@ -5,21 +5,24 @@
  */
 package com.br.headred.sma.models;
 
+import java.sql.Timestamp;
+
 /**
  *
  * @author Paulo Henrique Gonçalves Bacelar
  */
 public class File {
     
-    private long fileId;
+    private int fileId;
     private String fileName;
     private String filePath;
+    private Timestamp fileUploadDate;
 
-    public long getFileId() {
+    public int getFileId() {
         return fileId;
     }
 
-    public void setFileId(long fileId) {
+    public void setFileId(int fileId) {
         this.fileId = fileId;
     }
 
@@ -37,6 +40,14 @@ public class File {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }        
+
+    public Timestamp getFileUploadDate() {
+        return fileUploadDate;
+    }
+
+    public void setFileUploadDate(Timestamp fileUploadDate) {
+        this.fileUploadDate = fileUploadDate;
     }        
     
 }

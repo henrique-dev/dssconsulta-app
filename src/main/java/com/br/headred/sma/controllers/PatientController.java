@@ -78,6 +78,22 @@ public class PatientController {
         }
         return "redirect:../Paciente";
     }
+    
+    @RequestMapping("Paciente/MinhasConsultas")    
+    public String minhasConsultas(Model model, HttpSession session) {
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            int patientId = ((User)session.getAttribute("user")).getId();
+            List<Consult> consultList = new ConsultDAO(con).getAllConsultList(new Patient(patientId));
+            model.addAttribute(consultList);
+            return "patient/agenda-data";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Falha ao obter a conexão");
+            e.printStackTrace();
+        }
+        return "redirect:../Paciente";
+    }
 
     @RequestMapping("Paciente/MinhaAgenda/MinhaConsulta")
     public String minhaConsulta(int consultId, Model model) {
@@ -140,8 +156,7 @@ public class PatientController {
     }
     
     @RequestMapping("Paciente/ProximaConsulta")    
-    public String proximaConsulta(int medicId, Model model) {
-        System.out.println("HERE");
+    public String proximaConsulta(int medicId, Model model) {        
         try (Connection con = new ConnectionFactory().getConnection()) {
             MedicProfile medicProfile = new MedicDAO(con).getMedicProfileWithWorkInfoListForScheduleConsult(new Medic(medicId));
             model.addAttribute("medicProfile", medicProfile);            

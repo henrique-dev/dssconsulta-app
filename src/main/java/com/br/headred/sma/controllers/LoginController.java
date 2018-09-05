@@ -29,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -121,10 +122,11 @@ public class LoginController {
     }
 
     @RequestMapping("Teste")
-    public String teste(String userName, String userPassword, HttpSession session) {
-        System.out.println(session.getId());
-        System.out.println(session.getAttribute("usuario"));
-        System.out.println("Recuperando usuario desta sessão: " + session.getId());
+    public String teste(MultipartFile file, HttpSession session) {
+        
+        
+        
+        
         return "patient/main";
     }
 

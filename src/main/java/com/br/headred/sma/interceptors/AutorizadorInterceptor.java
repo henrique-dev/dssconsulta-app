@@ -26,9 +26,10 @@ public class AutorizadorInterceptor extends HandlerInterceptorAdapter {
             return true;            
         } else {          
             System.out.println("Acesso não autorizado");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            //response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return true;
         }        
-        return false;
+        //return true;
     }
 
 }
