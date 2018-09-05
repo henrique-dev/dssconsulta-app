@@ -14,6 +14,7 @@
         {patientName:${consult.patientProfile.patientName}},
         {currentDate:${currentDate.time}},
         {patientHeight:${consult.patientProfile.patientProfileHeight}},
+        {patientWeight:${consult.patientProfile.patientProfileWeight}},
         {patientBirthDate:${consult.patientProfile.patientProfileBirthDate.time}},
         {patientBloodType:${consult.patientProfile.patientProfileBloodType}}
     ]

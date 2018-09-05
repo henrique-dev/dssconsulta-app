@@ -17,11 +17,11 @@ public class AutorizadorInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {        
-        String uri = request.getRequestURI();
-        if (request.getSession().getAttribute("user") != null) {            
+        String uri = request.getRequestURI();        
+        if (request.getSession().getAttribute("user") != null) {
             return true;
         }
-        else if (uri.contains("resources") || uri.contains("Teste2") || uri.contains("Autenticar")
+        else if (uri.contains("resources") || uri.contains("Autenticar") || uri.contains("Registrar")
                 || uri.contains("Entrar") || uri.contains("Principal")) {            
             return true;            
         } else {          

@@ -20,6 +20,8 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -45,23 +47,31 @@ public class LoginController {
         return "login/register";
     }
 
-    @RequestMapping("Cadastrar")
-    public String registrando(String name, String cpf, String email, String genre,
-            Date birthDate, String height, String bloodType, String telephone, String password, String passwordRe) {
-        try {
+    @RequestMapping("Registrar")
+    public String registrando(String patientName, String patientCpf, String patientEmail, String patientGenre,
+            long patientBirthDate, float patientHeight, float patientWeight, String patientBloodType, String patientTelephone, String patientPassword, Model model) {
+        try (Connection con = new ConnectionFactory().getConnection()){
+            
+            System.out.println(patientCpf);
+            
             PatientProfile p = new PatientProfile();
-            p.setPatientName(name);
-            p.setPatientProfileEmail(email);
-            p.setPatientProfileGenre(genre);
-            p.setPatientProfileBirthDate(birthDate);
-            p.setPatientProfileHeight(Float.parseFloat(height));
-            p.setPatientProfileBloodType(bloodType);
-            p.setPatientProfileTelephone(telephone);
-            p.setPatientCpf(cpf);
-            p.setUserName(cpf);
-            p.setUserPassword(password);
-            new PatientDAO(new ConnectionFactory().getConnection()).addPatient(p);
+            p.setPatientName(patientName);
+            p.setPatientProfileEmail(patientEmail);
+            p.setPatientProfileGenre(patientGenre);
+            p.setPatientProfileBirthDate(new Date(patientBirthDate));
+            p.setPatientProfileHeight(patientHeight);
+            p.setPatientProfileBloodType(patientBloodType);
+            p.setPatientProfileTelephone(patientTelephone);
+            p.setPatientProfileWeight(patientWeight);
+            p.setPatientCpf(patientCpf);
+            p.setUserName(patientCpf);
+            p.setUserPassword(patientPassword);
+            new PatientDAO(con).addPatient(p);
+            model.addAttribute("message", "success");
+            return "patient/message";
         } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return "login/login";

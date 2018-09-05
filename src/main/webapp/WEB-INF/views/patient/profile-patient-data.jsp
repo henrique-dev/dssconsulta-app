@@ -10,7 +10,7 @@
         {cpf:${patientProfile.patientCpf}},
         {email:${patientProfile.patientProfileEmail}},
         {genre:${patientProfile.patientProfileGenre}},
-        {birthDate:${patientProfile.patientProfileBirthDate}},
+        {birthDate:${patientProfile.patientProfileBirthDate.time}},
         {height:${patientProfile.patientProfileHeight}},
         {bloodType:${patientProfile.patientProfileBloodType}},
         {telephone:${patientProfile.patientProfileTelephone}}

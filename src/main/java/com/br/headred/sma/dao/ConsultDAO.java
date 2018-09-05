@@ -276,7 +276,8 @@ public class ConsultDAO extends BasicDAO {
     }
     
     public Consult getNextConsult(MedicWorkAddress medicWorkAddress) throws DAOException {        
-        String sql = "select consultId, patientUser_fk, patientName, patientProfileBirthDate, patientProfileHeight, patientProfileBloodType from consult "
+        String sql = "select consultId, patientUser_fk, patientName, patientProfileBirthDate, patientProfileWeight, "
+                + "patientProfileHeight, patientProfileBloodType from consult "
                 + "join patientConsult on consult.consultId=patientConsult.consult_fk "
                 + "join patient on patientConsult.patientProfile_fk=patient.patientUser_fk "
                 + "join patientProfile on patientConsult.patientProfile_fk=patientProfile.patient_fk "
@@ -295,6 +296,7 @@ public class ConsultDAO extends BasicDAO {
                 patientProfile.setPatientName(rs.getString("patientName"));
                 patientProfile.setPatientProfileBirthDate(rs.getDate("patientProfileBirthDate"));
                 patientProfile.setPatientProfileHeight(rs.getFloat("patientProfileHeight"));
+                patientProfile.setPatientProfileWeight(rs.getFloat("patientProfileWeight"));
                 patientProfile.setPatientProfileBloodType(rs.getString("patientProfileBloodType"));
                 consult.setPatientProfile(patientProfile);
                 stmt.close();

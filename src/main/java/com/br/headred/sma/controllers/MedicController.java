@@ -107,7 +107,8 @@ public class MedicController {
                     try {
                         new ConsultDAO(con).addAccountSpeciality(accountSpeciality);
                     } catch (DAOException ex) {
-                        
+                        ex.printStackTrace();
+                        System.out.println("Falha ao adicionar o encaminhamento");
                     }                    
                 }
             }                        

@@ -107,7 +107,7 @@ public class PatientDAO extends BasicDAO {
      * @throws DAOException 
      */
     private void addPatientProfile(PatientProfile patientProfile) throws DAOException {
-        String sql = "insert into patientProfile values (?,?,?,?,?,?,?)";
+        String sql = "insert into patientProfile values (?,?,?,?,?,?,?,?)";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patientProfile.getId());
             stmt.setString(2, patientProfile.getPatientProfileEmail());
@@ -116,6 +116,7 @@ public class PatientDAO extends BasicDAO {
             stmt.setFloat(5, patientProfile.getPatientProfileHeight());
             stmt.setString(6, patientProfile.getPatientProfileBloodType());
             stmt.setString(7, patientProfile.getPatientProfileTelephone());
+            stmt.setFloat(8, patientProfile.getPatientProfileWeight());
             stmt.execute();
         } catch (SQLException e) {
             removePatient(new Patient(patientProfile.getId()));
@@ -156,8 +157,9 @@ public class PatientDAO extends BasicDAO {
                 patientProfile.setPatientCpf(rs.getString("patientCpf"));
                 patientProfile.setPatientProfileEmail(rs.getString("patientProfileEmail"));
                 patientProfile.setPatientProfileGenre(rs.getString("patientProfileGenre"));
-                patientProfile.setPatientProfileBirthDate(rs.getDate("patientProfileBirthDate"));
+                patientProfile.setPatientProfileBirthDate(rs.getDate("patientProfileBirthDate", Calendar.getInstance()));
                 patientProfile.setPatientProfileHeight(rs.getFloat("patientProfileHeight"));
+                patientProfile.setPatientProfileWeight(rs.getFloat("patientProfileWeight"));
                 patientProfile.setPatientProfileBloodType(rs.getString("patientProfileBloodType"));
                 patientProfile.setPatientProfileTelephone(rs.getString("patientProfileTelephone"));
             } 
