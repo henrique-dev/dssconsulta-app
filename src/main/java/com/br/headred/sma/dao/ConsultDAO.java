@@ -62,8 +62,20 @@ public class ConsultDAO extends BasicDAO {
         }
     }
 
-    public List<AccountSpeciality> getAccountSpecialityList(Patient patient) {
-        return null;
+    public List<String> getAccountSpecialityList(Patient patient) throws DAOException {
+        List<String> list = null;
+        String sql = "select specialityName from accountSpeciality "
+                + "join speciality on accountSpeciality.speciality_fk=speciality.specialityId";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            list = new ArrayList<>();
+            while (rs.next()) {
+                list.add(rs.getString("specialityName"));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao recupear a lista de especialidades da conta", e);
+        }
+        return list;
     }
 
     public List<AccountSpeciality> getAccountSpecialityList(Speciality speciality) {

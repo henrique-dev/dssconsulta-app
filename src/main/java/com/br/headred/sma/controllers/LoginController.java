@@ -6,7 +6,6 @@
 package com.br.headred.sma.controllers;
 
 import com.br.headred.sma.dao.LoginDAO;
-import com.br.headred.sma.dao.MedicDAO;
 import com.br.headred.sma.dao.PatientDAO;
 import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.jdbc.ConnectionFactory;
@@ -15,13 +14,10 @@ import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.PatientProfile;
 import com.br.headred.sma.models.User;
-import com.br.headred.sma.utils.ResponseCode;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -122,11 +118,13 @@ public class LoginController {
     }
 
     @RequestMapping("Teste")
-    public String teste(MultipartFile file, HttpSession session) {
-        
-        
-        
-        
+    public String teste(MultipartFile file, HttpSession session, HttpServletRequest request) {        
+        Enumeration<String> en = request.getParameterNames();  
+        System.out.println(file.getOriginalFilename());
+        while (en.hasMoreElements()) {            
+            String s = en.nextElement();
+            System.out.println(s + ": " + request.getParameter(s));
+        }                
         return "patient/main";
     }
 
