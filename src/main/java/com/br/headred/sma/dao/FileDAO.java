@@ -82,8 +82,7 @@ public class FileDAO extends BasicDAO {
             if (rs.next()) {
                 file = new File();
                 file.setFileId(fileId);                                    
-                file.setFilePath(rs.getString("filePath"));
-                System.out.println(file.getFilePath());                
+                file.setFilePath(rs.getString("filePath"));                
             }
         } catch (SQLException e) {
             throw new DAOException("Falha ao adquirir informações do arquivo", e);

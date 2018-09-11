@@ -51,8 +51,7 @@ public class StorageService {
             fileSaved.setFileName(multipartFile.getOriginalFilename());
             fileSaved.setFilePath(path);
             fileSaved.setFileUploadDate(new Timestamp(currentDate.getTime()));
-            fileSaved.setFileLength((int)file.length());
-            System.out.println("Tamanho do arquivo salvo: " + fileSaved.getFileLength());
+            fileSaved.setFileLength((int)file.length());            
         } catch (IOException e) {
             throw new StorageException("Falha ao gravar arquivo no disco", e);
         }

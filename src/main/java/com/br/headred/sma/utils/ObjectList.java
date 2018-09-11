@@ -54,8 +54,7 @@ public class ObjectList {
     
     @Deprecated
     public ObjectList getObjectList(String attrName) {
-        for (Result r : objectList) {                                  
-            System.out.println(attrName);
+        for (Result r : objectList) {                                              
             if (attrName.equals(r.getAttrName()))
                 return new ObjectList((List<Result>)r.getAttrValue());
         }

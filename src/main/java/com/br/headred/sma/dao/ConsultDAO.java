@@ -334,8 +334,7 @@ public class ConsultDAO extends BasicDAO {
                 patientProfile.setPatientProfileWeight(rs.getFloat("patientProfileWeight"));
                 patientProfile.setPatientProfileBloodType(rs.getString("patientProfileBloodType"));
                 consult.setPatientProfile(patientProfile);
-                try {
-                    System.out.println("HERE");
+                try {                    
                     File file = new File();
                     file.setFileId(rs.getInt("fileId"));
                     file.setFileLength(rs.getInt("fileLength"));

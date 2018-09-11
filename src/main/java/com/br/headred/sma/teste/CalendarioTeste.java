@@ -18,16 +18,14 @@ public class CalendarioTeste {
 
         String daysOfWeek = "0000001";
 
-        Date date = new Date(Calendar.getInstance().getTimeInMillis());
-        System.out.println("dATA ATUAL: " + date);
+        Date date = new Date(Calendar.getInstance().getTimeInMillis());        
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);                        
         calendar.add(Calendar.DAY_OF_MONTH, 1);
 
         int counter = 0;        
-        for (int i = calendar.get(Calendar.DAY_OF_WEEK); i <= daysOfWeek.length(); i++) {
-            System.out.println(i);
+        for (int i = calendar.get(Calendar.DAY_OF_WEEK); i <= daysOfWeek.length(); i++) {            
             if (daysOfWeek.charAt(i-1) == '0') {
                 counter++;
             } else {                                
@@ -37,10 +35,7 @@ public class CalendarioTeste {
                 i = 0;
         }
         
-        calendar.add(Calendar.DAY_OF_MONTH, counter);
-
-        System.out.println("dATA ALVO: " + new Date(calendar.getTimeInMillis()));
-
+        calendar.add(Calendar.DAY_OF_MONTH, counter);        
     }
 
 }

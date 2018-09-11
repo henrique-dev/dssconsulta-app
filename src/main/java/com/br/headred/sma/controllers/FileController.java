@@ -42,10 +42,8 @@ public class FileController {
             User user = (User) session.getAttribute("user");                                    
             if (user instanceof Patient) {
                 File file = new FileDAO(con).getPublicFile(imageId);
-                if (file != null) {
-                    System.out.println("Id do arquivo: " + imageId);
-                    bytes = new StorageService().load(file);
-                    System.out.println(bytes.length);                    
+                if (file != null) {                    
+                    bytes = new StorageService().load(file);                    
                 }
             } else if (user instanceof Medic) {
                 File file = new FileDAO(con).getPublicFile(imageId);
@@ -63,23 +61,20 @@ public class FileController {
 
     @RequestMapping("EnviarImagem")
     public String enviarImagem(MultipartFile file, int type, Model model, HttpSession session) {
-        String msg = "error";
-        System.out.println("TIPO: " + type);
+        String msg = "error";        
         try (Connection con = new ConnectionFactory().getConnection()) {
             User user = (User) session.getAttribute("user");                                  
             if (user instanceof Patient) {
                 StorageService storageService = new StorageService();
                 if (type == File.TYPE_PROFILE_PHOTO_PATIENT) {
                     File fileExist = new FileDAO(con).getFileProfile(user.getId(), "patient");
-                    if (fileExist != null) {
-                        System.out.println("O arquivo existe");
+                    if (fileExist != null) {                        
                         storageService.delete(fileExist);
                         File savedFile = storageService.store(file, type, user);
                         savedFile.setFileId(fileExist.getFileId());
                         new FileDAO(con).updateFileProfile(savedFile);
                         msg = "success";
-                    } else {
-                        System.out.println("O arquivo não existe");
+                    } else {                        
                         File savedFile = storageService.store(file, type, user);
                         new FileDAO(con).addFileProfile(savedFile, user, "patient");
                         msg = "success";

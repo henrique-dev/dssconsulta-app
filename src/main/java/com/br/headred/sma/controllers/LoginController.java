@@ -47,10 +47,7 @@ public class LoginController {
     @RequestMapping("Registrar")
     public String registrando(String patientName, String patientCpf, String patientEmail, String patientGenre,
             long patientBirthDate, float patientHeight, float patientWeight, String patientBloodType, String patientTelephone, String patientPassword, Model model) {
-        try (Connection con = new ConnectionFactory().getConnection()){
-            
-            System.out.println(patientCpf);
-            
+        try (Connection con = new ConnectionFactory().getConnection()){                                    
             PatientProfile p = new PatientProfile();
             p.setPatientName(patientName);
             p.setPatientProfileEmail(patientEmail);
@@ -119,11 +116,9 @@ public class LoginController {
 
     @RequestMapping("Teste")
     public String teste(MultipartFile file, HttpSession session, HttpServletRequest request) {        
-        Enumeration<String> en = request.getParameterNames();  
-        System.out.println(file.getOriginalFilename());
+        Enumeration<String> en = request.getParameterNames();          
         while (en.hasMoreElements()) {            
-            String s = en.nextElement();
-            System.out.println(s + ": " + request.getParameter(s));
+            String s = en.nextElement();            
         }                
         return "patient/main";
     }
