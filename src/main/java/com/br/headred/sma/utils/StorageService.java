@@ -29,40 +29,32 @@ public class StorageService {
     
     public com.br.headred.sma.models.File store(MultipartFile multipartFile, int type, User user) throws StorageException {
         if (type < 0 && type > 20)
-            throw new StorageException("Falha ao armazenar o arquivo. O tipo não é valido");
-        FileOutputStream fos = null;
+            throw new StorageException("Falha ao armazenar o arquivo. O tipo não é valido");        
         com.br.headred.sma.models.File fileSaved;
         try {
+            
             byte[] bytes = multipartFile.getBytes();
-            String path = user.getId() + "/" + type;
+            String path = user.getClass().getSimpleName()+ "/" + user.getId() + "/" + type;
             File file = new File(MASTER_PATH + path);
-            if (!file.exists()) {
-                System.out.println("ARQUIVO NÃO EXISTE");
+            if (!file.exists()) {                
                 file.mkdirs();
-            } else {
-                System.out.println("ARQUIVO EXISTE");
-            }            
+            }           
             Date currentDate = Calendar.getInstance().getTime();
             String dateParsed = new SimpleDateFormat("dd-MM-yyyy-hh-mm-s-ms").format(currentDate);
             path = path + "/" + multipartFile.getOriginalFilename() + "-" + dateParsed;
             file = new File(MASTER_PATH + path);            
-            fos = new FileOutputStream(file);
-            fos.write(bytes);
-            fos.flush();
-            fos.close();
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(bytes);
+                fos.flush();
+            }
             fileSaved = new com.br.headred.sma.models.File();
             fileSaved.setFileName(multipartFile.getOriginalFilename());
             fileSaved.setFilePath(path);
             fileSaved.setFileUploadDate(new Timestamp(currentDate.getTime()));
+            fileSaved.setFileLength((int)file.length());
+            System.out.println("Tamanho do arquivo salvo: " + fileSaved.getFileLength());
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException ex) {
-                }
-            }
+            throw new StorageException("Falha ao gravar arquivo no disco", e);
         }
         return fileSaved;
     }        

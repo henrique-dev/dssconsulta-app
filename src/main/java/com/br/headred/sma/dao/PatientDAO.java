@@ -10,8 +10,10 @@ import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.Patient;
 import com.br.headred.sma.models.PatientAccount;
 import com.br.headred.sma.models.Evaluation;
+import com.br.headred.sma.models.File;
 import com.br.headred.sma.models.MedicProfile;
 import com.br.headred.sma.models.PatientProfile;
+import com.br.headred.sma.models.PatientProfileFile;
 import com.br.headred.sma.models.User;
 import java.sql.Connection;
 import java.sql.Date;
@@ -145,7 +147,9 @@ public class PatientDAO extends BasicDAO {
     public PatientProfile getPatientProfile(int patientId) throws DAOException {
         PatientProfile patientProfile = null;
         String sql = "select * from patient "
-                + "inner join patientProfile on patientProfile.patient_fk=patient.patientUser_fk "
+                + "join patientProfile on patientProfile.patient_fk=patient.patientUser_fk "
+                + "left join patientProfileFile on patientProfile.patient_fk=patientProfileFile.patientProfile_fk "
+                + "join file on patientProfileFile.file_fk=file.fileId "
                 + "where patientUser_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patientId);
@@ -161,7 +165,15 @@ public class PatientDAO extends BasicDAO {
                 patientProfile.setPatientProfileHeight(rs.getFloat("patientProfileHeight"));
                 patientProfile.setPatientProfileWeight(rs.getFloat("patientProfileWeight"));
                 patientProfile.setPatientProfileBloodType(rs.getString("patientProfileBloodType"));
-                patientProfile.setPatientProfileTelephone(rs.getString("patientProfileTelephone"));
+                patientProfile.setPatientProfileTelephone(rs.getString("patientProfileTelephone"));                
+                try {
+                    File file = new File();
+                    file.setFileId(rs.getInt("fileId"));
+                    file.setFileLength(rs.getInt("fileLength"));
+                    patientProfile.setFile(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } 
         } catch (SQLException e) {
             throw new DAOException("Falha ao recuperar dados do paciente", e);

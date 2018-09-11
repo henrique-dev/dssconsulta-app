@@ -29,5 +29,10 @@
         </c:if>
     </c:forEach>
     )
+    <c:if test="${medicProfile.file != null}">
+        ,
+        {imageId:${medicProfile.file.fileId}},
+        {imageLength:${medicProfile.file.fileLength}}
+    </c:if>
 ]
 )

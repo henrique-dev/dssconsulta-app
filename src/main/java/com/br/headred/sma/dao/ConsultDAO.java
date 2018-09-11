@@ -11,6 +11,7 @@ import com.br.headred.sma.exceptions.DuplicateException;
 import com.br.headred.sma.models.AccountSpeciality;
 import com.br.headred.sma.models.ClinicProfile;
 import com.br.headred.sma.models.Consult;
+import com.br.headred.sma.models.File;
 import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.MedicProfile;
 import com.br.headred.sma.models.MedicSpeciality;
@@ -42,8 +43,9 @@ public class ConsultDAO extends BasicDAO {
     }
 
     public void addAccountSpeciality(AccountSpeciality accountSpeciality) throws DAOException {
-        if (existAccountSpecialityForAdd(accountSpeciality))
+        if (existAccountSpecialityForAdd(accountSpeciality)) {
             return;
+        }
         String sql = "insert into accountSpeciality values (?,?,?,?,?,?,?)";
         int accountSpecialityId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.accountSpeciality);
         accountSpeciality.setAccountSpecialityId(accountSpecialityId);
@@ -81,7 +83,7 @@ public class ConsultDAO extends BasicDAO {
     public List<AccountSpeciality> getAccountSpecialityList(Speciality speciality) {
         return null;
     }
-    
+
     private boolean existAccountSpecialityForAdd(AccountSpeciality accountSpeciality) {
         String sql = "select accountSpecialityId from accountSpeciality where accountSpecialityId=? and patientAccountSpecialityUsed=0";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
@@ -129,9 +131,9 @@ public class ConsultDAO extends BasicDAO {
         this.addPatientConsult(consult);
     }
 
-    private void setCalendarAvailableDate(Calendar calendar, String daysOfWorkOnWeek) {                               
+    private void setCalendarAvailableDate(Calendar calendar, String daysOfWorkOnWeek) {
         int counter = 0;
-        for (int i = calendar.get(Calendar.DAY_OF_WEEK); i <= daysOfWorkOnWeek.length(); i++) {            
+        for (int i = calendar.get(Calendar.DAY_OF_WEEK); i <= daysOfWorkOnWeek.length(); i++) {
             if (daysOfWorkOnWeek.charAt(i - 1) == '0') {
                 counter++;
             } else {
@@ -141,9 +143,9 @@ public class ConsultDAO extends BasicDAO {
                 i = 0;
             }
         }
-        calendar.add(Calendar.DAY_OF_MONTH, counter);        
+        calendar.add(Calendar.DAY_OF_MONTH, counter);
     }
-    
+
     private int compareCalendars(Calendar currentDate, Calendar lastDate) {
         if (currentDate.get(Calendar.DAY_OF_YEAR) == lastDate.get(Calendar.DAY_OF_YEAR)) {
             if (currentDate.get(Calendar.YEAR) == lastDate.get(Calendar.YEAR)) {
@@ -171,10 +173,10 @@ public class ConsultDAO extends BasicDAO {
     private Timestamp getAvailableDateForConsult(MedicWorkScheduling medicWorkScheduling) throws DAOException {
         Calendar currentDate = Calendar.getInstance();
         Calendar lastDate = Calendar.getInstance();
-        lastDate.setTime(medicWorkScheduling.getMedicWorkSchedulingDateLast());        
+        lastDate.setTime(medicWorkScheduling.getMedicWorkSchedulingDateLast());
 
         int diff = compareCalendars(currentDate, lastDate);
-        
+
         if (diff > 0) { // HÁ CONSULTA AGENDADA
             int counterOfDay = medicWorkScheduling.getMedicWorkSchedulingCounterOfDay();
             int consultsPerDay = medicWorkScheduling.getMedicWorkSchedulingPerDay();
@@ -184,10 +186,10 @@ public class ConsultDAO extends BasicDAO {
                 lastDate.set(Calendar.HOUR_OF_DAY, 7);
                 lastDate.set(Calendar.MINUTE, 0);
                 medicWorkScheduling.setMedicWorkSchedulingCounterOfDay(1);
-                medicWorkScheduling.setMedicWorkSchedulingDateLast(new Date(lastDate.getTimeInMillis()));                
+                medicWorkScheduling.setMedicWorkSchedulingDateLast(new Date(lastDate.getTimeInMillis()));
             } else { // AINDA HÁ CONSULTA OARA O DIA, AGENDANDO NO MESMO
                 lastDate.set(Calendar.HOUR_OF_DAY, 7);
-                lastDate.add(Calendar.MINUTE, 2 * (counterOfDay+1));
+                lastDate.add(Calendar.MINUTE, 2 * (counterOfDay + 1));
                 medicWorkScheduling.setMedicWorkSchedulingCounterOfDay(counterOfDay + 1);
             }
         } else { // NÃO HÁ CONSULTA AGENDADA, NOVO AGENDAGENTO NO DIA CRIADO
@@ -204,49 +206,50 @@ public class ConsultDAO extends BasicDAO {
         new MedicDAO(connection).updateMedicWorkSchedulingFromConsult(medicWorkScheduling);
         return new Timestamp(lastDate.getTimeInMillis());
     }
-    
+
     private boolean checkForDuplicatedConsult(Consult consult) throws DAOException {
         String sql = "select medicWorkAddress_fk from patientConsult "
                 + "join consult on consult.consultId=patientConsult.consult_fk where patientConsult.patientProfile_fk=? and consultConsulted=0";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, consult.getPatientProfile().getId());
             ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {                
+            while (rs.next()) {
                 int medicWorkAddressId = rs.getInt("medicWorkAddress_fk");
-                if (medicWorkAddressId == consult.getMedicWorkAddress().getMedicWorkAddressId())
+                if (medicWorkAddressId == consult.getMedicWorkAddress().getMedicWorkAddressId()) {
                     return true;
+                }
             }
         } catch (SQLException e) {
             throw new DAOException("Falha ao checar a duplicidade da consulta", e);
         }
         return false;
     }
-    
+
     private boolean checkForSpecialityPrivConsult(Consult consult) throws DAOException {
         Speciality speciality = new MedicDAO(connection).getSpeciality(consult.getMedicSpeciality().getSpeciality().getSpecialityId());
         return speciality.isSpecialityPriv();
     }
-    
+
     private void validateConsultWithPriv(Consult consult) throws DAOException, ConsultWithPrivilegesException {
         String sql = "select * from accountSpeciality where patientAccount_fk=? and patientAccountSpecialityUsed=0 "
                 + "and speciality_fk=?";
         try {
             PreparedStatement stmt = super.connection.prepareStatement(sql);
-            stmt.setInt(1, consult.getPatientProfile().getId());            
-            stmt.setInt(2, consult.getMedicSpeciality().getSpeciality().getSpecialityId());            
+            stmt.setInt(1, consult.getPatientProfile().getId());
+            stmt.setInt(2, consult.getMedicSpeciality().getSpeciality().getSpecialityId());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 int accountSpecialityId = rs.getInt("accountSpecialityId");
                 stmt.close();
                 sql = "update accountSpeciality "
                         + "set patientAccountSpecialityUseDate=?, patientAccountSpecialityUsed=? where accountSpecialityId=?";
-                stmt = super.connection.prepareStatement(sql);                
+                stmt = super.connection.prepareStatement(sql);
                 Timestamp currentDateTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
                 stmt.setObject(1, currentDateTime);
                 stmt.setBoolean(2, true);
                 stmt.setInt(3, accountSpecialityId);
                 stmt.execute();
-                stmt.close();                
+                stmt.close();
             } else {
                 stmt.close();
                 throw new ConsultWithPrivilegesException("O paciente não possui um encaminhamento");
@@ -256,20 +259,21 @@ public class ConsultDAO extends BasicDAO {
         }
     }
 
-    synchronized private void addConsult(Consult consult) throws DAOException, DuplicateException, ConsultWithPrivilegesException {                
-        if (checkForDuplicatedConsult(consult))
+    synchronized private void addConsult(Consult consult) throws DAOException, DuplicateException, ConsultWithPrivilegesException {
+        if (checkForDuplicatedConsult(consult)) {
             throw new DuplicateException("A consulta ja existe com este medico");
+        }
         if (checkForSpecialityPrivConsult(consult)) {
             validateConsultWithPriv(consult);
         }
-        
-        String sql = "insert into consult values (?,?,?,?,?,?,?,?)";        
-        
+
+        String sql = "insert into consult values (?,?,?,?,?,?,?,?)";
+
         int consultId = new SystemDAO(super.connection).getNextId(SystemDAO.Table.consult);
         MedicWorkScheduling medicWorkScheduling = new MedicDAO(connection).getMedicWorkScheduling(consult.getMedicWorkAddress());
 
         Timestamp currentDateTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
-        Timestamp consultForDateTime = getAvailableDateForConsult(medicWorkScheduling);        
+        Timestamp consultForDateTime = getAvailableDateForConsult(medicWorkScheduling);
 
         consult.setConsultId(consultId);
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
@@ -284,10 +288,11 @@ public class ConsultDAO extends BasicDAO {
             stmt.execute();
         } catch (SQLException e) {
             new SystemDAO(super.connection).releaseId(SystemDAO.Table.consult, consultId);
-            if (e instanceof SQLIntegrityConstraintViolationException)
-                throw new DAOException("Informações fornecidas incoerentes", e);    
-            else
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                throw new DAOException("Informações fornecidas incoerentes", e);
+            } else {
                 throw new DAOException("Falha ao adicionar a consulta", e);
+            }
         }
     }
 
@@ -301,13 +306,16 @@ public class ConsultDAO extends BasicDAO {
             throw new DAOException("Falha ao atualizar a consulta", e);
         }
     }
-    
-    public Consult getNextConsult(MedicWorkAddress medicWorkAddress) throws DAOException {        
+
+    public Consult getNextConsult(MedicWorkAddress medicWorkAddress) throws DAOException {
+        Consult consult = null;
         String sql = "select consultId, patientUser_fk, patientName, patientProfileBirthDate, patientProfileWeight, "
-                + "patientProfileHeight, patientProfileBloodType from consult "
+                + "patientProfileHeight, patientProfileBloodType, fileId, fileLength from consult "
                 + "join patientConsult on consult.consultId=patientConsult.consult_fk "
                 + "join patient on patientConsult.patientProfile_fk=patient.patientUser_fk "
                 + "join patientProfile on patientConsult.patientProfile_fk=patientProfile.patient_fk "
+                + "left join patientProfileFile on patientProfile.patient_fk=patientProfileFile.patientProfile_fk "
+                + "join file on patientProfileFile.file_fk=file.fileId "
                 + "where medicWorkAddress_fk=? and consultForDate<? order by consultForDate";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicWorkAddress.getMedicWorkAddressId());
@@ -316,7 +324,7 @@ public class ConsultDAO extends BasicDAO {
             stmt.setObject(2, new Timestamp(currentDateCalendar.getTimeInMillis()));
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                Consult consult = new Consult();
+                consult = new Consult();
                 consult.setConsultId(rs.getInt("consultId"));
                 PatientProfile patientProfile = new PatientProfile();
                 patientProfile.setId(rs.getInt("patientUser_fk"));
@@ -326,13 +334,20 @@ public class ConsultDAO extends BasicDAO {
                 patientProfile.setPatientProfileWeight(rs.getFloat("patientProfileWeight"));
                 patientProfile.setPatientProfileBloodType(rs.getString("patientProfileBloodType"));
                 consult.setPatientProfile(patientProfile);
-                stmt.close();
-                return consult;
+                try {
+                    System.out.println("HERE");
+                    File file = new File();
+                    file.setFileId(rs.getInt("fileId"));
+                    file.setFileLength(rs.getInt("fileLength"));
+                    patientProfile.setFile(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } catch (SQLException e) {
             throw new DAOException("Falha ao recuperar a consulta", e);
         }
-        return null;
+        return consult;
     }
 
     public Consult getConsult(int consultId) throws DAOException {
@@ -384,10 +399,10 @@ public class ConsultDAO extends BasicDAO {
         }
         return consult;
     }
-    
+
     public List<Consult> getAllConsultList(Patient patient) throws DAOException {
         List<Consult> consultList = null;
-        String sql = "select consultId, consultForDate, medicName, specialityName, clinicName, medicWorkAddressComplement, consultConsulted from consult "               
+        String sql = "select consultId, consultForDate, medicName, specialityName, clinicName, medicWorkAddressComplement, consultConsulted from consult "
                 + "join speciality on consult.medicSpeciality_speciality_fk=speciality.specialityId "
                 + "join medic on consult.medicSpeciality_medicProfile_fk=medic.medicUser_fk "
                 + "join medicWorkAddress on consult.medicWorkAddress_fk=medicWorkAddress.medicWorkAddressId "
@@ -402,21 +417,21 @@ public class ConsultDAO extends BasicDAO {
                 consult.setConsultId(rs.getInt("consultId"));
                 consult.setConsultForDate((Timestamp) rs.getObject("consultForDate", Timestamp.class));
                 consult.setConsultConsulted(rs.getBoolean("consultConsulted"));
-                
+
                 MedicProfile medicProfile = new MedicProfile();
                 medicProfile.setMedicName(rs.getString("medicName"));
                 Speciality speciality = new Speciality();
                 speciality.setSpecialityName(rs.getString("specialityName"));
                 consult.setMedicSpeciality(new MedicSpeciality(medicProfile, speciality));
-                
+
                 MedicWorkAddress medicWorkAddress = new MedicWorkAddress();
                 medicWorkAddress.setMedicWorkAddressComplement(rs.getString("medicWorkAddressComplement"));
-                
+
                 ClinicProfile clinicProfile = new ClinicProfile();
                 clinicProfile.setClinicName(rs.getString("clinicName"));
                 medicWorkAddress.setClinicProfile(clinicProfile);
                 consult.setMedicWorkAddress(medicWorkAddress);
-                
+
                 consultList.add(consult);
             }
         } catch (SQLException e) {
@@ -427,12 +442,15 @@ public class ConsultDAO extends BasicDAO {
 
     public List<Consult> getConsultList(Patient patient) throws DAOException {
         List<Consult> consultList = null;
-        String sql = "select consultId, consultForDate, medicName, specialityName, clinicName, medicWorkAddressComplement from patientConsult "
+        String sql = "select consultId, consultForDate, medicName, specialityName, clinicName, medicWorkAddressComplement, fileId, fileLength "
+                + "from patientConsult "               
                 + "join consult on patientConsult.consult_fk=consult.consultId "
                 + "join speciality on consult.medicSpeciality_speciality_fk=speciality.specialityId "
                 + "join medic on consult.medicSpeciality_medicProfile_fk=medic.medicUser_fk "
                 + "join medicWorkAddress on consult.medicWorkAddress_fk=medicWorkAddress.medicWorkAddressId "
                 + "join clinic on medicWorkAddress.clinicProfile_fk=clinic.clinicId "
+                + "left join medicProfileFile on medic.medicUser_fk=medicProfileFile.medicProfile_fk "
+                + " join file on medicProfileFile.file_fk=file.fileId "
                 + "where patientConsult.patientProfile_fk=? order by consultForDate";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patient.getId());
@@ -442,21 +460,31 @@ public class ConsultDAO extends BasicDAO {
                 Consult consult = new Consult();
                 consult.setConsultId(rs.getInt("consultId"));
                 consult.setConsultForDate((Timestamp) rs.getObject("consultForDate", Timestamp.class));
-                
+
                 MedicProfile medicProfile = new MedicProfile();
                 medicProfile.setMedicName(rs.getString("medicName"));
                 Speciality speciality = new Speciality();
                 speciality.setSpecialityName(rs.getString("specialityName"));
-                consult.setMedicSpeciality(new MedicSpeciality(medicProfile, speciality));
                 
+                try {
+                    File file = new File();
+                    file.setFileId(rs.getInt("fileId"));
+                    file.setFileLength(rs.getInt("fileLength"));
+                    medicProfile.setFile(file);
+                } catch (Exception e) {}
+                
+                consult.setMedicSpeciality(new MedicSpeciality(medicProfile, speciality));
+
                 MedicWorkAddress medicWorkAddress = new MedicWorkAddress();
                 medicWorkAddress.setMedicWorkAddressComplement(rs.getString("medicWorkAddressComplement"));
-                
+
                 ClinicProfile clinicProfile = new ClinicProfile();
                 clinicProfile.setClinicName(rs.getString("clinicName"));
                 medicWorkAddress.setClinicProfile(clinicProfile);
-                consult.setMedicWorkAddress(medicWorkAddress);
+                consult.setMedicWorkAddress(medicWorkAddress);                                
+
                 
+
                 consultList.add(consult);
             }
         } catch (SQLException e) {
@@ -517,10 +545,10 @@ public class ConsultDAO extends BasicDAO {
             throw new DAOException("Falha ao remover a consulta do medico", e);
         }
     }
-    
+
     public int getPatientId(Consult consult) throws DAOException {
         String sql = "select patientProfile_fk from patientConsult where consult_fk=?";
-        try (PreparedStatement stmt = super.connection.prepareStatement(sql)){
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, consult.getConsultId());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -530,7 +558,7 @@ public class ConsultDAO extends BasicDAO {
             }
         } catch (SQLException e) {
             throw new DAOException("Falha ao recuperar o id do paciente", e);
-        }    
+        }
         return -1;
     }
 

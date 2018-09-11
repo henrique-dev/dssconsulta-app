@@ -54,6 +54,22 @@ public class MedicController {
         return "medic/message";
     }
     
+    @PostMapping("Medico/MeuPerfil")
+    public String meuPerfil(Model model, HttpSession session) {
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            int medicId = ((User)session.getAttribute("user")).getId();
+            MedicProfile medicProfile = new MedicDAO(con).getMedicProfile(medicId);
+            model.addAttribute("medicProfile", medicProfile);
+            return "medic/profile-medic-data";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Falha ao obter a conexão");
+            e.printStackTrace();
+        }
+        return "medic/message";
+    }
+    
     @PostMapping("Medico/MinhaConsulta")
     public String minhaConsulta(int medicWorkAddressId, Model model) {
         try (Connection con = new ConnectionFactory().getConnection()) {

@@ -33,6 +33,11 @@
             ,
             </c:if>
         </c:forEach>)
+        <c:if test="${medic.file != null}">
+            ,
+            {imageId:${medic.file.fileId}},
+            {imageLength:${medic.file.fileLength}}
+        </c:if>
     ]
     <c:if test="${!i.last}">
         ,

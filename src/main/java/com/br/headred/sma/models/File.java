@@ -12,8 +12,7 @@ import java.sql.Timestamp;
  * @author Paulo Henrique Gonçalves Bacelar
  */
 public class File {
-    
-    public final static int TYPE_PROFILE_PHOTO = 0;
+        
     public final static int TYPE_PATIENT_1 = 1;
     public final static int TYPE_PATIENT_2 = 2;
     public final static int TYPE_PATIENT_3 = 3;
@@ -33,11 +32,14 @@ public class File {
     public final static int TYPE_MEDIC_8 = 18;
     public final static int TYPE_MEDIC_9 = 19;
     public final static int TYPE_MEDIC_10 = 20;
+    public final static int TYPE_PROFILE_PHOTO_PATIENT = 21;
+    public final static int TYPE_PROFILE_PHOTO_MEDIC = 22;
     
     private int fileId;
     private String fileName;
     private String filePath;
     private Timestamp fileUploadDate;
+    private int fileLength;
     private int type;
 
     public int getFileId() {
@@ -79,5 +81,13 @@ public class File {
     public void setType(int type) {
         this.type = type;
     }        
+
+    public int getFileLength() {
+        return fileLength;
+    }
+
+    public void setFileLength(int fileLength) {
+        this.fileLength = fileLength;
+    }            
     
 }

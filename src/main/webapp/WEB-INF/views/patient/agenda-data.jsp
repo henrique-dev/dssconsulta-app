@@ -14,6 +14,11 @@
         {specialityName:${consult.medicSpeciality.speciality.specialityName}},
         {clinicName:${consult.medicWorkAddress.clinicProfile.clinicName}},
         {workAddressInfo:${consult.medicWorkAddress.medicWorkAddressComplement}}
+        <c:if test="${consult.medicSpeciality.medicProfile.file != null}">
+            ,
+            {imageId:${consult.medicSpeciality.medicProfile.file.fileId}},
+            {imageLength:${consult.medicSpeciality.medicProfile.file.fileLength}}
+        </c:if>
     ]
     <c:if test="${!i.last}">
         ,

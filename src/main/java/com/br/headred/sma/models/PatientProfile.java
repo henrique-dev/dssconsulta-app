@@ -22,7 +22,7 @@ public class PatientProfile extends Patient {
     private String patientProfileBloodType;
     private String patientProfileTelephone;    
     private PatientAccount patientAccount;
-    private List<PatientProfileFile> patientProfileFiles;
+    private File file;
 
     public PatientProfile() {
     }
@@ -31,7 +31,7 @@ public class PatientProfile extends Patient {
         super(userId);
     }
 
-    public PatientProfile(String patientProfileEmail, String patientProfileGenre, Date patientProfileBirthDate, float patientProfileHeight, float patientProfileWeight, String patientProfileBloodType, String patientProfileTelephone, PatientAccount patientAccount, List<PatientProfileFile> patientProfileFiles, int userId) {
+    public PatientProfile(String patientProfileEmail, String patientProfileGenre, Date patientProfileBirthDate, float patientProfileHeight, float patientProfileWeight, String patientProfileBloodType, String patientProfileTelephone, PatientAccount patientAccount, File file, int userId) {
         super(userId);
         this.patientProfileEmail = patientProfileEmail;
         this.patientProfileGenre = patientProfileGenre;
@@ -41,10 +41,10 @@ public class PatientProfile extends Patient {
         this.patientProfileBloodType = patientProfileBloodType;
         this.patientProfileTelephone = patientProfileTelephone;
         this.patientAccount = patientAccount;
-        this.patientProfileFiles = patientProfileFiles;
+        this.file = file;
     }
 
-    public PatientProfile(String patientProfileEmail, String patientProfileGenre, Date patientProfileBirthDate, float patientProfileHeight, float patientProfileWeight, String patientProfileBloodType, String patientProfileTelephone, PatientAccount patientAccount, List<PatientProfileFile> patientProfileFiles) {
+    public PatientProfile(String patientProfileEmail, String patientProfileGenre, Date patientProfileBirthDate, float patientProfileHeight, float patientProfileWeight, String patientProfileBloodType, String patientProfileTelephone, PatientAccount patientAccount, File file) {
         this.patientProfileEmail = patientProfileEmail;
         this.patientProfileGenre = patientProfileGenre;
         this.patientProfileBirthDate = patientProfileBirthDate;
@@ -53,7 +53,7 @@ public class PatientProfile extends Patient {
         this.patientProfileBloodType = patientProfileBloodType;
         this.patientProfileTelephone = patientProfileTelephone;
         this.patientAccount = patientAccount;
-        this.patientProfileFiles = patientProfileFiles;
+        this.file = file;
     }
 
     
@@ -114,13 +114,13 @@ public class PatientProfile extends Patient {
         this.patientAccount = patientAccount;
     }
 
-    public List<PatientProfileFile> getPatientProfileFiles() {
-        return patientProfileFiles;
+    public File getFile() {
+        return file;
     }
 
-    public void setPatientProfileFiles(List<PatientProfileFile> patientProfileFiles) {
-        this.patientProfileFiles = patientProfileFiles;
-    }        
+    public void setFile(File file) {
+        this.file = file;
+    }    
 
     public float getPatientProfileWeight() {
         return patientProfileWeight;

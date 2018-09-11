@@ -22,11 +22,9 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 /**
  *
@@ -35,58 +33,94 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 @MultipartConfig
 @Controller
 public class FileController {
-    
-    @RequestMapping("Image/{imageId}")
+
+    @RequestMapping("Imagem/{imageId}")
     @ResponseBody
-    public byte[] image(@PathVariable int imageId) {
-        System.out.println(imageId);
-        File file = new File();
-        file.setFilePath("E:/APP/imagem.jpg");
-        byte[] bytes = new StorageService().load(file);
+    public byte[] image(@PathVariable int imageId, int type, HttpSession session) {
+        byte[] bytes = null;
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            User user = (User) session.getAttribute("user");                                    
+            if (user instanceof Patient) {
+                File file = new FileDAO(con).getPublicFile(imageId);
+                if (file != null) {
+                    System.out.println("Id do arquivo: " + imageId);
+                    bytes = new StorageService().load(file);
+                    System.out.println(bytes.length);                    
+                }
+            } else if (user instanceof Medic) {
+                File file = new FileDAO(con).getPublicFile(imageId);
+                if (file != null) {
+                    bytes = new StorageService().load(file);
+                }
+            }                        
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }                
         return bytes;
     }
-    
+
     @RequestMapping("EnviarImagem")
-    public String enviarImagem(MultipartFile file, int type, Model model, HttpSession session) {        
+    public String enviarImagem(MultipartFile file, int type, Model model, HttpSession session) {
         String msg = "error";
+        System.out.println("TIPO: " + type);
         try (Connection con = new ConnectionFactory().getConnection()) {
-            //User user = (User) session.getAttribute("user");
-            User user = new Patient();
-            user.setId(0);            
+            User user = (User) session.getAttribute("user");                                  
             if (user instanceof Patient) {
                 StorageService storageService = new StorageService();
-                if (type == File.TYPE_PROFILE_PHOTO) {
+                if (type == File.TYPE_PROFILE_PHOTO_PATIENT) {
                     File fileExist = new FileDAO(con).getFileProfile(user.getId(), "patient");
                     if (fileExist != null) {
+                        System.out.println("O arquivo existe");
                         storageService.delete(fileExist);
                         File savedFile = storageService.store(file, type, user);
-                        new FileDAO(con).updateFileProfile(savedFile, user, "patient");
+                        savedFile.setFileId(fileExist.getFileId());
+                        new FileDAO(con).updateFileProfile(savedFile);
                         msg = "success";
                     } else {
+                        System.out.println("O arquivo não existe");
                         File savedFile = storageService.store(file, type, user);
                         new FileDAO(con).addFileProfile(savedFile, user, "patient");
                         msg = "success";
                     }
-                }                                
+                } else if (type <= File.TYPE_PATIENT_10) {                    
+                    File savedFile = storageService.store(file, type, user);
+                    new FileDAO(con).addFilePatientAccount(savedFile, user);
+                    msg = "success";
+                }
             } else if (user instanceof Medic) {
-                
-            } else if (user instanceof Manager){
-                
+                StorageService storageService = new StorageService();
+                if (type == File.TYPE_PROFILE_PHOTO_MEDIC) {
+                    File fileExist = new FileDAO(con).getFileProfile(user.getId(), "medic");
+                    if (fileExist != null) {
+                        storageService.delete(fileExist);
+                        File savedFile = storageService.store(file, type, user);
+                        savedFile.setFileId(fileExist.getFileId());
+                        new FileDAO(con).updateFileProfile(savedFile);
+                        msg = "success";
+                    } else {
+                        File savedFile = storageService.store(file, type, user);
+                        new FileDAO(con).addFileProfile(savedFile, user, "medic");
+                        msg = "success";
+                    }
+                }
+            } else if (user instanceof Manager) {
+
             } else {
-                
+
             }
         } catch (SQLException e) {
-            e.printStackTrace();            
-        } catch (StorageException e) {
-            msg = "error-saving-ondisk";
             e.printStackTrace();
+        } catch (StorageException e) {
+            e.printStackTrace();
+            msg = "error-saving-ondisk";            
         } catch (DAOException e) {
+            e.printStackTrace();
             msg = "error-saving-ondb";
         }
         model.addAttribute("message", msg);
-        return "message"; 
+        return "message";
     }
-    
-    
-    
+
 }

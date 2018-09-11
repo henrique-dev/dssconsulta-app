@@ -17,6 +17,11 @@
         {patientWeight:${consult.patientProfile.patientProfileWeight}},
         {patientBirthDate:${consult.patientProfile.patientProfileBirthDate.time}},
         {patientBloodType:${consult.patientProfile.patientProfileBloodType}}
+        <c:if test="${consult.patientProfile.file != null}">
+            ,
+            {imageId:${consult.patientProfile.file.fileId}},
+            {imageLength:${consult.patientProfile.file.fileLength}}
+        </c:if>
     ]
 </c:if>    
 )
