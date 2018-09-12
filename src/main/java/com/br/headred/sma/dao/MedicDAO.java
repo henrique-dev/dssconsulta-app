@@ -184,10 +184,89 @@ public class MedicDAO extends BasicDAO {
                 + "join clinic on clinic.clinicId=medicWorkAddress.clinicProfile_fk "
                 + "join speciality on speciality.specialityId=medicWorkAddress.medicSpeciality_speciality_fk "
                 + "left join medicProfileFile on medicProfile.medic_fk=medicProfileFile.medicProfile_fk "
-                + "join file on medicProfileFile.file_fk=file.fileId "
+                + "left join file on medicProfileFile.file_fk=file.fileId "
                 + "where specialityId=? order by medic_fk";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, specialityId);
+            ResultSet rs = stmt.executeQuery();
+            int currentMedic = -1;
+            MedicProfile medicProfile = new MedicProfile();
+            medicProfileList = new ArrayList<>();
+            List<MedicWorkAddress> medicWorkAddressList = new ArrayList<>();
+            List<MedicSpeciality> medicSpecialityList = new ArrayList<>();;
+            while (rs.next()) {
+                int medicId = rs.getInt("medic_fk");
+                if (medicId != currentMedic) {
+                    if (currentMedic != -1) {
+                        medicProfile.setMedicWorkAddressList(medicWorkAddressList);
+                        medicProfile.setMedicSpecialityList(medicSpecialityList);
+                        medicProfileList.add(medicProfile);
+                    }
+                    currentMedic = medicId;
+                    medicProfile = new MedicProfile();
+                    medicWorkAddressList = new ArrayList<>();
+                    medicSpecialityList = new ArrayList<>();
+                    medicProfile.setId(medicId);
+                    medicProfile.setMedicName(rs.getString("medicName"));
+                    medicProfile.setMedicProfileExpAge(rs.getInt("medicProfileExpAge"));
+                    medicProfile.setMedicProfileEvaluationAvg(rs.getFloat("medicEvaluationAvg"));
+                    medicProfile.setMedicProfileEvaluationCount(rs.getInt("medicEvaluationCount"));
+
+                    try {
+                        File file = new File();
+                        file.setFileId(rs.getInt("fileId"));
+                        file.setFileLength(rs.getInt("fileLength"));
+                        medicProfile.setFile(file);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                MedicSpeciality medicSpeciality = new MedicSpeciality();
+                Speciality speciality = new Speciality();
+                speciality.setSpecialityId(rs.getInt("specialityId"));
+                speciality.setSpecialityName(rs.getString("specialityName"));
+                speciality.setSpecialityPriv(rs.getBoolean("specialityPriv"));
+                medicSpeciality.setSpeciality(speciality);
+                medicSpeciality.setMedicProfile(medicProfile);
+                medicSpecialityList.add(medicSpeciality);
+
+                MedicWorkAddress medicWorkAddress = new MedicWorkAddress();
+                ClinicProfile clinic = new ClinicProfile();
+                clinic.setId(rs.getInt("clinicId"));
+                clinic.setClinicName(rs.getString("clinicName"));
+                medicWorkAddress.setMedicWorkAddressId(rs.getInt("medicWorkAddressId"));
+                medicWorkAddress.setClinicProfile(clinic);
+                medicWorkAddress.setMedicSpeciality(medicSpeciality);
+                medicWorkAddressList.add(medicWorkAddress);
+            }
+            if (currentMedic != -1) {
+                medicProfile.setMedicWorkAddressList(medicWorkAddressList);
+                medicProfile.setMedicSpecialityList(medicSpecialityList);
+                medicProfileList.add(medicProfile);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao adquirir a lista de medicos", e);
+        }
+
+        return medicProfileList;
+    }
+    
+    public List<MedicProfile> getMedicProfileList(String medicKey) throws DAOException {
+        List<MedicProfile> medicProfileList = null;
+        String sql = "select "
+                + "medic_fk, medicName, medicWorkAddressId, medicProfileExpAge, medicEvaluationAvg, "
+                + "medicEvaluationCount, clinicId, clinicName, specialityId, specialityName, specialityPriv, fileId, fileLength "
+                + "from medicWorkAddress "
+                + "join medicProfile on medicWorkAddress.medicSpeciality_medicProfile_fk=medicProfile.medic_fk "
+                + "join medicEvaluation on medicEvaluation.medicProfile_fk=medicProfile.medic_fk "
+                + "join medic on medic.medicUser_fk=medicProfile.medic_fk "
+                + "join clinic on clinic.clinicId=medicWorkAddress.clinicProfile_fk "
+                + "join speciality on speciality.specialityId=medicWorkAddress.medicSpeciality_speciality_fk "
+                + "left join medicProfileFile on medicProfile.medic_fk=medicProfileFile.medicProfile_fk "
+                + "left join file on medicProfileFile.file_fk=file.fileId "
+                + "where medicName like ? order by medic_fk";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + medicKey + "%");
             ResultSet rs = stmt.executeQuery();
             int currentMedic = -1;
             MedicProfile medicProfile = new MedicProfile();

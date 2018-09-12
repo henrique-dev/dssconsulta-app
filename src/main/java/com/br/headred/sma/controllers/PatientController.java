@@ -143,9 +143,20 @@ public class PatientController {
     }
 
     @RequestMapping("Paciente/ListarMedicos")
-    public String listarMedicos(int keyForSearch, Model model) {        
-        try (Connection con = new ConnectionFactory().getConnection()) {            
-            List<MedicProfile> medicProfileList = new MedicDAO(con).getMedicProfileList(keyForSearch);
+    public String listarMedicos(String keyForSearch, Model model) {        
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            int specialityId = -1;
+            String medicKey = null;
+            try {
+                specialityId = Integer.parseInt(keyForSearch);
+            } catch (Exception e) {
+                medicKey = keyForSearch;
+            }
+            List<MedicProfile> medicProfileList;
+            if (medicKey == null)
+                medicProfileList = new MedicDAO(con).getMedicProfileList(specialityId);
+            else
+                medicProfileList = new MedicDAO(con).getMedicProfileList(medicKey);
             model.addAttribute(medicProfileList);            
             return "patient/list-medic-data";
         } catch (DAOException e) {

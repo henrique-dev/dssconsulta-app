@@ -13,6 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -73,6 +75,28 @@ public class FileDAO extends BasicDAO {
         }        
         return file;
     }*/
+    
+    public List<File> getPatientFileList(Patient patient) throws DAOException {
+        List<File> fileList = null;
+        String sql = "select fileId, fileLength, patientAccountFileType from patientAccountFile "
+                + "join file on patientAccountFile.file_fk=file.fileId where patientAccount_fk=?";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, patient.getId());
+            ResultSet rs = stmt.executeQuery();
+            fileList = new ArrayList<>();
+            while (rs.next()) {
+                File file = new File();
+                file.setFileId(rs.getInt("fileId"));
+                file.setFileLength(rs.getInt("fileLength"));
+                file.setType(rs.getInt("patientAccountFileType"));
+                fileList.add(file);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao adquirir a lista de arquivos do paciente", e);
+        }         
+        return fileList;
+    }
+    
     public File getPublicFile(int fileId) throws DAOException {
         File file = null;
         String sql = "select filePath from file where fileId=?";        

@@ -149,7 +149,7 @@ public class PatientDAO extends BasicDAO {
         String sql = "select * from patient "
                 + "join patientProfile on patientProfile.patient_fk=patient.patientUser_fk "
                 + "left join patientProfileFile on patientProfile.patient_fk=patientProfileFile.patientProfile_fk "
-                + "join file on patientProfileFile.file_fk=file.fileId "
+                + "left join file on patientProfileFile.file_fk=file.fileId "
                 + "where patientUser_fk=?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patientId);

@@ -67,7 +67,7 @@ public class ConsultDAO extends BasicDAO {
     public List<String> getAccountSpecialityList(Patient patient) throws DAOException {
         List<String> list = null;
         String sql = "select specialityName from accountSpeciality "
-                + "join speciality on accountSpeciality.speciality_fk=speciality.specialityId";
+                + "join speciality on accountSpeciality.speciality_fk=speciality.specialityId where patientAccountSpecialityUsed=0";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             list = new ArrayList<>();
@@ -315,12 +315,12 @@ public class ConsultDAO extends BasicDAO {
                 + "join patient on patientConsult.patientProfile_fk=patient.patientUser_fk "
                 + "join patientProfile on patientConsult.patientProfile_fk=patientProfile.patient_fk "
                 + "left join patientProfileFile on patientProfile.patient_fk=patientProfileFile.patientProfile_fk "
-                + "join file on patientProfileFile.file_fk=file.fileId "
+                + "left join file on patientProfileFile.file_fk=file.fileId "
                 + "where medicWorkAddress_fk=? and consultForDate<? order by consultForDate";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, medicWorkAddress.getMedicWorkAddressId());
             Calendar currentDateCalendar = Calendar.getInstance();
-            currentDateCalendar.add(Calendar.DAY_OF_MONTH, 5);
+            currentDateCalendar.add(Calendar.DAY_OF_MONTH, 15);
             stmt.setObject(2, new Timestamp(currentDateCalendar.getTimeInMillis()));
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -401,11 +401,14 @@ public class ConsultDAO extends BasicDAO {
 
     public List<Consult> getAllConsultList(Patient patient) throws DAOException {
         List<Consult> consultList = null;
-        String sql = "select consultId, consultForDate, medicName, specialityName, clinicName, medicWorkAddressComplement, consultConsulted from consult "
+        String sql = "select consultId, consultForDate, medicName, specialityName, clinicName, "
+                + "medicWorkAddressComplement, consultConsulted, fileId, fileLength from consult "
                 + "join speciality on consult.medicSpeciality_speciality_fk=speciality.specialityId "
                 + "join medic on consult.medicSpeciality_medicProfile_fk=medic.medicUser_fk "
                 + "join medicWorkAddress on consult.medicWorkAddress_fk=medicWorkAddress.medicWorkAddressId "
                 + "join clinic on medicWorkAddress.clinicProfile_fk=clinic.clinicId "
+                + "left join medicProfileFile on medic.medicUser_fk=medicProfileFile.medicProfile_fk "
+                + "left join file on medicProfileFile.file_fk=file.fileId "
                 + "where patientProfile_fk=? order by consultForDate";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patient.getId());
@@ -421,6 +424,14 @@ public class ConsultDAO extends BasicDAO {
                 medicProfile.setMedicName(rs.getString("medicName"));
                 Speciality speciality = new Speciality();
                 speciality.setSpecialityName(rs.getString("specialityName"));
+                
+                try {
+                    File file = new File();
+                    file.setFileId(rs.getInt("fileId"));
+                    file.setFileLength(rs.getInt("fileLength"));
+                    medicProfile.setFile(file);
+                } catch (Exception e) {}
+                
                 consult.setMedicSpeciality(new MedicSpeciality(medicProfile, speciality));
 
                 MedicWorkAddress medicWorkAddress = new MedicWorkAddress();
@@ -449,7 +460,7 @@ public class ConsultDAO extends BasicDAO {
                 + "join medicWorkAddress on consult.medicWorkAddress_fk=medicWorkAddress.medicWorkAddressId "
                 + "join clinic on medicWorkAddress.clinicProfile_fk=clinic.clinicId "
                 + "left join medicProfileFile on medic.medicUser_fk=medicProfileFile.medicProfile_fk "
-                + " join file on medicProfileFile.file_fk=file.fileId "
+                + "left join file on medicProfileFile.file_fk=file.fileId "
                 + "where patientConsult.patientProfile_fk=? order by consultForDate";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             stmt.setInt(1, patient.getId());

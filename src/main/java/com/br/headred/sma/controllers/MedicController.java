@@ -6,17 +6,20 @@
 package com.br.headred.sma.controllers;
 
 import com.br.headred.sma.dao.ConsultDAO;
+import com.br.headred.sma.dao.FileDAO;
 import com.br.headred.sma.dao.MedicDAO;
 import com.br.headred.sma.dao.PatientDAO;
 import com.br.headred.sma.exceptions.DAOException;
 import com.br.headred.sma.jdbc.ConnectionFactory;
 import com.br.headred.sma.models.AccountSpeciality;
 import com.br.headred.sma.models.Consult;
+import com.br.headred.sma.models.File;
 import com.br.headred.sma.models.Medic;
 import com.br.headred.sma.models.MedicProfile;
 import com.br.headred.sma.models.MedicSpeciality;
 import com.br.headred.sma.models.MedicWorkAddress;
 import com.br.headred.sma.models.PatientAccount;
+import com.br.headred.sma.models.PatientProfile;
 import com.br.headred.sma.models.Speciality;
 import com.br.headred.sma.models.User;
 import com.br.headred.sma.utils.ResultList;
@@ -45,6 +48,21 @@ public class MedicController {
             List<MedicWorkAddress> medicWorkAddressList = new MedicDAO(con).getMedicWorkAddressList(new Medic(medicId));
             model.addAttribute("medicWorkAddressList", medicWorkAddressList);
             return "medic/work-address-list-data";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Falha ao obter a conexão");
+            e.printStackTrace();
+        }
+        return "medic/message";
+    }
+    
+    @PostMapping("Medico/ProntuarioPaciente")
+    public String prontuarioPaciente(int patientId, Model model, HttpSession session) {
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            List<File> fileList = new FileDAO(con).getPatientFileList(new PatientProfile(patientId));
+            model.addAttribute("fileList", fileList);
+            return "medic/patient-file-list-data";
         } catch (DAOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -104,7 +122,7 @@ public class MedicController {
     
     @PostMapping("Medico/FinalizarConsulta")
     public String finalizarConsulta(int consultId, String specialityList, Model model, HttpSession session) {        
-        
+        System.out.println(specialityList);
         try (Connection con = new ConnectionFactory().getConnection()) {
             int patientId = new ConsultDAO(con).getPatientId(new Consult(consultId));
             int medicId = ((User)session.getAttribute("user")).getId();
