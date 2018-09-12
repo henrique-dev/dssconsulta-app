@@ -79,7 +79,7 @@ public class FileController {
                         new FileDAO(con).addFileProfile(savedFile, user, "patient");
                         msg = "success";
                     }
-                } else if (type <= File.TYPE_PATIENT_10) {                    
+                } else if (type <= File.TYPE_PATIENT_10) {
                     File savedFile = storageService.store(file, type, user);
                     new FileDAO(con).addFilePatientAccount(savedFile, user);
                     msg = "success";

@@ -50,6 +50,7 @@ public class StorageService {
             fileSaved = new com.br.headred.sma.models.File();
             fileSaved.setFileName(multipartFile.getOriginalFilename());
             fileSaved.setFilePath(path);
+            fileSaved.setType(type);
             fileSaved.setFileUploadDate(new Timestamp(currentDate.getTime()));
             fileSaved.setFileLength((int)file.length());            
         } catch (IOException e) {

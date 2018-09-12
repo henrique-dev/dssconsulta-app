@@ -44,6 +44,7 @@ public class ConsultDAO extends BasicDAO {
 
     public void addAccountSpeciality(AccountSpeciality accountSpeciality) throws DAOException {
         if (existAccountSpecialityForAdd(accountSpeciality)) {
+            System.out.println("RETORNOU");
             return;
         }
         String sql = "insert into accountSpeciality values (?,?,?,?,?,?,?)";
@@ -85,9 +86,9 @@ public class ConsultDAO extends BasicDAO {
     }
 
     private boolean existAccountSpecialityForAdd(AccountSpeciality accountSpeciality) {
-        String sql = "select accountSpecialityId from accountSpeciality where accountSpecialityId=? and patientAccountSpecialityUsed=0";
+        String sql = "select accountSpecialityId from accountSpeciality where speciality_fk=? and patientAccountSpecialityUsed=0";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
-            stmt.setInt(1, accountSpeciality.getAccountSpecialityId());
+            stmt.setInt(1, accountSpeciality.getMedicSpeciality().getSpeciality().getSpecialityId());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return true;

@@ -131,6 +131,7 @@ public class MedicController {
                 ResultSet resultSet = new ResultSet(specialityList);
                 ResultList resultList = new ResultList(resultSet.getResult());
                 while (resultList.next()) {
+                    System.out.println(resultList.getInt("specialityId"));
                     AccountSpeciality accountSpeciality = new AccountSpeciality();
                     accountSpeciality.setPatientAccount(new PatientAccount(patientId));
                     accountSpeciality.setMedicSpeciality(new MedicSpeciality(
