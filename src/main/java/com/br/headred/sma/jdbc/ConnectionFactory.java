@@ -19,7 +19,7 @@ public class ConnectionFactory {
         try {
             //String url = "jdbc:mysql://192.168.2.148:3306/smc?useTimezone=true&serverTimezone=UTC";
             String url = "jdbc:mysql://localhost:3306/smc?useTimezone=true&serverTimezone=UTC";
-            String user = "admin";
+            String user = "root";
             String password = "root";
             Class.forName("com.mysql.jdbc.Driver");
             return DriverManager.getConnection(url, user, password);
