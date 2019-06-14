@@ -8,7 +8,8 @@
 (accountSpecialityList:
 <c:forEach items="${accountSpecialityList}" var="speciality" varStatus="i">
     [consult:
-        {specialityName:${speciality}}        
+        {specialityId:${speciality.specialityId}},
+        {specialityName:${speciality.specialityName}}        
     ]
     <c:if test="${!i.last}">
         ,

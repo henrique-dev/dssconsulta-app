@@ -45,6 +45,7 @@ public class ClinicDAO extends BasicDAO {
             stmt.execute();
         } catch (SQLException e) {
             new SystemDAO(super.connection).releaseId(SystemDAO.Table.patientUser, clinicId);
+            removeClinic(clinic);
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 throw new DAOException("Falha ao adicionar as informações da clinica. O cnpj ja existe", e);
             } else {
@@ -71,6 +72,7 @@ public class ClinicDAO extends BasicDAO {
 
             }
         } catch (SQLException e) {
+            removeClinic(clinicProfile);
             throw new DAOException("Falha ao adicionar um perfil para a clinica", e);
         }
     }

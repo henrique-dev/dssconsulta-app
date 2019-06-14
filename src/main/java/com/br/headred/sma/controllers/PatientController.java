@@ -114,7 +114,7 @@ public class PatientController {
     public String meusEncaminhamentos(Model model, HttpSession session) {
         try (Connection con = new ConnectionFactory().getConnection()) {
             int patientId = ((User)session.getAttribute("user")).getId();
-            List<String> list = new ConsultDAO(con).getAccountSpecialityList(new Patient(patientId));
+            List<Speciality> list = new ConsultDAO(con).getAccountSpecialityList(new Patient(patientId));
             model.addAttribute("accountSpecialityList", list);
             return "patient/account-data";
         } catch (DAOException e) {
