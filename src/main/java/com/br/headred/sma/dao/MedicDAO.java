@@ -757,7 +757,7 @@ public class MedicDAO extends BasicDAO {
         String sql = "select medicUser_fk, medicName, medicWorkAddressId, medicWorkSchedulingDateLast, medicWorkSchedulingCounterOfDay,"
                 + "medicWorkSchedulingPerDay, medicWorkSchedulingDaysOfWeek, clinicName, specialityId, specialityName, specialityPriv, fileId, fileLength "
                 + "from medic "
-                + "join medicWorkAddress on medic.medicUser_fk=MedicWorkAddress.medicSpeciality_medicProfile_fk "
+                + "join medicWorkAddress on medic.medicUser_fk=medicWorkAddress.medicSpeciality_medicProfile_fk "
                 + "join medicWorkScheduling on medicWorkAddress.medicWorkAddressId=medicWorkScheduling.medicWorkAddress_fk "
                 + "join clinic on medicWorkAddress.clinicProfile_fk=clinic.clinicId "
                 + "join speciality on medicWorkAddress.medicSpeciality_speciality_fk=speciality.specialityId "
@@ -779,9 +779,10 @@ public class MedicDAO extends BasicDAO {
                     medicProfile.setMedicName(rs.getString("medicName"));
 
                     try {
-                        File file = new File();
+                        File file = new File();                        
                         file.setFileId(rs.getInt("fileId"));
                         file.setFileLength(rs.getInt("fileLength"));
+                        System.out.println(medicProfile.getMedicName() + ": " + file.getFileId());
                         medicProfile.setFile(file);
                     } catch (Exception e) {
 

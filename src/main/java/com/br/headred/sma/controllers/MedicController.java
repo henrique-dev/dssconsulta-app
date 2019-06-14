@@ -88,6 +88,23 @@ public class MedicController {
         return "medic/message";
     }
     
+    @PostMapping("Medico/PerfilPaciente")
+    public String perfilPaciente(int medicWorkAddressId, int patientId, Model model, HttpSession session) {
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            //int medicId = ((User)session.getAttribute("user")).getId();
+            PatientProfile patientProfile = new PatientDAO(con).getPatientProfile(patientId);
+            model.addAttribute("patientProfile", patientProfile);
+            model.addAttribute("currentDate", Calendar.getInstance().getTime());
+            return "medic/profile-patient-data";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Falha ao obter a conexão");
+            e.printStackTrace();
+        }
+        return "medic/message";
+    }
+    
     @PostMapping("Medico/MinhaConsulta")
     public String minhaConsulta(int medicWorkAddressId, Model model) {
         try (Connection con = new ConnectionFactory().getConnection()) {
@@ -101,8 +118,22 @@ public class MedicController {
             System.err.println("Falha ao obter a conexão");
             e.printStackTrace();
         }
-        return "medic/message";
-            
+        return "medic/message";            
+    }
+    
+    @PostMapping("Medico/MinhaAgenda")
+    public String minhaAgenda(int medicWorkAddressId, Model model) {
+        try (Connection con = new ConnectionFactory().getConnection()) {
+            List<Consult> consultList = new ConsultDAO(con).getConsultList(new MedicWorkAddress(medicWorkAddressId), false);            
+            model.addAttribute("consultList", consultList);
+            return "medic/list-consult-data";
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Falha ao obter a conexão");
+            e.printStackTrace();
+        }
+        return "medic/message";            
     }
     
     @PostMapping("Medico/ListarEspecialidades")

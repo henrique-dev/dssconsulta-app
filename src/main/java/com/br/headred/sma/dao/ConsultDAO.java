@@ -65,15 +65,18 @@ public class ConsultDAO extends BasicDAO {
         }
     }
 
-    public List<String> getAccountSpecialityList(Patient patient) throws DAOException {
-        List<String> list = null;
-        String sql = "select specialityName from accountSpeciality "
+    public List<Speciality> getAccountSpecialityList(Patient patient) throws DAOException {
+        List<Speciality> list = null;
+        String sql = "select specialityId, specialityName from accountSpeciality "
                 + "join speciality on accountSpeciality.speciality_fk=speciality.specialityId where patientAccountSpecialityUsed=0";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             list = new ArrayList<>();
             while (rs.next()) {
-                list.add(rs.getString("specialityName"));
+                Speciality speciality = new Speciality();
+                speciality.setSpecialityId(rs.getInt("specialityId"));
+                speciality.setSpecialityName(rs.getString("specialityName"));
+                list.add(speciality);
             }
         } catch (SQLException e) {
             throw new DAOException("Falha ao recupear a lista de especialidades da conta", e);
@@ -504,8 +507,41 @@ public class ConsultDAO extends BasicDAO {
         return consultList;
     }
 
-    public List<Consult> getConsultList(Medic medic) {
-        return null;
+    public List<Consult> getConsultList(MedicWorkAddress medicWorkAddress, boolean allConsults) throws DAOException {
+        List<Consult> consultList = null;
+        String sql = "select consultId, consultForDate, consult.patientProfile_fk, patientName, fileId, fileLength from consult "
+                + "join patient on consult.patientProfile_fk=patient.patientUser_fk "
+                + "left join patientProfileFile on consult.patientProfile_fk=patientProfileFile.patientProfile_fk "
+                + "left join file on patientProfileFile.file_fk=file.fileId "
+                + "where medicWorkAddress_fk=? and consultConsulted=? order by consultForDate";
+        try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, medicWorkAddress.getMedicWorkAddressId());
+            stmt.setBoolean(2, allConsults);
+            ResultSet rs = stmt.executeQuery();
+            consultList = new ArrayList<>();
+            while (rs.next()) {
+                Consult consult = new Consult();
+                consult.setConsultId(rs.getInt("consultId"));
+                consult.setConsultForDate((Timestamp) rs.getObject("consultForDate", Timestamp.class));
+                
+                PatientProfile patient = new PatientProfile();
+                patient.setId(rs.getInt("patientProfile_fk"));
+                patient.setPatientName(rs.getString("patientName"));
+                
+                try {
+                    File file = new File();
+                    file.setFileId(rs.getInt("fileId"));
+                    file.setFileLength(rs.getInt("fileLength"));
+                    patient.setFile(file);
+                } catch (Exception e) {}
+                
+                consult.setPatientProfile(patient);
+                consultList.add(consult);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Falha ao recuperar a agenda do medico", e);
+        }
+        return consultList;
     }
 
     public void removeConsult(Consult consult) throws DAOException {
