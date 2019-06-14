@@ -68,8 +68,10 @@ public class ConsultDAO extends BasicDAO {
     public List<Speciality> getAccountSpecialityList(Patient patient) throws DAOException {
         List<Speciality> list = null;
         String sql = "select specialityId, specialityName from accountSpeciality "
-                + "join speciality on accountSpeciality.speciality_fk=speciality.specialityId where patientAccountSpecialityUsed=0";
+                + "join speciality on accountSpeciality.speciality_fk=speciality.specialityId where patientAccountSpecialityUsed=0 "
+                + " and patientAccount_fk = ?";
         try (PreparedStatement stmt = super.connection.prepareStatement(sql)) {
+            stmt.setInt(1, patient.getId());
             ResultSet rs = stmt.executeQuery();
             list = new ArrayList<>();
             while (rs.next()) {
