@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class StorageService {
     
-    private static final String MASTER_PATH = "E:/APP/SMC/";       
+    private static final String MASTER_PATH = "/home/henrique_phgb/smc/";
     
     public com.br.headred.sma.models.File store(MultipartFile multipartFile, int type, User user) throws StorageException {
         if (type < 0 && type > 20)
